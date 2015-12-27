@@ -1,0 +1,10 @@
+Heroes:
+	http://us.battle.net/heroes/en/heroes/
+
+Free Hero Rotation:
+	http://us.battle.net/heroes/en/forum/topic/17936383460
+
+Hero Detail (sample):
+	http://us.battle.net/heroes/en/heroes/murky/
+
+
