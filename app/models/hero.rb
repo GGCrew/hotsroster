@@ -1,5 +1,9 @@
 class Hero < ActiveRecord::Base
 
+	belongs_to	:role
+	belongs_to	:typp
+	belongs_to	:franchise
+
 	def self.update_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'
 		url = URI.parse(address)
@@ -23,13 +27,34 @@ class Hero < ActiveRecord::Base
 		json_string = hero_script[json_start..json_end]
 		json = JSON.parse(json_string)
 	
+		# update related tables
+		roles = []
+		typps = []
+		franchises = []
+		json.each do |hero_json|
+			roles << hero_json['role']
+			typps << hero_json['type']
+			franchises << hero_json['franchise']
+		end
+		roles.uniq!
+		typps.uniq!
+		franchises.uniq!
+		Role.update_from_json(roles)
+		Typp.update_from_json(typps)
+		Franchise.update_from_json(franchises)
+
+		# update heroes
 		json.each do |hero_json|
 			hero = self.where(name: hero_json['name']).first
 			hero = self.new(name: hero_json['name']) unless hero
 			
 			hero.title = hero_json['title']
 			hero.slug = hero_json['slug']
-			
+
+			hero.role = Role.where(name: hero_json['role']['name']).first
+			hero.typp = Typp.where(name: hero_json['type']['name']).first
+			hero.franchise = Franchise.where(name: hero_json['franchise']).first
+
 			hero.save! if hero.changed?
 		end
 		
