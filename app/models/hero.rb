@@ -4,6 +4,8 @@ class Hero < ActiveRecord::Base
 	belongs_to	:typp
 	belongs_to	:franchise
 
+	has_many	:rosters
+
 	def self.update_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'
 		url = URI.parse(address)
