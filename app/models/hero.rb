@@ -19,7 +19,7 @@ class Hero < ActiveRecord::Base
 		json_end_regex = Regexp.new(Regexp.quote(json_end_string))
 
 		hero_script = nil
-		page.css('script').each_with_index do |script|
+		page.css('script').each do |script|
 			hero_script = script.to_s if (json_start_regex =~ script)
 		end
 		#TODO: error handling (hero_script == nil)
