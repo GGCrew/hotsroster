@@ -6,7 +6,7 @@ class Hero < ActiveRecord::Base
 
 	has_many	:rosters
 
-	def self.update_from_blizzard
+	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'
 		url = URI.parse(address)
 		html = Net::HTTP.get(url) # TODO: error handling
@@ -41,9 +41,9 @@ class Hero < ActiveRecord::Base
 		roles.uniq!
 		typps.uniq!
 		franchises.uniq!
-		Role.update_from_json(roles)
-		Typp.update_from_json(typps)
-		Franchise.update_from_json(franchises)
+		Role.import_from_json(roles)
+		Typp.import_from_json(typps)
+		Franchise.import_from_json(franchises)
 
 		# update heroes
 		json.each do |hero_json|
