@@ -4,7 +4,7 @@ class Hero < ActiveRecord::Base
 	belongs_to	:typp
 	belongs_to	:franchise
 
-	has_many	:rosters
+	has_many	:rosters, dependent: :destroy
 
 	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'

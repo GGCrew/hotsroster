@@ -1,6 +1,6 @@
 class Typp < ActiveRecord::Base
 
-	has_many	:heroes
+	has_many	:heroes, dependent: :nullify
 
 	def self.import_from_json(json)
 		for typp in json
