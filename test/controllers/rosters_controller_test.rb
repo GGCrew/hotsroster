@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RostersControllerTest < ActionController::TestCase
   setup do
-    @roster = rosters(:one)
+    @roster = rosters(:roster_1)
   end
 
   test "should get index" do
