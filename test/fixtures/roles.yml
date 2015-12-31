@@ -4,8 +4,10 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+<% (1..4).each do |i| %>
+role_<%= i %>:
+  name: Role <%= i %>
+  slug: role-<%= i %>
+
+<% end %>
+

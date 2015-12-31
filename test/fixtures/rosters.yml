@@ -4,8 +4,19 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+<% (1..52).each do |date_range| %>
+<% (1..8).each do |counter| %>
+<% 
+	heroes = []
+	while heroes.count < 8
+		heroes << rand(30)+1
+		heroes.uniq!
+	end
+%>
+roster_<%= date_range + counter - 1 %>:
+  hero: hero_<%= heroes[counter - 1] %>
+  date_range: date_range_<%= date_range %>
+  player_level: <%= counter == 8 ? 15 : (counter == 7 ? 7 : 1) %>
+
+<% end %>
+<% end %>
