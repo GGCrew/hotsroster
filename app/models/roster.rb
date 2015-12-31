@@ -12,7 +12,8 @@ class Roster < ActiveRecord::Base
 		page = Nokogiri::HTML(html)
 
 		date_search_regex = Regexp.new(Regexp.quote(date_search_text))
-	
+
+		# TODO: Check for and loop through pagination	
 		post_list = page.css('div.post-list div.topic-post')
 		for post in post_list
 			date_text = nil
@@ -39,23 +40,33 @@ class Roster < ActiveRecord::Base
 				hero_match = /^(.*) \(Slot unlocked at Player Level (\d{1,2})\)$/.match(hero_text)
 				if hero_match
 					# hero requires a player level
-					heroes << {
-						name: hero_match[1],
-						player_level: hero_match[2].to_i
-					}
+					hero_name = hero_match[1]
+					player_level = hero_match[2].to_i
 				else
 					# hero does not require a player level
-					heroes << {
-						name: hero_text,
-						player_level: 1
-					}
+					hero_name = hero_text
+					player_level = 1
 				end
+				heroes << {
+					hero: Hero.where(name: hero_name).first,
+					player_level: player_level
+				}
 			end
 
-			# TODO: Import into Roster
+			# Import into Roster
+			for hero in heroes
+				attributes = {
+					date_range: date_range,
+					hero: hero[:hero],
+					player_level: hero[:player_level]
+				}
+				roster = Roster.where(attributes).first
+				roster = Roster.create!(attributes) unless roster
+			end
 		end
+		# END TODO: Check for and loop through pagination	
 		
-		return {date_range: date_range, heroes: heroes}
+		return true
 	end
 
 end
