@@ -5,6 +5,7 @@ class Hero < ActiveRecord::Base
 	belongs_to	:franchise
 
 	has_many	:rosters, dependent: :destroy
+	has_many	:date_ranges,	through: :rosters
 
 	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'

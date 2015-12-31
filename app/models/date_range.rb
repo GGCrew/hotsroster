@@ -1,6 +1,7 @@
 class DateRange < ActiveRecord::Base
 
 	has_many	:rosters, dependent: :destroy
+	has_many	:heroes,	through: :rosters
 
 	def self.import_date_text(date_text)
 		date_match = /^([a-zA-Z]*) (\d{1,2}) . ([a-zA-Z]*) ?(\d{1,2}), (\d{4})$/.match(date_text)
