@@ -21,8 +21,7 @@ class DateRange < ActiveRecord::Base
 			end
 		end
 
-		date_range = self.where(start: start_date).where(end: end_date).first
-		date_range = self.create!(start: start_date, end: end_date) unless date_range
+		date_range = self.find_or_create_by!(start: start_date, end: end_date)
 
 		return date_range
 	end		

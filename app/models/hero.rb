@@ -48,17 +48,15 @@ class Hero < ActiveRecord::Base
 
 		# update heroes
 		json.each do |hero_json|
-			hero = self.where(name: hero_json['name']).first
-			hero = self.new(name: hero_json['name']) unless hero
+			hero = self.find_or_create_by!(name: hero_json['name'])
 			
-			hero.title = hero_json['title']
-			hero.slug = hero_json['slug']
-
-			hero.role = Role.where(name: hero_json['role']['name']).first
-			hero.typp = Typp.where(name: hero_json['type']['name']).first
-			hero.franchise = Franchise.where(name: hero_json['franchise']).first
-
-			hero.save! if hero.changed?
+			hero.update_attributes!({
+				title: hero_json['title'],
+				slug: hero_json['slug'],
+				role: Role.where(name: hero_json['role']['name']).first,
+				typp: Typp.where(name: hero_json['type']['name']).first,
+				franchise: Franchise.where(name: hero_json['franchise']).first
+			})
 		end
 		
 		return json

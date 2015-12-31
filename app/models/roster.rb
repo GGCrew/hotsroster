@@ -56,13 +56,11 @@ class Roster < ActiveRecord::Base
 
 				# Import into Roster
 				for hero in heroes
-					attributes = {
+					Roster.find_or_create_by!({
 						date_range: date_range,
 						hero: hero[:hero],
 						player_level: hero[:player_level]
-					}
-					roster = Roster.where(attributes).first
-					roster = Roster.create!(attributes) unless roster
+					})
 				end
 			end
 
