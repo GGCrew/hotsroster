@@ -3,8 +3,12 @@ class Role < ActiveRecord::Base
 	has_many	:heroes, dependent: :nullify
 
 	def self.import_from_json(json)
-		for role in json
-			self.create!(name: role['name'], slug: role['slug']) unless self.where(name: role['name']).first
+		for json_data in json
+			role = self.find_or_create_by!(name: json_data['name'])
+			
+			role.update_attributes!({
+				slug: json_data['slug']
+			})
 		end
 	end
 

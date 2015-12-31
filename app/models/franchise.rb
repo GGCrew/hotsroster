@@ -4,8 +4,10 @@ class Franchise < ActiveRecord::Base
 
 	def self.import_from_json(json)
 		for name in json
-			self.create!(name: name) unless self.where(name: name).first
+			self.find_or_create_by!(name: name)
 		end
+
+		return true
 	end
 
 end
