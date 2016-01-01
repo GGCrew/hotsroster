@@ -1,0 +1,9 @@
+%figure
+	= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg"
+	%figcaption
+		= hero_portrait.hero.name
+		- if hero_portrait.player_level > 1
+			%br
+			Player Level
+			= hero_portrait.player_level
+
