@@ -14,3 +14,33 @@
 
 @import "bootstrap";
 
+#content {
+	width: 90%;
+	margin: auto;
+}
+
+#roster {
+	.current, .previous {
+		display: inline-block;
+
+		.all, .restricted {
+
+			.heroes {
+				text-align: center;
+
+				figure {
+					width: 10em;
+					display: inline-block;
+
+					img {
+						width: 100%;
+					}
+				
+					figcaption {
+						text-align: center;
+					}
+				}
+			}
+		}
+	}
+}
