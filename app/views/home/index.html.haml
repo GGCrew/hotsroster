@@ -1,0 +1,21 @@
+#content
+	#roster
+		.current
+			%h1= raw("#{@current_rotation[:date_range].start} &mdash; #{@current_rotation[:date_range].end}")
+			%ul.all
+				- for roster in @current_rotation[:roster].where(player_level: 1)
+					%li.level_all= roster.hero.name
+			%ul.restricted
+				- for roster in @current_rotation[:roster].where.not(player_level: 1)
+					%li.level_all= roster.hero.name
+
+		.previous
+			- for rotation in @previous_rotations
+				%h1= raw("#{rotation[:date_range].start} &mdash; #{rotation[:date_range].end}")
+				%ul.all
+					- for roster in rotation[:roster].where(player_level: 1)
+						%li.level_all= roster.hero.name
+				%ul.restricted
+					- for roster in rotation[:roster].where.not(player_level: 1)
+						%li.level_all= roster.hero.name
+				
