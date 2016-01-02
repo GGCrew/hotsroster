@@ -1,15 +1,16 @@
-%h1
-	= rotation[:date_range].start
+%h2
+	= rotation[:date_range].start.to_s(:shortish)
 	&mdash;
-	= rotation[:date_range].end
+	= rotation[:date_range].end.to_s(:shortish)
 
 .all
-	%p Heroes available to all players
+	%h3 Heroes available to all players
 	.heroes
 		- for roster in rotation[:roster].where(player_level: 1)
 			= render(partial: 'rosters/hero_portrait', object: roster)
 
 .restricted
+	%h3 Restricted Heroes
 	.heroes
 		- for roster in rotation[:roster].where.not(player_level: 1)
 			= render(partial: 'rosters/hero_portrait', object: roster)

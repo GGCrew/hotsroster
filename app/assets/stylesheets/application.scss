@@ -12,35 +12,60 @@
  *
  */
 
+@import "bootstrap-sprockets";
 @import "bootstrap";
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
 
 #content {
 	width: 90%;
 	margin: auto;
 }
 
-#roster {
-	.current, .previous {
-		display: inline-block;
+.jumbotron {
+	background-image: image-url('jumbotron_bg_2000x1250.jpg');
+	background-repeat: no-repeat;
+	backgroung-position: center bottom;
+	color: #BBAAFF;
+}
 
-		.all, .restricted {
+.current, .previous {
+	display: inline-block;
 
-			.heroes {
-				text-align: center;
+	.all, .restricted {
+		margin-left: 1em;
 
-				figure {
-					width: 10em;
-					display: inline-block;
+		.heroes {
+			//text-align: center;
 
-					img {
-						width: 100%;
-					}
-				
-					figcaption {
-						text-align: center;
-					}
+			figure {
+				width: 10em;
+				display: inline-block;
+				vertical-align: top;
+
+				img {
+					width: 100%;
+				}
+
+				figcaption {
+					text-align: center;
 				}
 			}
 		}
 	}
 }
+
+.previous {
+	.all, .restricted {
+		.heroes {
+			figure {
+				width: 5em;
+			}
+		}
+	}
+}
+
