@@ -1,8 +1,12 @@
-#content
-	#roster
+.jumbotron
+	.container
 		.current
 			= render(partial: 'rosters/rotation', object: @current_rotation)
 
-		.previous
-			= render(partial: 'rosters/rotation', collection: @previous_rotations)
+.container
+	.row
+		- for rotation in @previous_rotations
+			.col-md-6
+				.previous
+					= render(partial: 'rosters/rotation', object: rotation)
 				
