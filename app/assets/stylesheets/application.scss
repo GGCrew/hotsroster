@@ -29,8 +29,8 @@ body {
 .jumbotron {
 	background-image: image-url('jumbotron_bg_2000x1250.jpg');
 	background-repeat: no-repeat;
-	backgroung-position: center bottom;
-	color: #BBAAFF;
+	background-position: center bottom;
+	color: #D6A6FF;
 }
 
 .current, .previous {
@@ -47,8 +47,19 @@ body {
 				vertical-align: top;
 				background-color: black;
 
-				img {
-					width: 100%;
+				.border {
+					background: linear-gradient(#14324A, #43286B) repeat scroll 0% 0%;
+					padding: .25em;
+					display: inline-block;
+					transition: background 0.5s;
+					
+					&:hover {
+						background: linear-gradient(#40d0ff, #D6A6FF);
+					}
+
+					img {
+						width: 100%;
+					}
 				}
 
 				figcaption {
