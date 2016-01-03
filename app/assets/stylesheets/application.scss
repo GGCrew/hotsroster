@@ -40,12 +40,12 @@ body {
 		margin-left: 1em;
 
 		.heroes {
-			//text-align: center;
 
 			figure {
 				width: 10em;
 				display: inline-block;
 				vertical-align: top;
+				background-color: black;
 
 				img {
 					width: 100%;
@@ -53,6 +53,8 @@ body {
 
 				figcaption {
 					text-align: center;
+					font-weight: bold;
+					color: #40d0ff;
 				}
 			}
 		}
