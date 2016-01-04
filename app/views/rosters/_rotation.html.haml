@@ -2,6 +2,13 @@
 	= rotation[:date_range].start.to_s(:shortish)
 	&mdash;
 	= rotation[:date_range].end.to_s(:shortish)
+	- case rotation_index
+		- when 0
+			(Current Rotation)
+		- when 1
+			(Previous Rotation)
+		- else
+			= "(#{rotation_index} rotations ago)"
 
 .all
 	%h3 Heroes available to all players
