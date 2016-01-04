@@ -1,12 +1,12 @@
 .jumbotron
 	.container
 		.current
-			= render(partial: 'rosters/rotation', object: @current_rotation)
+			= render(partial: 'rosters/rotation', object: @current_rotation, locals: {rotation_index: 0})
 
 .container
 	.row
-		- for rotation in @previous_rotations
+		- @previous_rotations.each_with_index do |rotation, rotation_index|
 			.col-md-6
 				.previous
-					= render(partial: 'rosters/rotation', object: rotation)
+					= render(partial: 'rosters/rotation', object: rotation, locals: {rotation_index: rotation_index + 1})
 				

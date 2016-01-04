@@ -15,10 +15,20 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-/* Move down content because we have a fixed navbar that is 50px tall */
 body {
+	/* Move down content because we have a fixed navbar that is 50px tall */
   padding-top: 50px;
   padding-bottom: 20px;
+
+	background: black;
+}
+
+h2 {
+	font-size: 2.2em;
+}
+
+h3 {
+	font-size: 1.5em;
 }
 
 #content {
@@ -51,7 +61,8 @@ body {
 					background: linear-gradient(#14324A, #43286B) repeat scroll 0% 0%;
 					padding: .25em;
 					display: inline-block;
-					transition: background 0.5s;
+					//transition: background 0.5s;  // Incompatible with bitmap background images
+					border-radius: .25em;
 					
 					&:hover {
 						background: linear-gradient(#40d0ff, #D6A6FF);
@@ -64,8 +75,14 @@ body {
 
 				figcaption {
 					text-align: center;
-					font-weight: bold;
+					//font-weight: bold;
 					color: #40d0ff;
+					font-size: 1.3em;
+
+					.player_level {
+						font-size: .8em;
+						font-style: italic;
+					}
 				}
 			}
 		}
@@ -73,10 +90,13 @@ body {
 }
 
 .previous {
+	font-size: .7em;
+	color: #bbb;
+
 	.all, .restricted {
 		.heroes {
 			figure {
-				width: 5em;
+				width: 8em;
 			}
 		}
 	}
