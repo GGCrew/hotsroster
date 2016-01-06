@@ -1,4 +1,11 @@
-%p#notice= notice
-= link_to 'Edit', edit_hero_path(@hero)
-|
-\#{link_to 'Back', heros_path}
+.jumbotron
+	.container
+		.row
+			.col-md-3
+				.hero
+					%figure
+						%span.border
+							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{@hero.slug}.jpg"
+			.col-md-9
+				%h2= @hero.name
+				%h3= @hero.title

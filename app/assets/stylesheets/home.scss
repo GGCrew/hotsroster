@@ -1,3 +1,31 @@
 // Place all the styles related to the home controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.heroes {
+	figure {
+		width: 10em;
+	}
+}
+
+.current, .previous {
+	display: inline-block;
+
+	.all, .restricted {
+		margin-left: 1em;
+	}
+}
+
+.previous {
+	font-size: .7em;
+	color: #bbb;
+
+	.all, .restricted {
+		.heroes {
+			figure {
+				width: 8em;
+			}
+		}
+	}
+}
+
