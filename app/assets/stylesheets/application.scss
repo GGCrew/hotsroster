@@ -43,63 +43,41 @@ h3 {
 	color: #D6A6FF;
 }
 
-.current, .previous {
-	display: inline-block;
+.heroes, .hero {
 
-	.all, .restricted {
-		margin-left: 1em;
+	figure {
+		//width: 10em;
+		display: inline-block;
+		vertical-align: top;
+		background-color: black;
+		border-radius: .25em;
 
-		.heroes {
+		.border {
+			background: linear-gradient(#14324A, #43286B) repeat scroll 0% 0%;
+			padding: .25em;
+			display: inline-block;
+			//transition: background 0.5s;  // Incompatible with bitmap background images
+			border-radius: .25em;
+			
+			&:hover {
+				background: linear-gradient(#40d0ff, #D6A6FF);
+			}
 
-			figure {
-				width: 10em;
-				display: inline-block;
-				vertical-align: top;
-				background-color: black;
-				border-radius: .25em;
+			img {
+				width: 100%;
+			}
+		}
 
-				.border {
-					background: linear-gradient(#14324A, #43286B) repeat scroll 0% 0%;
-					padding: .25em;
-					display: inline-block;
-					//transition: background 0.5s;  // Incompatible with bitmap background images
-					border-radius: .25em;
-					
-					&:hover {
-						background: linear-gradient(#40d0ff, #D6A6FF);
-					}
+		figcaption {
+			text-align: center;
+			//font-weight: bold;
+			color: #40d0ff;
+			font-size: 1.3em;
 
-					img {
-						width: 100%;
-					}
-				}
-
-				figcaption {
-					text-align: center;
-					//font-weight: bold;
-					color: #40d0ff;
-					font-size: 1.3em;
-
-					.player_level {
-						font-size: .8em;
-						font-style: italic;
-					}
-				}
+			.player_level {
+				font-size: .8em;
+				font-style: italic;
 			}
 		}
 	}
 }
-
-.previous {
-	font-size: .7em;
-	color: #bbb;
-
-	.all, .restricted {
-		.heroes {
-			figure {
-				width: 8em;
-			}
-		}
-	}
-}
-
