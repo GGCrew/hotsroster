@@ -1,7 +1,8 @@
 %figure
 	%a 
-		%span.border
-			= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg"
+		= link_to(hero_path(hero_portrait.hero)) do
+			%span.border
+				= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg"
 	%figcaption
 		= hero_portrait.hero.name
 		- if hero_portrait.player_level > 1

@@ -1,0 +1,4 @@
+Prefix Verb URI Pattern          Controller#Action
+ heros GET  /heros(.:format)     heros#index
+  hero GET  /heros/:id(.:format) heros#show
+  root GET  /                    home#index
