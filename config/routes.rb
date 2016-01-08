@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  resources :rosters
-  resources :heros
+  #resources :rosters
+  #resources :heros
 
 	root 'home#index'
 
