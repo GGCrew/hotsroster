@@ -55,7 +55,7 @@ class Hero < ActiveRecord::Base
 				slug: hero_json['slug'],
 				role: Role.where(name: hero_json['role']['name']).first,
 				typp: Typp.where(name: hero_json['type']['name']).first,
-				franchise: Franchise.where(name: hero_json['franchise']).first
+				franchise: Franchise.where(value: hero_json['franchise']).first
 			})
 		end
 		
