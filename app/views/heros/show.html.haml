@@ -7,5 +7,21 @@
 						%span.border
 							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{@hero.slug}.jpg"
 			.col-md-9
-				%h2= @hero.name
-				%h3= @hero.title
+				.row
+					.col-md-12
+						%h2.name= @hero.name
+						%h3.title= @hero.title
+				.row
+					.col-md-2
+						%h4
+							= image_tag("icons/franchise/#{@hero.franchise.value}.png", class: 'icon')
+							= @hero.franchise.name
+					.col-md-2
+						%h4
+							= image_tag("icons/role/#{@hero.role.slug}.png", class: 'icon')
+							= @hero.role.name
+					.col-md-2
+						%h4
+							= image_tag("icons/typp/#{@hero.typp.slug}.png", class: 'icon')
+							= @hero.typp.name
+

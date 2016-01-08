@@ -1,3 +1,8 @@
+action = 'Importing Franchises'
+puts "#{action}..."
+Franchise.import_from_blizzard
+puts "#{action} complete!"
+
 action = 'Importing Heroes'
 puts "#{action}..."
 Hero.import_from_blizzard
