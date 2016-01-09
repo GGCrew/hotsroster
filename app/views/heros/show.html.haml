@@ -52,24 +52,22 @@
 						%h4.title Rotation stats
 
 						Rotations since game launch:
-						= @hero.date_ranges.count
-						= "(#{(@hero.date_ranges.count / DateRange.count.to_f * 100).round(2)}%)"
+						= rotations_since_launch(@hero)
+						= "(#{rotation_percentage_since_launch(@hero)}%)"
 
 						%br
-						- conditions = ['start >= :hero_date', {hero_date: @hero.release_date}]
 						Rotations since
 						= @hero.name
 						was added to the game:
-						= @hero.date_ranges.where(conditions).count
-						= "(#{(@hero.date_ranges.where(conditions).count / DateRange.where(conditions).count.to_f * 100).round(2)}%)"
+						= rotations_since_release(@hero)
+						= "(#{rotation_percentage_since_release(@hero)}%)"
 
 						%br
-						- conditions = ['start >= :hero_date', {hero_date: Hero.newest.release_date}]
 						Rotations since newest hero
 						= "(#{Hero.newest.name})"
 						was added to the game:
-						= @hero.date_ranges.where(conditions).count
-						= "(#{(@hero.date_ranges.where(conditions).count / DateRange.where(conditions).count.to_f * 100).round(2)}%)"
+						= rotations_since_newest_hero_release(@hero)
+						= "(#{rotation_percentage_since_newest_hero_release(@hero)}%)"
 
 .container.history
 	.row

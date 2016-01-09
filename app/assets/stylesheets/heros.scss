@@ -2,6 +2,26 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+.title {
+	color: #D6A6FF;
+}
+
+.heroes {
+	figure {
+		width: 10em;
+		margin-bottom: 1em;
+
+		figcaption {
+
+			.rotation_count {
+				font-style: italic;
+				font-size: .7em;
+				vertical-align: super;
+			}
+		}
+	}
+}
+
 img.icon {
 	height: 2em;
 }

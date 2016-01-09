@@ -1,14 +1,18 @@
-%p#notice= notice
-%h1 Listing Heros
-%table
-  %thead
-    %tr
-      %th{:colspan => "3"}
-  %tbody
-    - @heros.each do |hero|
-      %tr
-        %td= link_to 'Show', hero
-        %td= link_to 'Edit', edit_hero_path(hero)
-        %td= link_to 'Destroy', hero, method: :delete, data: { confirm: 'Are you sure?' }
-%br
-  = link_to 'New Hero', new_hero_path
+.container
+	%h2.title All Heroes
+	.row
+		.col-md-12.heroes
+			- for hero in @heros
+				%figure
+					%a 
+						= link_to(hero_path(hero)) do
+							%span.border
+								= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero.slug}.jpg"
+					%figcaption
+						= hero.name
+						%br
+						%span.rotation_count
+							= hero.rosters.count
+							rotations
+							= "(#{rotation_percentage_since_release(hero)}%)"
+				
