@@ -12,7 +12,6 @@
 						= hero.name
 						%br
 						%span.rotation_count
-							= hero.rosters.count
-							rotations
+							= pluralize(hero.rosters.count, 'rotation')
 							= "(#{rotation_percentage_since_release(hero)}%)"
 				
