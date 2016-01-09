@@ -6,12 +6,49 @@ img.icon {
 	height: 2em;
 }
 
-h2.name {
-	font-weight: bold;
-	margin-bottom: 0;
+.portrait {
+	text-align: center;
 }
 
-h3.title {
-	margin-top: 0;
-	font-style: italic;
+.callout {
+	background-color: rgba(0,0,0,.75);
+	border-radius: .5em;
+	
+	.name {
+		font-weight: bold;
+		margin-bottom: 0;
+	}
+
+	.title {
+		margin-top: 0;
+		font-style: italic;
+	}
+
+	.release_date {
+		margin-top: 20px;
+	}
+
+	.category {
+		margin-top: 0;
+	}
+
+	.rotation_status {
+		margin-top: 0;
+
+		span {
+			color: #40D0FF;
+		}
+	}
+
+	.stats {
+		.title {
+			margin-top: 0;
+			border-bottom: 1px solid #43286B;
+			font-style: italic;
+		}
+	}
+}
+
+.history {
+	color: #40D0FF;
 }
