@@ -4,6 +4,9 @@ class HerosController < ApplicationController
   # GET /heros
   # GET /heros.json
   def index
+  	@head[:title] = 'All Heroes'
+  	@head[:meta][:description] = "All currently released heroes for Heroes of the Storm."
+
     @heros = Hero.order(:name)
   end
 
