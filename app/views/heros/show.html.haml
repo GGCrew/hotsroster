@@ -50,13 +50,13 @@
 						Rotation percentage since
 						= @hero.name
 						was added to the game:
-						= "#{(@hero.date_ranges.count / DateRange.count.to_f * 100).round(2)}%"
+						= "#{(@hero.date_ranges.where('start >= :hero_date', {hero_date: @hero.release_date}).count / DateRange.where('start >= :hero_date', {hero_date: @hero.release_date}).count.to_f * 100).round(2)}%"
 
 						%br
 						Rotation percentage since newest hero
 						= "(#{Hero.newest.name})"
 						was added to the game:
-						= "#{(@hero.date_ranges.count / DateRange.count.to_f * 100).round(2)}%"
+						= "#{(@hero.date_ranges.where('start >= :hero_date', {hero_date: Hero.newest.release_date}).count / DateRange.where('start >= :hero_date', {hero_date: Hero.newest.release_date}).count.to_f * 100).round(2)}%"
 
 						%br
 						
