@@ -50,9 +50,7 @@
 				.row.stats
 					.col-md-12
 						%h4.title Rotation stats
-						= pluralize(@hero.date_ranges.count, 'rotation')
 
-						%br
 						Rotations since game launch:
 						= @hero.date_ranges.count
 						= "(#{(@hero.date_ranges.count / DateRange.count.to_f * 100).round(2)}%)"
