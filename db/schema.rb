@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160108091008) do
+ActiveRecord::Schema.define(version: 20160108225309) do
 
   create_table "date_ranges", force: :cascade do |t|
     t.datetime "start"
@@ -34,8 +34,10 @@ ActiveRecord::Schema.define(version: 20160108091008) do
     t.integer  "role_id"
     t.integer  "typp_id"
     t.integer  "franchise_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.datetime "release_date"
+    t.datetime "prerelease_date"
   end
 
   create_table "roles", force: :cascade do |t|

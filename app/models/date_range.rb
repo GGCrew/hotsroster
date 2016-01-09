@@ -25,5 +25,8 @@ class DateRange < ActiveRecord::Base
 
 		return date_range
 	end		
-	
+
+	def self.current
+		return self.order(:end).last
+	end
 end
