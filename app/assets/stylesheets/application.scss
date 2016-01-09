@@ -36,6 +36,21 @@ h3 {
 	margin: auto;
 }
 
+.navbar-inverse {
+	.navbar-nav {
+		li {
+			a {
+				color: #40d0ff;
+				font-size: 2em;
+				
+				&:hover {
+					color: #D6A6FF;
+				}
+			}
+		}
+	}
+}
+
 .navbar-brand {
 	padding: 0;
 }

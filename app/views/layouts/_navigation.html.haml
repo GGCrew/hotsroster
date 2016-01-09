@@ -9,6 +9,9 @@
 			%a.navbar-brand{href: root_path}
 				= image_tag 'logo.png'
 		#navbar.navbar-collapse.collapse
+			%ul.nav.navbar-nav
+				%li.divider{role: 'separator'}
+				%li= link_to 'Heroes', heroes_path
 			- if false
 				%form.navbar-form.navbar-right
 					.form-group
