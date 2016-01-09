@@ -80,5 +80,8 @@
 					= rotation.start.to_s(:shortish)
 					&mdash;
 					= rotation.end.to_s(:shortish)
+					- roster = Roster.where(hero_id: @hero.id, date_range_id: rotation.id).first
+					- if roster.player_level > 1
+						= "(Restricted: player level #{roster.player_level})"
 			
 						
