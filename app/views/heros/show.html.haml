@@ -1,62 +1,86 @@
 .jumbotron
 	.container
 		.row
-			.col-md-3
+			.col-md-3.portrait
 				.hero
 					%figure
 						%span.border
 							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{@hero.slug}.jpg"
-			.col-md-9
+			.col-md-9.callout
 				.row
-					.col-md-12
+					.col-md-9
 						%h2.name= @hero.name
 						%h3.title= @hero.title
+					.col-md-3
+						%h4.release_date
+							Released
+							= @hero.release_date.to_s(:shortish)
+						
 				.row
 					.col-md-2
-						%h4
+						%h4.category
 							= image_tag("icons/franchise/#{@hero.franchise.value}.png", class: 'icon')
 							= @hero.franchise.name
 					.col-md-2
-						%h4
+						%h4.category
 							= image_tag("icons/role/#{@hero.role.slug}.png", class: 'icon')
 							= @hero.role.name
 					.col-md-2
-						%h4
+						%h4.category
 							= image_tag("icons/typp/#{@hero.typp.slug}.png", class: 'icon')
 							= @hero.typp.name
+
 				.row
 					.col-md-12
-						- if DateRange.current.heroes.include?(@hero)
-							Currently playable!
-						- else
-							- date_range = @hero.date_ranges.order(:end).last
-							- if date_range
-								Last rotation:
-								= date_range.start.to_s(:shortish)
-								&mdash;
-								= date_range.end.to_s(:shortish)
+						%h2.rotation_status
+							- if DateRange.current.heroes.include?(@hero)
+								%span
+									Currently playable!
 							- else
-								Has never appeared in the free hero rotation.
-				.row
+								- rotation = @hero.date_ranges.order(:end).last
+								- if rotation
+									Last rotation:
+									%span
+										= rotation.start.to_s(:shortish)
+										&mdash;
+										= rotation.end.to_s(:shortish)
+								- else
+									Has never appeared in the free hero rotation.
+
+				.row.stats
 					.col-md-12
-						%h4 Rotation stats
+						%h4.title Rotation stats
 						= pluralize(@hero.date_ranges.count, 'rotation')
 
 						%br
-						Rotation percentage since game launch:
-						= "#{(@hero.date_ranges.count / DateRange.count.to_f * 100).round(2)}%"
+						Rotations since game launch:
+						= @hero.date_ranges.count
+						= "(#{(@hero.date_ranges.count / DateRange.count.to_f * 100).round(2)}%)"
 
 						%br
-						Rotation percentage since
+						- conditions = ['start >= :hero_date', {hero_date: @hero.release_date}]
+						Rotations since
 						= @hero.name
 						was added to the game:
-						= "#{(@hero.date_ranges.where('start >= :hero_date', {hero_date: @hero.release_date}).count / DateRange.where('start >= :hero_date', {hero_date: @hero.release_date}).count.to_f * 100).round(2)}%"
+						= @hero.date_ranges.where(conditions).count
+						= "(#{(@hero.date_ranges.where(conditions).count / DateRange.where(conditions).count.to_f * 100).round(2)}%)"
 
 						%br
-						Rotation percentage since newest hero
+						- conditions = ['start >= :hero_date', {hero_date: Hero.newest.release_date}]
+						Rotations since newest hero
 						= "(#{Hero.newest.name})"
 						was added to the game:
-						= "#{(@hero.date_ranges.where('start >= :hero_date', {hero_date: Hero.newest.release_date}).count / DateRange.where('start >= :hero_date', {hero_date: Hero.newest.release_date}).count.to_f * 100).round(2)}%"
+						= @hero.date_ranges.where(conditions).count
+						= "(#{(@hero.date_ranges.where(conditions).count / DateRange.where(conditions).count.to_f * 100).round(2)}%)"
 
-						%br
+.container.history
+	.row
+		.col-md-12
+			%h2 Rotation History
+			- for rotation in @hero.date_ranges.order(:end).order(:start)
+				%p
+					= rotation.start.to_s(:shortish)
+					&mdash;
+					= rotation.end.to_s(:shortish)
+			
 						
