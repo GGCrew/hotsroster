@@ -1,6 +1,9 @@
 class HomeController < ApplicationController
 
 	def index
+		@head[:meta][:description] = "Hero Rotation statistics for Blizzard's Heroes of the Storm."
+		@head[:title] = "Hero Rotation statistics for Blizzard's Heroes of the Storm"
+
 		current_date_range = DateRange.order(:start).last
 		@current_rotation = {
 			date_range: current_date_range,

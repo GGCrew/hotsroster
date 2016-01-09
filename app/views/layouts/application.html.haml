@@ -5,9 +5,9 @@
 		%meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}
 		%meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}
 		/ The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags
-		%meta{:name => "description", :content => "Hero Rotation statistics for Blizzard's Heroes of the Storm."}
+		%meta{:name => "description", :content => @head[:meta][:description]}
 		%meta{:name => "author", :content => "GG Crew"}
-		%title HotS Roster - Hero Rotation Statistics For Blizzard's Heroes of the Storm 
+		%title #{['HotS Roster', @head[:title]].compact.join(' - ')}
 		= favicon_link_tag('favicon_16.png', type: 'image/png', sizes: '16x16')
 		= favicon_link_tag('favicon_24.png', type: 'image/png', sizes: '24x24')
 		= favicon_link_tag('favicon_32.png', type: 'image/png', sizes: '32x32')
