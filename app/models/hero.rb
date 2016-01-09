@@ -62,4 +62,8 @@ class Hero < ActiveRecord::Base
 		return json
 	end
 
+	def self.newest
+		return self.order(:release_date).last
+	end
+
 end
