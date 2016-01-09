@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   #resources :rosters
-  resources :heros,	only: [:index, :show]
+  resources :heroes,	only: [:show], controller: 'heros'
 
 	root 'home#index'
 
