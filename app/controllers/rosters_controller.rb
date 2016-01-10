@@ -1,5 +1,5 @@
 class RostersController < ApplicationController
-  before_action :set_roster, only: [:show, :edit, :update, :destroy]
+  before_action :set_roster, only: [:show]
 
   # GET /rosters
   # GET /rosters.json

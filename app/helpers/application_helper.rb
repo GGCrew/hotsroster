@@ -28,4 +28,7 @@ module ApplicationHelper
 		(hero.date_ranges.where(conditions).count / DateRange.where(conditions).count.to_f * 100).round(2)
 	end
 
+	def format_date_range(date_range)
+		return "#{date_range.start.to_s(:shortish)} — #{date_range.end.to_s(:shortish)}"
+	end
 end

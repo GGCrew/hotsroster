@@ -12,11 +12,5 @@
 			%ul.nav.navbar-nav
 				%li.divider{role: 'separator'}
 				%li= link_to 'Heroes', heroes_path
-			- if false
-				%form.navbar-form.navbar-right
-					.form-group
-						%input.form-control{:placeholder => "Email", :type => "text"}
-					.form-group
-						%input.form-control{:placeholder => "Password", :type => "password"}
-					%button.btn.btn-success{:type => "submit"} Sign in
+				%li= link_to 'Rotations', rotations_path
 		/ /.navbar-collapse

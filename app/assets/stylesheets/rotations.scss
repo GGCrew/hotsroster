@@ -1,0 +1,21 @@
+// Place all the styles related to the Rotations controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.dates {
+	color: #40d0ff;
+	font-size: 1.3em;
+	text-align: center;
+	padding-top: 2em;
+}
+
+.heroes {
+	figure {
+		width: 5em;
+	
+		figcaption {
+			font-size: .8em;
+		}
+	}
+}
+
