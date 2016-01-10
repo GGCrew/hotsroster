@@ -6,6 +6,7 @@ class Hero < ActiveRecord::Base
 
 	has_many	:rosters, dependent: :destroy
 	has_many	:date_ranges,	through: :rosters
+	has_many	:alternate_hero_names,	dependent: :destroy
 
 	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'
