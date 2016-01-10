@@ -4,4 +4,4 @@
 			.col-md-3.dates
 				= format_date_range(rotation)
 			.col-md-9.heroes
-				= render partial: '/rosters/hero_portrait', collection: rotation.rosters.joins(:hero).order(:player_level).order('heros.name ASC')
+				= render partial: '/rosters/hero_portrait', collection: rotation.rosters.includes(:hero).order(:player_level).order('heros.name ASC')
