@@ -11,7 +11,7 @@
 					%figcaption
 						= hero.name
 						%br
-						%span.rotation_count
+						%span.rotation_count{title: 'Rotation percentage since this hero was released'}
 							= pluralize(hero.rosters.count, 'rotation')
 							= "(#{rotation_percentage_since_release(hero)}%)"
 				
