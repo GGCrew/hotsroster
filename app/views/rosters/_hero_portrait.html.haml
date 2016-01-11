@@ -5,6 +5,11 @@
 				= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg"
 	%figcaption
 		= hero_portrait.hero.name
+		%br
+		%span.category
+			= image_tag("icons/franchise/#{hero_portrait.hero.franchise.value}.png", title: hero_portrait.hero.franchise.name, class: 'icon')
+			= image_tag("icons/role/#{hero_portrait.hero.role.slug}.png", title: hero_portrait.hero.role.name, class: 'icon')
+			= image_tag("icons/typp/#{hero_portrait.hero.typp.slug}.png", title: hero_portrait.hero.typp.name, class: 'icon')
 		- if hero_portrait.player_level > 1
 			%br
 			%span.player_level
