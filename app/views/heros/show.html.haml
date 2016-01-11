@@ -56,6 +56,11 @@
 						= "(#{rotation_percentage_since_launch(@hero)}%)"
 
 						%br
+						Rotations since latest change in roster size:
+						= rotations_since_latest_change_in_roster_size(@hero)
+						= "(#{rotation_percentage_since_latest_change_in_roster_size(@hero)})"
+						
+						%br
 						Rotations since
 						= @hero.name
 						was added to the game:

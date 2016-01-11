@@ -73,4 +73,25 @@ class Roster < ActiveRecord::Base
 		return true
 	end
 
+	def self.date_of_latest_roster_size_change
+		# Count each date_range's roster size
+		# Using the database sort commands because they should be more efficient than Ruby's sorting/reverse methods
+		# The key:value pairs represent date_range_id:roster_size_for_that_date
+		counts = self.joins(:date_range).group(:date_range_id).order('date_ranges.start DESC, date_ranges.end DESC').count
+
+		# This trick only works because Ruby's Array.uniq method maintains the order of the first appearance of a value
+		values = counts.values.uniq[0..1]
+		current_size = values.first
+		previous_size = values.last
+
+		# Get key of last rotation with previous roster size
+		previous_key = counts.key(previous_size)
+
+		# Get key of first rotation with current roster size
+		counts_keys = counts.keys
+		previous_key_index = counts_keys.index(previous_key)
+		current_key = counts.keys[previous_key_index - 1]
+		
+		return DateRange.find(current_key)
+	end
 end
