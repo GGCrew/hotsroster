@@ -5,6 +5,12 @@
 .heroes {
 	figure {
 		width: 10em;
+		
+		figcaption {
+			img.icon {
+				height: 1em;
+			}
+		}
 	}
 }
 
