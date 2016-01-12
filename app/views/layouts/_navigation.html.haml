@@ -13,4 +13,8 @@
 				%li.divider{role: 'separator'}
 				%li= link_to 'Heroes', heroes_path
 				%li= link_to 'Rotations', rotations_path
+				%li.dropdown
+					%a.dropdown-toggle{href: '#', role: 'button', data: {toggle: 'dropdown'}} Etc
+					%ul.dropdown-menu
+						%li=link_to 'Copyrights' , copyrights_path
 		/ /.navbar-collapse
