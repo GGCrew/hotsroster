@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   resources :heroes,	only: [:index, :show], controller: 'heros'
   resources :rotations,	only: [:index]
 
+	# TODO: About page
+	#get 'about'		=> 'site#about',		:as => 'about'
+	get 'copyrights'		=> 'home#copyrights',		:as => 'copyrights'
+
 	root 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
