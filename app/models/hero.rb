@@ -50,13 +50,17 @@ class Hero < ActiveRecord::Base
 		json.each do |hero_json|
 			hero = self.find_or_create_by!(name: hero_json['name'])
 			
-			hero.update_attributes!({
+			attributes = {
 				title: hero_json['title'],
 				slug: hero_json['slug'],
 				role: Role.where(name: hero_json['role']['name']).first,
 				typp: Typp.where(name: hero_json['type']['name']).first,
 				franchise: Franchise.where(value: hero_json['franchise']).first
-			})
+			}
+			attributes.merge!({release_date: Date.today.to_datetime}) unless hero.release_date
+			attributes.merge!({prerelease_date: Date.today.to_datetime}) unless hero.prerelease_date
+
+			hero.update_attributes!(attributes)
 		end
 		
 		return json
