@@ -1,0 +1,40 @@
+.jumbotron
+	.container
+		.row
+			.col-md-3.dates
+				= format_date_range(@rotation)
+			.col-md-9.heroes
+				= render partial: '/rosters/hero_portrait', collection: @rotation.rosters.includes(:hero).order(:player_level).order('heros.name ASC')
+
+.container
+	.row
+		.col-md-4
+			%h2 Franchise
+			- for franchise in Franchise.all
+				.row
+					.col-md-3
+						%span.category
+							= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, class: 'icon')
+						#{count_of_heroes_in_franchise(@rotation.heroes, franchise)}
+						(#{percent_of_heroes_in_franchise(@rotation.heroes, franchise)}%)
+
+		.col-md-4
+			%h2 Role
+			- for role in Role.all
+				.row
+					.col-md-3
+						%span.category
+							= image_tag("icons/role/#{role.slug}.png", title: role.name, class: 'icon')
+						#{count_of_heroes_by_role(@rotation.heroes, role)}
+						(#{percent_of_heroes_by_role(@rotation.heroes, role)}%)
+
+		.col-md-4
+			%h2 Type
+			- for typp in Typp.all
+				.row
+					.col-md-3
+						%span.category
+							= image_tag("icons/typp/#{typp.slug}.png", title: typp.name, class: 'icon')
+						#{count_of_heroes_by_typp(@rotation.heroes, typp)}
+						(#{percent_of_heroes_by_typp(@rotation.heroes, typp)}%)
+

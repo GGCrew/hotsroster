@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   #resources :rosters
   resources :heroes,	only: [:index, :show], controller: 'heros'
-  resources :rotations,	only: [:index]
+  resources :rotations,	only: [:index, :show]
 
 	# TODO: About page
 	#get 'about'		=> 'site#about',		:as => 'about'

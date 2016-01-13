@@ -1,6 +1,7 @@
-    Prefix Verb URI Pattern           Controller#Action
-    heroes GET  /heroes(.:format)     heros#index
-      hero GET  /heroes/:id(.:format) heros#show
- rotations GET  /rotations(.:format)  rotations#index
-copyrights GET  /copyrights(.:format) home#copyrights
-      root GET  /                     home#index
+    Prefix Verb URI Pattern              Controller#Action
+    heroes GET  /heroes(.:format)        heros#index
+      hero GET  /heroes/:id(.:format)    heros#show
+ rotations GET  /rotations(.:format)     rotations#index
+  rotation GET  /rotations/:id(.:format) rotations#show
+copyrights GET  /copyrights(.:format)    home#copyrights
+      root GET  /                        home#index
