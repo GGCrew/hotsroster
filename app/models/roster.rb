@@ -38,6 +38,7 @@ class Roster < ActiveRecord::Base
 				#       as is a simple if-else for handling the RegEx match results.
 				heroes = []
 				for hero_text in hero_texts
+					# Check for required player levels
 					hero_match = /^(.*) \(Slot unlocked at Player Level (\d{1,2})\)$/.match(hero_text)
 					if hero_match
 						# hero requires a player level
@@ -48,8 +49,23 @@ class Roster < ActiveRecord::Base
 						hero_name = hero_text
 						player_level = 1
 					end
+
+					# Check for hero name
+					hero = Hero.where(name: hero_name).first
+					unless hero
+						alternate_name = AlternateHeroName.where(name: hero_name).first
+						if alternate_name
+							hero = alternate_name.hero
+						else
+							AlternateHeroName.create!(name: hero_name)
+							# TODO: Alert Admin of newly-created unrelated record
+						end
+					end
+
+					# TODO: Alert Admin if hero.nil?
+
 					heroes << {
-						hero: Hero.where(name: hero_name).first,
+						hero: hero,
 						player_level: player_level
 					}
 				end
