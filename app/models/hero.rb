@@ -8,6 +8,12 @@ class Hero < ActiveRecord::Base
 	has_many	:date_ranges,	through: :rosters
 	has_many	:alternate_hero_names,	dependent: :destroy
 
+	#..#
+	
+	# ROTATIONS_SINCE_RELEASE_CONDITIONS = ['start >= :release_date', {release_date: self.release_date}]
+	
+	#..#
+	
 	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'
 		url = URI.parse(address)
@@ -71,4 +77,48 @@ class Hero < ActiveRecord::Base
 		return self.order(:release_date).last
 	end
 
+	def self.percentage_by_franchise(franchise)
+		(self.where(franchise: franchise).count / self.count.to_f) * 100
+	end
+
+	def self.percentage_by_role(role)
+		(self.where(role: role).count / self.count.to_f) * 100
+	end
+
+	def self.percentage_by_typp(typp)
+		(self.where(typp: typp).count / self.count.to_f) * 100
+	end
+
+	#..#
+	
+	def rotations
+		self.date_ranges.count
+	end
+
+	def rotations_since_newest_hero_release
+		self.date_ranges.since_start_date(Hero.newest.release_date).count
+	end
+
+	def rotations_since_latest_change_in_roster_size
+		self.date_ranges.since_start_date(Roster.date_range_of_latest_roster_size_change.start).count
+	end
+
+
+	def rotation_percentage_since_launch
+		((self.rotations / DateRange.count.to_f) * 100).round(2)
+	end
+
+	def rotation_percentage_since_release
+		(self.rotations / DateRange.since_start_date(self.release_date).count.to_f) * 100
+	end
+
+	def rotation_percentage_since_newest_hero_release
+		(self.rotations_since_newest_hero_release / DateRange.since_start_date(Hero.newest.release_date).count.to_f) * 100
+	end
+
+	def rotation_percentage_since_latest_change_in_roster_size
+		(self.rotations_since_latest_change_in_roster_size / DateRange.since_start_date(Roster.date_range_of_latest_roster_size_change.start).count.to_f) * 100
+	end
+
 end
+
