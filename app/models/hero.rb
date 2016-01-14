@@ -10,10 +10,6 @@ class Hero < ActiveRecord::Base
 
 	#..#
 	
-	# ROTATIONS_SINCE_RELEASE_CONDITIONS = ['start >= :release_date', {release_date: self.release_date}]
-	
-	#..#
-	
 	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'
 		url = URI.parse(address)

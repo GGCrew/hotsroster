@@ -25,6 +25,20 @@
 	}
 }
 
+.jumbotron {
+	.heroes {
+		text-align: center;
+
+		figure {
+			width: 7em;
+
+			figcaption {
+				font-size: 0.9em;
+			}
+		}
+	}
+}
+
 .categories {
 
 	h3 {
