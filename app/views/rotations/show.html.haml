@@ -9,7 +9,7 @@
 .container
 	.row.categories
 		.col-md-4
-			%h2 Franchise
+			%h3 Franchise
 			- for franchise in Franchise.all
 				.row
 					.col-md-12
@@ -19,7 +19,7 @@
 						(#{number_to_percentage(@rotation.heroes.percentage_by_franchise(franchise), precision: 2)})
 
 		.col-md-4
-			%h2 Role
+			%h3 Role
 			- for role in Role.all
 				.row
 					.col-md-12
@@ -29,7 +29,7 @@
 						(#{number_to_percentage(@rotation.heroes.percentage_by_role(role), precision: 2)})
 
 		.col-md-4
-			%h2 Type
+			%h3 Type
 			- for typp in Typp.all
 				.row
 					.col-md-12
