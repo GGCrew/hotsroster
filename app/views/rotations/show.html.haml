@@ -1,14 +1,54 @@
 .jumbotron
 	.container
 		.row
-			.col-md-3.dates
-				= format_date_range(@rotation)
-			.col-md-9.heroes
+			.col-md-12
+				%h2= format_date_range(@rotation)
+		.row
+			.col-md-12.heroes
 				= render partial: '/rosters/hero_portrait', collection: @rotation.rosters.includes(:hero).order(:player_level).order('heros.name ASC')
+
+		.row.categories
+			.col-md-3
+			.col-md-2
+				%h3 Franchise
+				- for franchise in Franchise.all
+					.row
+						.col-md-12
+							%span.category
+								= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, class: 'icon')
+							#{@rotation.heroes.where(franchise: franchise).count}
+							(#{number_to_percentage(@rotation.heroes.percentage_by_franchise(franchise), precision: 2)})
+
+			.col-md-2
+				%h3 Role
+				- for role in Role.all
+					.row
+						.col-md-12
+							%span.category
+								= image_tag("icons/role/#{role.slug}.png", title: role.name, class: 'icon')
+							#{@rotation.heroes.where(role: role).count}
+							(#{number_to_percentage(@rotation.heroes.percentage_by_role(role), precision: 2)})
+
+			.col-md-2
+				%h3 Type
+				- for typp in Typp.all
+					.row
+						.col-md-12
+							%span.category
+								= image_tag("icons/typp/#{typp.slug}.png", title: typp.name, class: 'icon')
+							#{@rotation.heroes.where(typp: typp).count}
+							(#{number_to_percentage(@rotation.heroes.percentage_by_typp(typp), precision: 2)})
+
+			.col-md-3
+
+.container
+	.row
+
+
 
 .container
 	.row.categories
-		.col-md-4
+		.col-md-2
 			%h3 Franchise
 			- for franchise in Franchise.all
 				.row
@@ -17,8 +57,12 @@
 							= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, class: 'icon')
 						#{@rotation.heroes.where(franchise: franchise).count}
 						(#{number_to_percentage(@rotation.heroes.percentage_by_franchise(franchise), precision: 2)})
+						- if false
+							%span.total
+								#{Roster.where(hero: Hero.where(franchise: franchise)).count}
+								#{number_to_percentage(Roster.where(hero: Hero.where(franchise: franchise)).count / Roster.count.to_f * 100, precision: 2)}
 
-		.col-md-4
+		.col-md-2
 			%h3 Role
 			- for role in Role.all
 				.row
@@ -28,7 +72,7 @@
 						#{@rotation.heroes.where(role: role).count}
 						(#{number_to_percentage(@rotation.heroes.percentage_by_role(role), precision: 2)})
 
-		.col-md-4
+		.col-md-2
 			%h3 Type
 			- for typp in Typp.all
 				.row
