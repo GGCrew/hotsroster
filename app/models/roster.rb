@@ -89,7 +89,7 @@ class Roster < ActiveRecord::Base
 		return true
 	end
 
-	def self.date_of_latest_roster_size_change
+	def self.date_range_of_latest_roster_size_change
 		# Count each date_range's roster size
 		# Using the database sort commands because they should be more efficient than Ruby's sorting/reverse methods
 		# The key:value pairs represent date_range_id:roster_size_for_that_date
