@@ -3,13 +3,22 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .dates {
-	color: #40d0ff;
 	font-size: 1.3em;
 	text-align: center;
 	padding-top: 2em;
+
+	a {
+		color: #40D0FF;
+		text-decoration: none;
+		
+		&:hover, &:focus {
+			color: #D6A6FF;
+		}
+	}
 }
 
 .heroes {
+	font-size: 1.3em;
 	figure {
 		width: 5em;
 	
@@ -28,19 +37,19 @@
 .jumbotron {
 	.heroes {
 		text-align: center;
+	}
+}
 
-		figure {
-			width: 7em;
+.rotation {
+	padding-top: 1em;
+	padding-bottom: 1em;
 
-			figcaption {
-				font-size: 0.9em;
-			}
-		}
+	.heroes {
+		font-size: 1.1em;
 	}
 }
 
 .categories {
-
 	h3 {
 		border-bottom: 1px solid #555;
 	}
@@ -48,6 +57,17 @@
 	.category {
 		.icon {
 			height: 3em;
+		}
+	}
+}
+
+table.heroes {
+	text-align: center;
+	//font-size: 1.3em;
+
+	thead {
+		th {
+			padding: 0 .25em;
 		}
 	}
 }

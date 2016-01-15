@@ -2,7 +2,7 @@
 	- for rotation in @rotations
 		.row.rotation
 			.col-md-3.dates
-				= format_date_range(rotation)
+				= link_to format_date_range(rotation), rotation_path(rotation)
 			.col-md-9.heroes
 				= render partial: '/rosters/hero_portrait', collection: rotation.rosters.includes(:hero).order(:player_level).order('heros.name ASC')
 

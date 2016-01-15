@@ -2,7 +2,7 @@
 	.container
 		.row
 			.col-md-12
-				%h2= format_date_range(@rotation)
+				%h2 Rotation for #{format_date_range(@rotation)}
 		.row
 			.col-md-12.heroes
 				= render partial: '/rosters/hero_portrait', collection: @rotation.rosters.includes(:hero).order(:player_level).order('heros.name ASC')
@@ -43,42 +43,47 @@
 
 .container
 	.row
-
-
+		.col-md-12
+			%table.heroes.table-striped
+				%caption Number of times these heroes have been in the same rotation
+				%thead
+					%tr
+						%th
+						- for roster in @rosters
+							%th= render partial: '/rosters/hero_portrait', object: roster, locals: {display_categories: false, display_player_level: false}
+				%tbody
+					- for roster in @rosters
+						%tr
+							%th= roster.hero.name
+							- for comp_roster in @rosters
+								%td
+									- if roster == comp_roster
+										&mdash;
+									- else
+										= roster.hero.date_ranges.where(id: comp_roster.hero.date_ranges).count
 
 .container
-	.row.categories
-		.col-md-2
-			%h3 Franchise
-			- for franchise in Franchise.all
-				.row
-					.col-md-12
-						%span.category
-							= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, class: 'icon')
-						#{@rotation.heroes.where(franchise: franchise).count}
-						(#{number_to_percentage(@rotation.heroes.percentage_by_franchise(franchise), precision: 2)})
-						- if false
-							%span.total
-								#{Roster.where(hero: Hero.where(franchise: franchise)).count}
-								#{number_to_percentage(Roster.where(hero: Hero.where(franchise: franchise)).count / Roster.count.to_f * 100, precision: 2)}
+	.row
+		.col-md-12
+			%table.heroes.table-striped
+				%caption Number of times these heroes have been in the same rotation since this rotation's newest hero (#{@newest_hero.name}) was added
+				%thead
+					%tr
+						%th
+						- for roster in @rosters
+							%th= render partial: '/rosters/hero_portrait', object: roster, locals: {display_categories: false, display_player_level: false}
+				%tbody
+					- for roster in @rosters
+						%tr
+							%th= roster.hero.name
+							- for comp_roster in @rosters
+								%td
+									- if roster == comp_roster
+										&mdash;
+									- else
+										= roster.hero.date_ranges.where(id: comp_roster.hero.date_ranges).since_start_date(@newest_hero.release_date).count
 
-		.col-md-2
-			%h3 Role
-			- for role in Role.all
-				.row
-					.col-md-12
-						%span.category
-							= image_tag("icons/role/#{role.slug}.png", title: role.name, class: 'icon')
-						#{@rotation.heroes.where(role: role).count}
-						(#{number_to_percentage(@rotation.heroes.percentage_by_role(role), precision: 2)})
-
-		.col-md-2
-			%h3 Type
-			- for typp in Typp.all
-				.row
-					.col-md-12
-						%span.category
-							= image_tag("icons/typp/#{typp.slug}.png", title: typp.name, class: 'icon')
-						#{@rotation.heroes.where(typp: typp).count}
-						(#{number_to_percentage(@rotation.heroes.percentage_by_typp(typp), precision: 2)})
+- if false
+	#{Roster.where(hero: Hero.where(franchise: franchise)).count}
+	#{number_to_percentage(Roster.where(hero: Hero.where(franchise: franchise)).count / Roster.count.to_f * 100, precision: 2)}
 

@@ -1,18 +1,22 @@
+- display_categories = true unless local_assigns.has_key?(:display_categories)
+- display_player_level = true unless local_assigns.has_key?(:display_player_level)
+
 %figure
-	%a 
-		= link_to(hero_path(hero_portrait.hero)) do
-			%span.border
-				= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg"
+	= link_to(hero_path(hero_portrait.hero)) do
+		%span.border
+			= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg"
 	%figcaption
 		= hero_portrait.hero.name
-		%br
-		%span.category
-			= image_tag("icons/franchise/#{hero_portrait.hero.franchise.value}.png", title: hero_portrait.hero.franchise.name, class: 'icon')
-			= image_tag("icons/role/#{hero_portrait.hero.role.slug}.png", title: hero_portrait.hero.role.name, class: 'icon')
-			= image_tag("icons/typp/#{hero_portrait.hero.typp.slug}.png", title: hero_portrait.hero.typp.name, class: 'icon')
-		- if hero_portrait.player_level > 1
+		- if display_categories
 			%br
-			%span.player_level
-				Player Level
-				= hero_portrait.player_level
+			%span.category
+				= image_tag("icons/franchise/#{hero_portrait.hero.franchise.value}.png", title: hero_portrait.hero.franchise.name, class: 'icon')
+				= image_tag("icons/role/#{hero_portrait.hero.role.slug}.png", title: hero_portrait.hero.role.name, class: 'icon')
+				= image_tag("icons/typp/#{hero_portrait.hero.typp.slug}.png", title: hero_portrait.hero.typp.name, class: 'icon')
+		- if display_player_level	
+			- if hero_portrait.player_level > 1
+				%br
+				%span.player_level
+					Player Level
+					= hero_portrait.player_level
 
