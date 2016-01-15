@@ -51,6 +51,10 @@
 					.col-md-12
 						%h4.title Rotation stats
 
+						First rotation:
+						= link_to format_date_range(@first_rotation), rotation_path(@first_rotation)
+						
+						%br
 						Rotations since game launch:
 						= @hero.rotations
 						= "(#{number_to_percentage(@hero.rotation_percentage_since_launch, precision: 2)})"
@@ -80,9 +84,7 @@
 			%h2 Rotation History
 			- for rotation in @hero.date_ranges.order(:end).order(:start)
 				%p
-					= rotation.start.to_s(:shortish)
-					&mdash;
-					= rotation.end.to_s(:shortish)
+					= link_to format_date_range(rotation), rotation_path(rotation)
 					- roster = Roster.where(hero_id: @hero.id, date_range_id: rotation.id).first
 					- if roster.player_level > 1
 						= "(Restricted: player level #{roster.player_level})"
