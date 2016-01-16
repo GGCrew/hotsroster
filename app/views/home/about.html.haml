@@ -48,10 +48,12 @@
 						%tr
 							%td
 								= pluralize(datum[:least][:count], 'rotation')
+								(#{format_percentage(datum[:least][:count] / DateRange.count.to_f * 100)})
 								%br
 								= render partial: 'heros/portrait', collection: datum[:least][:heroes]
 							%td
 								= pluralize(datum[:most][:count], 'rotation')
+								(#{format_percentage(datum[:most][:count] / DateRange.count.to_f * 100)})
 								%br
 								= render partial: 'heros/portrait', collection: datum[:most][:heroes]
 							
