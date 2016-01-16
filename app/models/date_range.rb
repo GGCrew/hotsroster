@@ -33,6 +33,6 @@ class DateRange < ActiveRecord::Base
 	end		
 
 	def self.current
-		return self.order(:end).last
+		return self.order([:end, :start]).last
 	end
 end

@@ -29,8 +29,6 @@ class HomeController < ApplicationController
 		@head[:title] = "About"
 
 		rotation_count_data = Hero.launch_heroes.map{|hero| {id: hero.id, name: hero.name, rotation_count: hero.date_ranges.count}}
-		#rotation_count_data.sort_by!{|i| [ i[:rotation_count], i[:name] ]}
-		#rotation_count_data.sort_by!{|i| i[:name]}
 		rotation_counts = rotation_count_data.map{|i| i[:rotation_count]}.uniq.sort
 		least_rotation_counts = rotation_counts[0..2]
 		most_rotation_counts = rotation_counts[-3..-1].reverse
@@ -48,7 +46,19 @@ class HomeController < ApplicationController
 				}
 			}
 		end
+	end
+
+	def sitemap
+		headers['Content-Type'] = 'application/xml'
 		
+		respond_to do |format|
+			format.xml { 
+				@heroes = Hero.all.order(:name)
+				@rotations = DateRange.all.order([:start, :end])
+				
+				@lastmod = DateRange.maximum(:updated_at).strftime('%Y-%m-%d')
+			}
+		end
 	end
 
 end
