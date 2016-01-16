@@ -4,14 +4,13 @@
 		.col-md-12.heroes
 			- for hero in @heros
 				%figure
-					%a 
-						= link_to(hero_path(hero)) do
-							%span.border
-								= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero.slug}.jpg"
+					= link_to(hero_path(hero)) do
+						%span.border
+							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero.slug}.jpg", alt: hero.name, title: hero.name
 					%figcaption
 						= hero.name
 						%br
 						%span.rotation_count{title: 'Rotation percentage since this hero was released'}
 							= pluralize(hero.rosters.count, 'rotation')
-							= "(#{number_to_percentage(hero.rotation_percentage_since_release, precision: 2)})"
+							= "(#{format_percentage(hero.rotation_percentage_since_release)})"
 				

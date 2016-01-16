@@ -17,7 +17,7 @@
 							%span.category
 								= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, class: 'icon')
 							#{@rotation.heroes.where(franchise: franchise).count}
-							(#{number_to_percentage(@rotation.heroes.percentage_by_franchise(franchise), precision: 2)})
+							(#{format_percentage(@rotation.heroes.percentage_by_franchise(franchise))})
 
 			.col-md-2
 				%h3 Role
@@ -27,7 +27,7 @@
 							%span.category
 								= image_tag("icons/role/#{role.slug}.png", title: role.name, class: 'icon')
 							#{@rotation.heroes.where(role: role).count}
-							(#{number_to_percentage(@rotation.heroes.percentage_by_role(role), precision: 2)})
+							(#{format_percentage(@rotation.heroes.percentage_by_role(role))})
 
 			.col-md-2
 				%h3 Type
@@ -37,7 +37,7 @@
 							%span.category
 								= image_tag("icons/typp/#{typp.slug}.png", title: typp.name, class: 'icon')
 							#{@rotation.heroes.where(typp: typp).count}
-							(#{number_to_percentage(@rotation.heroes.percentage_by_typp(typp), precision: 2)})
+							(#{format_percentage(@rotation.heroes.percentage_by_typp(typp))})
 
 			.col-md-3
 
@@ -85,5 +85,5 @@
 
 - if false
 	#{Roster.where(hero: Hero.where(franchise: franchise)).count}
-	#{number_to_percentage(Roster.where(hero: Hero.where(franchise: franchise)).count / Roster.count.to_f * 100, precision: 2)}
+	#{format_percentage(Roster.where(hero: Hero.where(franchise: franchise)).count / Roster.count.to_f * 100)}
 

@@ -1,11 +1,10 @@
 Rails.application.routes.draw do
   #resources :rosters
-  resources :heroes,	only: [:index, :show], controller: 'heros'
+  resources :heroes,		only: [:index, :show], controller: 'heros'
   resources :rotations,	only: [:index, :show]
 
-	# TODO: About page
-	#get 'about'		=> 'site#about',		:as => 'about'
-	get 'copyrights'		=> 'home#copyrights',		:as => 'copyrights'
+	get 'about'				=> 'home#about',			:as => 'about'
+	get 'copyrights'	=> 'home#copyrights',	:as => 'copyrights'
 
 	root 'home#index'
 

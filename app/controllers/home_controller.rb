@@ -19,4 +19,36 @@ class HomeController < ApplicationController
 		end
 	end
 
+	def copyrights
+		@head[:meta][:description] = "Copyright information for images and text used on this website."
+		@head[:title] = "Copyrights"
+	end
+
+	def about
+		@head[:meta][:description] = "The who and why about this website."
+		@head[:title] = "About"
+
+		rotation_count_data = Hero.launch_heroes.map{|hero| {id: hero.id, name: hero.name, rotation_count: hero.date_ranges.count}}
+		#rotation_count_data.sort_by!{|i| [ i[:rotation_count], i[:name] ]}
+		#rotation_count_data.sort_by!{|i| i[:name]}
+		rotation_counts = rotation_count_data.map{|i| i[:rotation_count]}.uniq.sort
+		least_rotation_counts = rotation_counts[0..2]
+		most_rotation_counts = rotation_counts[-3..-1].reverse
+		
+		@rotation_table_data = []
+		for counter in (0..2) do
+			@rotation_table_data << {
+				least: {
+					count: least_rotation_counts[counter],
+					heroes: Hero.where(id: rotation_count_data.select{|i| i[:rotation_count] == least_rotation_counts[counter]}.map{|i| i[:id]}).order(:name)
+				},
+				most: {
+					count: most_rotation_counts[counter],
+					heroes: Hero.where(id: rotation_count_data.select{|i| i[:rotation_count] == most_rotation_counts[counter]}.map{|i| i[:id]}).order(:name)
+				}
+			}
+		end
+		
+	end
+
 end

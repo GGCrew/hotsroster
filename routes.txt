@@ -3,5 +3,6 @@
       hero GET  /heroes/:id(.:format)    heros#show
  rotations GET  /rotations(.:format)     rotations#index
   rotation GET  /rotations/:id(.:format) rotations#show
+     about GET  /about(.:format)         site#about
 copyrights GET  /copyrights(.:format)    home#copyrights
       root GET  /                        home#index

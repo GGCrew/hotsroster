@@ -51,3 +51,22 @@ dl {
 		margin-bottom: 1em;
 	}
 }
+
+table.heroes {
+	margin: auto;
+
+	caption {
+		text-align: center;
+		font-size: 1.3em;
+		font-weight: bold;
+	}
+
+	td, th {
+		text-align: center;
+	}
+
+	figure {
+		font-size: .7em;
+	}
+}
+
