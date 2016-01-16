@@ -54,6 +54,7 @@ dl {
 
 table.heroes {
 	margin: auto;
+	border: 1px solid #555;
 
 	caption {
 		text-align: center;
@@ -63,6 +64,8 @@ table.heroes {
 
 	td, th {
 		text-align: center;
+		border-right: 1px solid #555;
+		padding: 1em;
 	}
 
 	figure {

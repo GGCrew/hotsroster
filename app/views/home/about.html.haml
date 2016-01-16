@@ -1,58 +1,57 @@
-.jumbotron
-	.container
-		.row
-			.col-md-12
-				%h2 About
-				%p
-					#{link_to 'HotS Roster', root_url}
-					is a site dedicated to analyzing the publicly available Hero rotation data for
-					#{link_to 'Blizzard Entertainment', 'http://Blizzard.com'}'s
-					#{link_to 'Heroes of the Storm', 'http://HeroesOfTheStorm.com'}.
-				%p
-					Heroes of the Storm is a
-					#{link_to 'free-to-play', '#'}
-					game in the
-					#{link_to 'MOBA', '#'}
-					genre.
-					Dubbed a "Hero Brawler", the game currently includes
-					#{Hero.count}
-					different characters that the player can choose to play.
-					Many of these characters are locked behind a
-					#{link_to 'pay wall', '#'};
-					these character can be permanently unlocked by paying real money or using in-game currency.
-					(In-game currency can be accrued by playing the game.)
-				%p
-					Since the game's official release on
-					#{GAME_LAUNCH_DATE.to_s(:shortish)},
-					Blizzard has offered a limited selection of Heroes for players to try for free.
-					The selection of free Heroes changes on a weekly basis.
-					The "Hero Rotation" happens Tuesday morning (depending on geographical location) and offers a seemingly-random assortment of heroes.
-				%p
-					The phrase "seemingly random" at the end of the previous paragraph is important!
-					As someone who prefers to try each Hero before unlocking it, I noticed that certain Heroes appeared more frequently than others.
-					In fact, some Heroes
-					- if Hero.unrotated.where('release_date < ?', 2.months.ago).count > 0
-						have never
-					- else
-						hadn't ever
-					been in the free rotation!
-					For example:
-				%table.table-striped.heroes
-					%caption Least/Most Rotated Launch Heroes
-					%thead
+.container
+	.row
+		.col-md-12
+			%h2 About
+			%p
+				#{link_to 'HotS Roster', root_url}
+				is a site dedicated to analyzing the publicly available Hero rotation data for
+				#{link_to 'Blizzard Entertainment', 'http://Blizzard.com'}'s
+				#{link_to 'Heroes of the Storm', 'http://HeroesOfTheStorm.com'}.
+			%p
+				Heroes of the Storm is a
+				#{link_to 'free-to-play', '#'}
+				game in the
+				#{link_to 'MOBA', '#'}
+				genre.
+				Dubbed a "Hero Brawler", the game currently includes
+				#{Hero.count}
+				different characters that the player can choose to play.
+				Many of these characters are locked behind a
+				#{link_to 'pay wall', '#'};
+				these character can be permanently unlocked by paying real money or using in-game currency.
+				(In-game currency can be accrued by playing the game.)
+			%p
+				Since the game's official release on
+				#{GAME_LAUNCH_DATE.to_s(:shortish)},
+				Blizzard has offered a limited selection of Heroes for players to try for free.
+				The selection of free Heroes changes on a weekly basis.
+				The "Hero Rotation" happens Tuesday morning (depending on geographical location) and offers a seemingly-random assortment of heroes.
+			%p
+				The phrase "seemingly random" at the end of the previous paragraph is important!
+				As someone who prefers to try each Hero before unlocking it, I noticed that certain Heroes appeared more frequently than others.
+				In fact, some Heroes
+				- if Hero.unrotated.where('release_date < ?', 2.months.ago).count > 0
+					have never
+				- else
+					hadn't ever
+				been in the free rotation!
+				For example:
+			%table.table-striped.heroes
+				%caption Least/Most Rotated Launch Heroes
+				%thead
+					%tr
+						%th Least rotations
+						%th Most rotations
+				%tbody
+					- for datum in @rotation_table_data
 						%tr
-							%th Least rotations
-							%th Most rotations
-					%tbody
-						- for datum in @rotation_table_data
-							%tr
-								%td
-									= pluralize(datum[:least][:count], 'rotation')
-									%br
-									= render partial: 'heros/portrait', collection: datum[:least][:heroes]
-								%td
-									= pluralize(datum[:most][:count], 'rotation')
-									%br
-									= render partial: 'heros/portrait', collection: datum[:most][:heroes]
-								
-					
+							%td
+								= pluralize(datum[:least][:count], 'rotation')
+								%br
+								= render partial: 'heros/portrait', collection: datum[:least][:heroes]
+							%td
+								= pluralize(datum[:most][:count], 'rotation')
+								%br
+								= render partial: 'heros/portrait', collection: datum[:most][:heroes]
+							
+				
