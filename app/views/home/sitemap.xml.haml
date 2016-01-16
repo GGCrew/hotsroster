@@ -1,0 +1,43 @@
+!!! XML
+%urlset{:xmlns => "http://www.sitemaps.org/schemas/sitemap/0.9"}
+	%url
+		%loc= root_url
+		%lastmod= @lastmod
+		%changefreq weekly
+		%priority 1.0
+	%url
+		%loc= about_url
+		%lastmod= @lastmod
+		%changefreq weekly
+		%priority 0.1
+	%url
+		%loc= copyrights_url
+		%lastmod= @lastmod
+		%changefreq never
+		%priority 0.0
+	
+	%url
+		%loc= rotations_url
+		%lastmod= @lastmod
+		%changefreq weekly
+		%priority 0.8
+	- for rotation in @rotations
+		%url
+			%loc= rotation_url(rotation)
+			%lastmod=@lastmod
+			%changefreq weekly
+			%priority 0.8
+
+	%url
+		%loc= heroes_url
+		%lastmod= @lastmod
+		%changefreq weekly
+		%priority 0.5
+	- for hero in @heroes
+		%url
+			%loc= hero_url(hero)
+			%lastmod=@lastmod
+			%changefreq weekly
+			%priority 0.5
+
+
