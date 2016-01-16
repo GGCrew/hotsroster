@@ -60,7 +60,10 @@
 									- if roster == comp_roster
 										&mdash;
 									- else
-										= roster.hero.date_ranges.where(id: comp_roster.hero.date_ranges).count
+										- rotation_count = roster.hero.date_ranges.where(id: comp_roster.hero.date_ranges).count
+										- rotation_percentage = rotation_count / DateRange.count.to_f * 100
+										%span.value= rotation_count
+										%span.percentage= format_percentage(rotation_percentage)
 
 .container
 	.row
@@ -81,7 +84,10 @@
 									- if roster == comp_roster
 										&mdash;
 									- else
-										= roster.hero.date_ranges.where(id: comp_roster.hero.date_ranges).since_start_date(@newest_hero.release_date).count
+										- rotation_count = roster.hero.date_ranges.where(id: comp_roster.hero.date_ranges).since_start_date(@newest_hero.release_date).count
+										- rotation_percentage = rotation_count / DateRange.since_start_date(@newest_hero.release_date).count.to_f * 100
+										%span.value= rotation_count
+										%span.percentage= format_percentage(rotation_percentage)
 
 - if false
 	#{Roster.where(hero: Hero.where(franchise: franchise)).count}

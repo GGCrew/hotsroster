@@ -70,4 +70,16 @@ table.heroes {
 			padding: 0 .25em;
 		}
 	}
+	
+	tbody {
+		td {
+			.value {
+				font-weight: bold;
+			}
+			
+			.percentage {
+				font-size: .7em;
+			}
+		}
+	}
 }
