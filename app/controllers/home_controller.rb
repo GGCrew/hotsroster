@@ -61,4 +61,12 @@ class HomeController < ApplicationController
 		end
 	end
 
+	def robots
+		headers['Content-Type'] = 'text/plain'
+
+		respond_to do |format|
+			format.text {}
+		end
+	end
+
 end
