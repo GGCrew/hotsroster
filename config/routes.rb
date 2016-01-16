@@ -5,7 +5,8 @@ Rails.application.routes.draw do
 
 	get 'about'				=> 'home#about',			:as => 'about'
 	get 'copyrights'	=> 'home#copyrights',	:as => 'copyrights'
-	get 'sitemap'			=> 'home#sitemap',		:defaults => {:format => 'xml'}
+	get 'sitemap'			=> 'home#sitemap',		:as => 'sitemap'
+	get 'robots'			=> 'home#robots',			:as => 'robots'
 
 	root 'home#index'
 
