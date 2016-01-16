@@ -51,6 +51,10 @@
 						First rotation:
 						- if @hero.first_rotation
 							= link_to format_date_range(@hero.first_rotation), rotation_path(@hero.first_rotation)
+							- if @hero.weeks_between_release_and_first_rotation == 0
+								(week of release)
+							- else
+								(#{@hero.weeks_between_release_and_first_rotation} weeks after release)
 						- else
 							Has never appeared in the free hero rotation.
 						
@@ -77,6 +81,13 @@
 						was added to the game:
 						= @hero.rotations_since_newest_hero_release
 						= "(#{format_percentage(@hero.rotation_percentage_since_newest_hero_release)})"
+
+		.row.navigation
+			.col-md-2.previous
+				=link_to raw("&#9754; #{h @hero.previous.name}"), hero_path(@hero.previous)
+			.col-md-8
+			.col-md-2.next
+				=link_to raw("#{h @hero.next.name} &#9755;"), hero_path(@hero.next)
 
 .container.history
 	.row
