@@ -15,8 +15,6 @@ class HerosController < ApplicationController
   def show
   	@head[:title] = @hero.name
   	@head[:meta][:description] = "Rotation statistics for #{@hero.name}"
-
-		@first_rotation = @hero.date_ranges.order(:start).first
   end
 
   private

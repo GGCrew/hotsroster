@@ -106,12 +106,34 @@ class Hero < ActiveRecord::Base
 
 	#..#
 
+	def previous
+		hero_ids = Hero.select(:id).order(:name).map(&:id)
+		index = hero_ids.index(self.id)
+		index = hero_ids.count if index == 0
+		return Hero.find(hero_ids[index - 1])
+	end
+	
+	def next
+		hero_ids = Hero.select(:id).order(:name).map(&:id)
+		index = hero_ids.index(self.id)
+		index = -1 if self.id == hero_ids.last
+		return Hero.find(hero_ids[index + 1])
+	end
+	
 	def first_rotation
 		self.date_ranges.order([:start, :end]).first
 	end
 
 	def last_rotation
 		self.date_ranges.order([:end, :start]).last
+	end
+
+	def weeks_between_release_and_first_rotation
+		if self.first_rotation
+			return ((self.first_rotation.start - self.release_date) / 1.week).to_i
+		else
+			return nil
+		end
 	end
 
 	def rotations

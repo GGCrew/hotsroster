@@ -153,3 +153,18 @@ h3 {
 		display: inline-block;
 	}
 }
+
+.navigation {
+	font-size: 1.4em;
+	margin-top: 1em;
+	
+	.previous {
+		text-align: left;
+		padding-left: 2em;
+	}
+
+	.next {
+		text-align: right;
+		padding-right: 2em;
+	}
+}
