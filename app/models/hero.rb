@@ -9,7 +9,12 @@ class Hero < ActiveRecord::Base
 	has_many	:alternate_hero_names,	dependent: :destroy
 
 	#..#
-	
+
+	scope	:launch_heroes, -> { where(release_date: GAME_LAUNCH_DATE) }
+	scope	:post_launch_heroes, -> { where.not(release_date: GAME_LAUNCH_DATE) }
+
+	#..#
+
 	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'
 		url = URI.parse(address)
@@ -85,8 +90,30 @@ class Hero < ActiveRecord::Base
 		(self.where(typp: typp).count / self.count.to_f) * 100
 	end
 
+	def self.rotated
+		rotated_ids = Roster.select(:hero_id).map(&:hero_id).uniq
+		return self.where(id: rotated_ids)
+	end
+
+	def self.unrotated
+		rotated_ids = Roster.select(:hero_id).map(&:hero_id).uniq
+		return self.where('id NOT IN (:ids)', {ids: rotated_ids})
+	end
+
+	def self.launch_heroes
+		self.where(release_date: GAME_LAUNCH_DATE)
+	end
+
 	#..#
-	
+
+	def first_rotation
+		self.date_ranges.order([:start, :end]).first
+	end
+
+	def last_rotation
+		self.date_ranges.order([:end, :start]).last
+	end
+
 	def rotations
 		self.date_ranges.count
 	end

@@ -1,7 +1,5 @@
 %h2
-	= rotation[:date_range].start.to_s(:shortish)
-	&mdash;
-	= rotation[:date_range].end.to_s(:shortish)
+	= link_to format_date_range(rotation[:date_range]), rotation_path(rotation[:date_range])
 	- case rotation_index
 		- when 0
 			(Current rotation)

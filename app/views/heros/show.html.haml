@@ -5,7 +5,7 @@
 				.hero
 					%figure
 						%span.border
-							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{@hero.slug}.jpg"
+							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{@hero.slug}.jpg", alt: @hero.name, title: @hero.name
 			.col-md-9.callout
 				.row
 					.col-md-9
@@ -37,13 +37,10 @@
 								%span
 									Currently playable!
 							- else
-								- rotation = @hero.date_ranges.order(:end).last
-								- if rotation
+								- if @hero.last_rotation
 									Last rotation:
 									%span
-										= rotation.start.to_s(:shortish)
-										&mdash;
-										= rotation.end.to_s(:shortish)
+										= format_date_range(@hero.last_rotation)
 								- else
 									Has never appeared in the free hero rotation.
 
@@ -52,31 +49,34 @@
 						%h4.title Rotation stats
 
 						First rotation:
-						= link_to format_date_range(@first_rotation), rotation_path(@first_rotation)
+						- if @hero.first_rotation
+							= link_to format_date_range(@hero.first_rotation), rotation_path(@hero.first_rotation)
+						- else
+							Has never appeared in the free hero rotation.
 						
 						%br
 						Rotations since game launch:
 						= @hero.rotations
-						= "(#{number_to_percentage(@hero.rotation_percentage_since_launch, precision: 2)})"
+						= "(#{format_percentage(@hero.rotation_percentage_since_launch)})"
 
 						%br
 						Rotations since latest change in roster size:
 						= @hero.rotations_since_latest_change_in_roster_size
-						= "(#{number_to_percentage(@hero.rotation_percentage_since_latest_change_in_roster_size, precision: 2)})"
+						= "(#{format_percentage(@hero.rotation_percentage_since_latest_change_in_roster_size)})"
 						
 						%br
 						Rotations since
 						= @hero.name
 						was added to the game:
 						= @hero.rotations
-						= "(#{number_to_percentage(@hero.rotation_percentage_since_release, precision: 2)})"
+						= "(#{format_percentage(@hero.rotation_percentage_since_release)})"
 
 						%br
 						Rotations since newest hero
 						= "(#{Hero.newest.name})"
 						was added to the game:
 						= @hero.rotations_since_newest_hero_release
-						= "(#{number_to_percentage(@hero.rotation_percentage_since_newest_hero_release, precision: 2)})"
+						= "(#{format_percentage(@hero.rotation_percentage_since_newest_hero_release)})"
 
 .container.history
 	.row
