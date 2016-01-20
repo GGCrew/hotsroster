@@ -57,12 +57,14 @@ class Roster < ActiveRecord::Base
 						if alternate_name
 							hero = alternate_name.hero
 						else
-							AlternateHeroName.create!(name: hero_name)
+							alternate_hero_name = AlternateHeroName.create!(name: hero_name)
 							# TODO: Alert Admin of newly-created unrelated record
+							try AdminMailer.roster_unrecognized_hero_name(hero_name, date_range)
 						end
 					end
 
 					# TODO: Alert Admin if hero.nil?
+					try AdminMailer.roster_hero_not_found(hero_text, date_range)
 
 					heroes << {
 						hero: hero,

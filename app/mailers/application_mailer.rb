@@ -16,4 +16,9 @@ class ApplicationMailer < ActionMailer::Base
 
 		return true
   end
+
+	def self.format_date_range(date_range)
+		format = '%Y-%m-%d'
+		return "#{date_range.start.strftime(format)}::#{date_range.end.strftime(format)}"
+	end
 end
