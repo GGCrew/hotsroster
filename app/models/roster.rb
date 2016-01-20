@@ -61,7 +61,7 @@ class Roster < ActiveRecord::Base
 							# Alert Admin of newly-created unrelated record
 							begin
 								AdminMailer.roster_unrecognized_hero_name(hero_name, date_range).deliver_now
-							rescue
+							rescue => e
 								Rails.logger.error "Failed 'AdminMailer.roster_unrecognized_hero_name(hero_name, date_range)' -- #{hero_name} -- #{date_range.try(:id)}"
 								Rails.logger.error e.message
 							end
