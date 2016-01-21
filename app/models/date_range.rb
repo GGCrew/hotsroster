@@ -1,11 +1,17 @@
 class DateRange < ActiveRecord::Base
 
-	has_many	:rosters, dependent: :destroy
+	has_many	:rosters, dependent: :destroy, inverse_of: :date_range
 	has_many	:heroes,	through: :rosters
 
 	#..#
 	
 	scope :since_start_date, -> (date) { where(['start >= :date', {date: date}]) }
+
+	#..#
+
+	validates	'start', 'end', presence: true
+	validate	:end_is_after_start
+	validates	:start, uniqueness: { scope: :end, message: 'and End have already been taken' }
 
 	#..#
 
@@ -34,5 +40,11 @@ class DateRange < ActiveRecord::Base
 
 	def self.current
 		return self.order([:end, :start]).last
+	end
+
+	def end_is_after_start
+		if self.start && self.end && self.start >= self.end
+			errors.add(:start, "must be before End (#{self.end.to_s})")
+		end
 	end
 end

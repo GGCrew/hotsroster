@@ -11,6 +11,7 @@ class HerosControllerTest < ActionController::TestCase
     assert_not_nil assigns(:heros)
   end
 
+=begin
   test "should get new" do
     get :new
     assert_response :success
@@ -23,12 +24,14 @@ class HerosControllerTest < ActionController::TestCase
 
     assert_redirected_to hero_path(assigns(:hero))
   end
+=end
 
   test "should show hero" do
     get :show, id: @hero
     assert_response :success
   end
 
+=begin
   test "should get edit" do
     get :edit, id: @hero
     assert_response :success
@@ -46,4 +49,5 @@ class HerosControllerTest < ActionController::TestCase
 
     assert_redirected_to heros_path
   end
+=end
 end

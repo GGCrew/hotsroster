@@ -4,14 +4,22 @@ class Hero < ActiveRecord::Base
 	belongs_to	:typp
 	belongs_to	:franchise
 
-	has_many	:rosters, dependent: :destroy
+	has_many	:rosters, dependent: :destroy, inverse_of: :hero
 	has_many	:date_ranges,	through: :rosters
-	has_many	:alternate_hero_names,	dependent: :destroy
+	has_many	:alternate_hero_names,	dependent: :destroy, inverse_of: :hero
 
 	#..#
 
 	scope	:launch_heroes, -> { where(release_date: GAME_LAUNCH_DATE) }
 	scope	:post_launch_heroes, -> { where.not(release_date: GAME_LAUNCH_DATE) }
+
+	#..#
+
+	validates :name, :slug, presence: true
+	validates :name, :slug, uniqueness: true
+	validates	:role, presence: true
+	validates	:typp, presence: true
+	validates	:franchise, presence: true
 
 	#..#
 

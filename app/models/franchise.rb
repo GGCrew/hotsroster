@@ -1,6 +1,12 @@
 class Franchise < ActiveRecord::Base
 
-	has_many	:heroes, dependent: :nullify
+	has_many	:heroes, dependent: :nullify, inverse_of: :franchise
+
+	#..#
+
+	validates :name, :value, presence: true, uniqueness: true
+
+	#..#
 
 	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/heroes/'

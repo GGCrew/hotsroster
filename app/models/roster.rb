@@ -3,6 +3,13 @@ class Roster < ActiveRecord::Base
 	belongs_to	:hero
 	belongs_to	:date_range
 
+	#..#
+
+	validates	:hero, presence: true
+	validates	:date_range, presence: true
+
+	#..#
+
 	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/forum/topic/17936383460'
 		date_search_text = 'Free-to-Play Hero Rotation:'

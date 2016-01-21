@@ -4,8 +4,9 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+<% (1..5).each do |i| %>
+alternate_hero_name_<%= i %>:
+  <% hero_number = ((i % 4) + 1) * 3 %>
+  hero: hero_<%= hero_number %>
+  name: <%= i %> -- Alternate Name for Hero <%= hero_number %>
+<% end %>
