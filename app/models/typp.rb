@@ -10,11 +10,15 @@ class Typp < ActiveRecord::Base
 
 	def self.import_from_json(json)
 		for json_data in json
-			typp = self.find_or_create_by!(name: json_data['name'])
-			
-			typp.update_attributes!({
+			attributes = {
+				name: json_data['name'],
 				slug: json_data['slug']
-			})
+			}
+				
+			typp = self.find_by(slug: attributes[:slug])
+			typp = self.create!(attributes) unless typp
+			
+			typp.update_attributes!(attributes)
 		end
 	end
 

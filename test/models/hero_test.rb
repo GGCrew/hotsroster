@@ -17,6 +17,8 @@ class HeroTest < ActiveSupport::TestCase
 		typp: attributes[:typp]
 	}
 
+	# Validation tests
+
 	test "should not save hero without name" do
 		hero = Hero.new attributes.reject{|k,v| k == :name}
 		assert_not hero.save
@@ -58,4 +60,22 @@ class HeroTest < ActiveSupport::TestCase
 		hero = Hero.new attributes
 		assert hero.save
 	end
+
+	# Method tests
+
+	test 'should import from blizzard' do
+		assert_instance_of Array, Hero.import_from_blizzard
+	end
+
+	test 'should return newest hero' do
+		assert_instance_of Hero, Hero.newest
+	end
+
+	test 'should return percentage by franchise' do
+		Franchise.all.each do |franchise|
+			percentage = Hero.percentage_by_franchise(franchise)
+			assert percentage.between?(0, 100)
+		end
+	end
+	
 end

@@ -10,11 +10,15 @@ class Role < ActiveRecord::Base
 
 	def self.import_from_json(json)
 		for json_data in json
-			role = self.find_or_create_by!(name: json_data['name'])
-			
-			role.update_attributes!({
+			attributes = {
+				name: json_data['name'],
 				slug: json_data['slug']
-			})
+			}
+				
+			role = self.find_by(slug: attributes[:slug])
+			role = self.create!(attributes) unless role
+			
+			role.update_attributes!(attributes)
 		end
 	end
 
