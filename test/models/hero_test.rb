@@ -77,5 +77,18 @@ class HeroTest < ActiveSupport::TestCase
 			assert percentage.between?(0, 100)
 		end
 	end
+
+	test 'should return percentage by role' do
+		Role.all.each do |role|
+			percentage = Hero.percentage_by_role(role)
+			assert percentage.between?(0, 100)
+		end
+	end
 	
+	test 'should return percentage by typp' do
+		Typp.all.each do |typp|
+			percentage = Hero.percentage_by_typp(typp)
+			assert percentage.between?(0, 100)
+		end
+	end
 end
