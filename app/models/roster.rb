@@ -5,8 +5,8 @@ class Roster < ActiveRecord::Base
 
 	#..#
 
-	validates	:hero, presence: true
-	validates	:date_range, presence: true
+	validates	:hero, :date_range, presence: true
+	validates :hero, uniqueness: { scope: :date_range, message: 'and DateRange have already been taken.' }
 
 	#..#
 
