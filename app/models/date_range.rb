@@ -17,25 +17,29 @@ class DateRange < ActiveRecord::Base
 
 	def self.import_date_text(date_text)
 		date_match = /^([a-zA-Z]*) (\d{1,2}) . ([a-zA-Z]*) ?(\d{1,2}), (\d{4})$/.match(date_text)
-		start_month = date_match[1]
-		start_day = date_match[2]
-		end_month = date_match[3]
-		end_day = date_match[4]
-		year = date_match[5]
-		start_date = DateTime.parse("#{start_month} #{start_day}, #{year}")
-		(end_month = start_month) if (end_month.blank? && (end_day.to_i == (start_day.to_i + 7)))
-		end_date = DateTime.parse("#{end_month} #{end_day}, #{year}")
+		if date_match
+			start_month = date_match[1]
+			start_day = date_match[2]
+			end_month = date_match[3]
+			end_day = date_match[4]
+			year = date_match[5]
+			start_date = DateTime.parse("#{start_month} #{start_day}, #{year}")
+			(end_month = start_month) if (end_month.blank? && (end_day.to_i == (start_day.to_i + 7)))
+			end_date = DateTime.parse("#{end_month} #{end_day}, #{year}")
 		
-		# Kludge for funky end-of-year date text like "Dec 29 - Jan 5, 2015"
-		if start_date > end_date
-			if ((start_date + 1.week).month == end_date.month) && ((start_date + 1.week).day == end_date.day)
-				end_date = start_date + 1.week
+			# Kludge for funky end-of-year date text like "Dec 29 - Jan 5, 2015"
+			if start_date > end_date
+				if ((start_date + 1.week).month == end_date.month) && ((start_date + 1.week).day == end_date.day)
+					end_date = start_date + 1.week
+				end
 			end
+
+			date_range = self.find_or_create_by!(start: start_date, end: end_date)
+
+			return date_range
+		else
+			return nil
 		end
-
-		date_range = self.find_or_create_by!(start: start_date, end: end_date)
-
-		return date_range
 	end		
 
 	def self.current
@@ -43,8 +47,16 @@ class DateRange < ActiveRecord::Base
 	end
 
 	def end_is_after_start
-		if self.start && self.end && self.start >= self.end
-			errors.add(:start, "must be before End (#{self.end.to_s})")
+		if self.start && self.end
+			if self.start < self.end
+				return true
+			else
+				errors.add(:start, "must be before End (#{self.end.to_s})")
+				return false
+			end
+		else
+			errors.add(:start, "or End is invalid")
+			return false
 		end
 	end
 end
