@@ -93,7 +93,10 @@ class HeroTest < ActiveSupport::TestCase
 	end
 
 	test 'should return rotated heroes' do
-		flunk
+		hero_ids = Roster.select(:hero_id).map(&:hero_id).uniq
+		expected_heroes = Hero.find(hero_ids)
+		assert_equal Hero.rotated.count, expected_heroes.count
+		assert_empty Hero.rotated - expected_heroes
 	end
 
 	test 'should return unrotated heroes' do
@@ -200,7 +203,7 @@ class HeroTest < ActiveSupport::TestCase
 	test 'should return count of hero\'s rotations since the newest hero was released' do
 		heroes = Hero.all
 		newest_hero_release = heroes.map(&:release_date).max
-		date_ranges = DateRange.where('start >= :release_date', {release_date: newest_hero_release})
+		date_ranges = DateRange.where('start >= :date', {date: newest_hero_release})
 		heroes.each do |hero|
 			roster_count = Roster.where(hero: hero, date_range: date_ranges).count
 			assert_equal hero.rotations_since_newest_hero_release, roster_count
@@ -221,7 +224,7 @@ class HeroTest < ActiveSupport::TestCase
 			end	
 
 			latest_roster_size_change = date_range_and_roster_count[:date_range][:start]
-			date_ranges = DateRange.where('start >= :roster_size_change_date', {roster_size_change_date: latest_roster_size_change})
+			date_ranges = DateRange.where('start >= :date', {date: latest_roster_size_change})
 			heroes.each do |hero|
 				roster_count = Roster.where(hero: hero, date_range: date_ranges).count
 				assert_equal hero.rotations_since_latest_change_in_roster_size, roster_count
@@ -232,19 +235,47 @@ class HeroTest < ActiveSupport::TestCase
 	end
 
 	test 'should return percentage of hero\'s rotations since game launch' do
-		flunk
+		rotation_count = DateRange.count
+		heros = Hero.all
+		heros.each do |hero|
+			hero_rotation_count = Roster.where(hero: hero).count
+			expected_percentage = (hero_rotation_count.to_f / rotation_count) * 100
+			assert_in_delta expected_percentage, hero.rotation_percentage_since_launch, 0.005 # Leave some wiggle room for rounding
+		end
 	end
 
 	test 'should return percentage of hero\'s rotations since hero was released' do
-		flunk
+		heros = Hero.all
+		heros.each do |hero|
+			rotation_count = DateRange.where('start >= :date', {date: hero.release_date}).count
+			hero_rotation_count = Roster.where(hero: hero).count
+			expected_percentage = (hero_rotation_count.to_f / rotation_count) * 100
+			assert_in_delta expected_percentage, hero.rotation_percentage_since_release, 0.005 # Leave some wiggle room for rounding
+		end
 	end
 
 	test 'should return percentage of hero\'s rotations since newest hero was released' do
-		flunk
+		newest_hero = Hero.order(release_date: :asc).last
+		date_ranges = DateRange.where('start >= :date', {date: newest_hero.release_date})
+		rotation_count = date_ranges.count
+		heros = Hero.all
+		heros.each do |hero|
+			hero_rotation_count = Roster.where(hero: hero, date_range: date_ranges).count
+			expected_percentage = (hero_rotation_count.to_f / rotation_count) * 100
+			assert_in_delta expected_percentage, hero.rotation_percentage_since_newest_hero_release, 0.005 # Leave some wiggle room for rounding
+		end
 	end
 
 	test 'should return percentage of hero\'s rotations since the latest change in roster size' do
-		flunk
+		latest_change_in_roster_size = Roster.date_range_of_latest_roster_size_change
+		date_ranges = DateRange.where('start >= :date', {date: latest_change_in_roster_size[:start]})
+		rotation_count = date_ranges.count
+		heros = Hero.all
+		heros.each do |hero|
+			hero_rotation_count = Roster.where(hero: hero, date_range: date_ranges).count
+			expected_percentage = (hero_rotation_count.to_f / rotation_count) * 100
+			assert_in_delta expected_percentage, hero.rotation_percentage_since_latest_change_in_roster_size, 0.005 # Leave some wiggle room for rounding
+		end
 	end
 
 
