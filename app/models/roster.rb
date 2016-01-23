@@ -88,7 +88,7 @@ class Roster < ActiveRecord::Base
 					heroes << {
 						hero: hero,
 						player_level: player_level
-					}
+					} if hero
 				end
 
 				# Import into Roster
