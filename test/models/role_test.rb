@@ -43,6 +43,10 @@ class RoleTest < ActiveSupport::TestCase
 	# Model tests
 
 	test 'should import from json' do
-		flunk
+		json = [
+			HashWithIndifferentAccess.new(attributes),
+			HashWithIndifferentAccess.new(bogus_attributes)
+		]
+		assert Role.import_from_json json
 	end
 end

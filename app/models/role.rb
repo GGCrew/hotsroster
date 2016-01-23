@@ -20,6 +20,8 @@ class Role < ActiveRecord::Base
 			
 			role.update_attributes!(attributes)
 		end
+
+		return true
 	end
 
 end
