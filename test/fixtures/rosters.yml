@@ -5,11 +5,12 @@
 # below each fixture, per the syntax in the comments below
 #
 <% (1..52).each do |date_range| %>
-<% (1..8).each do |counter| %>
+# Gradually increasing roster size to assist with testing
+<% (1..(8 + (date_range / 20).floor)).each do |counter| %>
 <% 
 	heroes = []
 	while heroes.count < 8
-		heroes << rand(30)+1
+		heroes << rand(30 - 5) + 1  # heros fixtures defines 30 heroes.  Intentionally omitting some from roster to test Hero.rotated and Hero.unrotated
 		heroes.uniq!
 	end
 %>
