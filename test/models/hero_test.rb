@@ -174,8 +174,19 @@ class HeroTest < ActiveSupport::TestCase
 		end
 	end
 
-	test 'should return weeks between release and first rotation' do
-		flunk
+	test 'should return weeks between hero release and first rotation' do
+		heroes = Hero.all
+		heroes.each do |hero|
+			first_rotation = DateRange.order(start: :asc).find(Roster.where(hero: hero).map(&:date_range_id)).first
+			if first_rotation
+				difference = first_rotation[:start] - hero.release_date
+				weeks = difference / 1.week
+				weeks = weeks.to_i
+				assert_equal hero.weeks_between_release_and_first_rotation, weeks
+			else
+				assert_nil hero.weeks_between_release_and_first_rotation
+			end
+		end
 	end
 
 	test 'should return count of hero\'s rotations' do
