@@ -10,7 +10,9 @@ class TyppTest < ActiveSupport::TestCase
 		name: 'Bogus Typp Name',
 		slug: 'Bogus Typp Slug'
 	}
-	
+
+	# Validation tests
+
 	test 'should not save typp without name' do
 		typp = Typp.new attributes.reject{|k,v| k == :name}
 		assert_not typp.save
@@ -36,5 +38,11 @@ class TyppTest < ActiveSupport::TestCase
 	test 'should save typp' do
 		typp = Typp.new attributes
 		assert typp.save
+	end
+
+	# Model tests
+
+	test 'should import from json' do
+		flunk
 	end
 end

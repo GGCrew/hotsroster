@@ -10,7 +10,9 @@ class RoleTest < ActiveSupport::TestCase
 		name: 'Bogus Role Name',
 		slug: 'Bogus Role Slug'
 	}
-	
+
+	# Validation tests
+
 	test 'should not save role without name' do
 		role = Role.new attributes.reject{|k,v| k == :name}
 		assert_not role.save
@@ -36,5 +38,11 @@ class RoleTest < ActiveSupport::TestCase
 	test 'should save role' do
 		role = Role.new attributes
 		assert role.save
+	end
+
+	# Model tests
+
+	test 'should import from json' do
+		flunk
 	end
 end

@@ -15,6 +15,8 @@ class RosterTest < ActiveSupport::TestCase
 		)
 	}
 
+	# Validatino tests
+
 	test "should not save roster without hero" do
 		roster = Roster.new attributes.reject{|k,v| k == :hero}
 		assert_not roster.save
@@ -30,5 +32,15 @@ class RosterTest < ActiveSupport::TestCase
 		roster = Roster.new attributes
 		assert_not roster.save
 	end	
+
+	# Model tests
+
+	test 'should import from blizzard' do
+		flunk
+	end
+
+	test 'should return date range of latest roster size change' do
+		flunk
+	end
 
 end
