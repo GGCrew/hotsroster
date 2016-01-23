@@ -95,16 +95,23 @@ class HeroTest < ActiveSupport::TestCase
 	test 'should return rotated heroes' do
 		hero_ids = Roster.select(:hero_id).map(&:hero_id).uniq
 		expected_heroes = Hero.find(hero_ids)
-		assert_equal Hero.rotated.count, expected_heroes.count
-		assert_empty Hero.rotated - expected_heroes
+		assert_equal expected_heroes.count, Hero.rotated.count
+		assert_empty expected_heroes - Hero.rotated
 	end
 
 	test 'should return unrotated heroes' do
-		flunk
+		hero_ids = Roster.select(:hero_id).map(&:hero_id).uniq
+		expected_heroes = Hero.all - Hero.find(hero_ids)
+		assert_equal expected_heroes.count, Hero.unrotated.count
+		assert_empty Hero.unrotated - expected_heroes
 	end
 
 	test 'should return launch heroes' do
-		flunk
+		heroes = Hero.all
+		min_release_date = heroes.map(&:release_date).min # Earliest release date will coincide with game launch
+		expected_heroes = heroes.select{|hero| hero.release_date == min_release_date}
+		assert_equal expected_heroes.count, Hero.launch_heroes.count
+		assert_empty expected_heroes - Hero.launch_heroes
 	end
 
 	# Instance method tests
