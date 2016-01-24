@@ -76,6 +76,7 @@
 						- for roster in @rosters
 							%th= render partial: '/rosters/hero_portrait', object: roster, locals: {display_categories: false, display_player_level: false}
 				%tbody
+					- rotation_count = DateRange.since_start_date(@newest_hero.release_date).count.to_f
 					- for roster in @rosters
 						%tr
 							%th= roster.hero.name
@@ -84,9 +85,9 @@
 									- if roster == comp_roster
 										&mdash;
 									- else
-										- rotation_count = roster.hero.date_ranges.where(id: comp_roster.hero.date_ranges).since_start_date(@newest_hero.release_date).count
-										- rotation_percentage = rotation_count / DateRange.since_start_date(@newest_hero.release_date).count.to_f * 100
-										%span.value= rotation_count
+										- hero_rotation_count = roster.hero.date_ranges.where(id: comp_roster.hero.date_ranges).since_start_date(@newest_hero.release_date).count
+										- rotation_percentage = hero_rotation_count / rotation_count * 100
+										%span.value= hero_rotation_count
 										%span.percentage= format_percentage(rotation_percentage)
 
 - if false
