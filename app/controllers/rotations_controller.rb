@@ -6,7 +6,8 @@ class RotationsController < ApplicationController
 		@head[:title] = "Rotations"
 
     #@rotations = DateRange.order(end: :desc).order(start: :desc)
-    @rotations = DateRange.order(end: :desc).order(start: :desc).includes(:rosters).order('rosters.player_level ASC').includes(:heroes).order('heros.name ASC')
+    #@rotations = DateRange.order(end: :desc).order(start: :desc).includes(:rosters).order('rosters.player_level ASC').includes(:heroes).order('heros.name ASC')
+    @rotations = DateRange.includes(:rosters).includes(:heroes).order(end: :desc).order(start: :desc).order('rosters.player_level ASC').order('heros.name ASC')
   end
 
 	def show
