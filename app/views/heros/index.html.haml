@@ -3,7 +3,12 @@
 	.row
 		.col-md-12.heroes
 			- for hero in @heros
-				%figure
+				%figure{data: {                   |
+					name: hero.slug,                |
+					role: hero.role.slug,           |
+					typp: hero.typp.slug,           |
+					franchise: hero.franchise.value |
+					} }                             |
 					= link_to(hero_path(hero)) do
 						%span.border
 							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero.slug}.jpg", alt: hero.name, title: hero.name
