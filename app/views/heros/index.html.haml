@@ -1,5 +1,18 @@
 .container
-	%h2.title All Heroes
+	%h2.title Heroes
+	.row.filters
+		.col-md-2
+			- Franchise.all.each do |franchise|
+				= link_to franchise.value, data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
+					= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, alt: franchise.name, class: 'icon')
+		.col-md-2
+			- Role.all.each do |role|
+				= link_to role.slug, data: {key: 'role', value: role.slug, role: role.slug, selected: true} do
+					= image_tag("icons/role/#{role.slug}.png", title: role.name, alt: role.name, class: 'icon')
+		.col-md-2
+			- Typp.all.each do |typp|
+				= link_to typp.slug, data: {key: 'typp', value: typp.slug, typp: typp.slug, selected: true} do
+					= image_tag("icons/typp/#{typp.slug}.png", title: typp.name, alt: typp.name, class: 'icon')
 	.row
 		.col-md-12.heroes
 			- for hero in @heros
