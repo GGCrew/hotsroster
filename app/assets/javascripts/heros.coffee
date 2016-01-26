@@ -6,12 +6,15 @@ applyFilters = () ->
 	$('.filtered').removeClass('filtered')
 	$('.filters a').each (index) ->
 		filterdata = $(this).data()
-		console.log filterdata
 		if !filterdata.selected
 			selector = '[data-' + filterdata.key + '="' + filterdata.value + '"]'
-			console.log selector
 			$(selector).addClass('filtered')
 		return true
+	hero_count = $('.heroes figure').length
+	filtered_count = $('.heroes figure.filtered').length
+	unfiltered_count = hero_count - filtered_count
+	message = unfiltered_count + " matching Heroes (out of " + hero_count + " Heroes)"
+	$('.filters .messages').text(message)
 	return true
 	
 $(document).on "ready", ->
