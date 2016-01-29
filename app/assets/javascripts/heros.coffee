@@ -3,15 +3,16 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 applyFilters = () ->
-	$('.filtered').removeClass('filtered')
+	$('[data-filtered=true]').attr('data-filtered', false)
 	$('.filters a').each (index) ->
 		filterdata = $(this).data()
 		if !filterdata.selected
 			selector = '[data-' + filterdata.key + '="' + filterdata.value + '"]'
-			$(selector).addClass('filtered')
+			$(selector).attr('data-filtered', true)
 		return true
+	filtered_heroes = $('.heroes figure[data-filtered=true]')
 	hero_count = $('.heroes figure').length
-	filtered_count = $('.heroes figure.filtered').length
+	filtered_count = filtered_heroes.length
 	unfiltered_count = hero_count - filtered_count
 	message = unfiltered_count + " matching Heroes (out of " + hero_count + " Heroes)"
 	$('.filters .messages').text(message)
@@ -19,8 +20,9 @@ applyFilters = () ->
 	
 $(document).on "ready", ->
   $('.filters a').click ->
-    icondata = $(this).data()
-    icondata.selected = !icondata.selected
+    #icondata = $(this).data()
+    #icondata.selected = !icondata.selected
+    $(this).data('selected', !$(this).data('selected'))
     applyFilters()
     return false
   return true
