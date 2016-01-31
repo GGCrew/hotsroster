@@ -11,6 +11,7 @@ applyFilters = () ->
 		filterdata = $(this).data()
 		if !filterdata.selected
 			selector = '[data-' + filterdata.key + '="' + filterdata.value + '"]'
+			console.log selector
 			$(selector).attr('data-filtered', true)
 			$(this).addClass('filtered')
 		else
