@@ -12,6 +12,9 @@ applyFilters = () ->
 		if !filterdata.selected
 			selector = '[data-' + filterdata.key + '="' + filterdata.value + '"]'
 			$(selector).attr('data-filtered', true)
+			$(this).addClass('filtered')
+		else
+			$(this).removeClass('filtered')
 		return true
 
 	filtered_heroes = $('.heroes figure[data-filtered=true]')
@@ -20,13 +23,15 @@ applyFilters = () ->
 	# Hide newly-filtered heroes
 	filtered_heroes.each (index) ->
 		if $(this).css('display') != 'none'
-				$(this).slideUp()
+			#$(this).slideUp()
+			$(this).animate({height: 'toggle', width: 'toggle'})
 		return true
 
 	# Reveal newly-unfiltered heroes
 	unfiltered_heroes.each (index) ->
 		if $(this).css('display') == 'none'
-				$(this).slideDown()
+			#$(this).slideDown()
+			$(this).animate({height: 'toggle', width: 'toggle'})
 		return true
 
 	hero_count = $('.heroes figure').length
