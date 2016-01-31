@@ -4,7 +4,7 @@
 		.row.options
 			.col-md-2
 				- Franchise.all.each do |franchise|
-					= link_to franchise.value, data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
+					= link_to '#', data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
 						= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, alt: franchise.name, class: 'icon')
 			.col-md-2
 				- Role.all.each do |role|
@@ -20,12 +20,13 @@
 	.row
 		.col-md-12.heroes
 			- for hero in @heros
-				%figure{data: {                   |
-					name: hero.slug,                |
-					role: hero.role.slug,           |
-					typp: hero.typp.slug,           |
-					franchise: hero.franchise.value |
-					} }                             |
+				%figure{data: {                      |
+					name: hero.slug,                 |
+					role: hero.role.slug,            |
+					typp: hero.typp.slug,            |
+					franchise: hero.franchise.value, |
+					filtered: 'false'                |
+					} }                              |
 					= link_to(hero_path(hero)) do
 						%span.border
 							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero.slug}.jpg", alt: hero.name, title: hero.name
