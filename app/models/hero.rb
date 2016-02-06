@@ -161,7 +161,7 @@ class Hero < ActiveRecord::Base
 
 
 	def rotation_percentage_since_launch
-		((self.rotations / DateRange.count.to_f) * 100).round(2)
+		(self.rotations / DateRange.count.to_f) * 100
 	end
 
 	def rotation_percentage_since_release
@@ -176,5 +176,25 @@ class Hero < ActiveRecord::Base
 		(self.rotations_since_latest_change_in_roster_size / DateRange.since_start_date(Roster.date_range_of_latest_roster_size_change.start).count.to_f) * 100
 	end
 
+	def rotation_pairings
+		self_date_ranges = self.date_ranges
+		self_date_ranges_count = self_date_ranges.count
+		other_heroes = Hero.where.not(id: self.id).order(name: :asc)
+		pairings = []
+		for other_hero in other_heroes
+			other_hero_date_ranges = other_hero.date_ranges
+			paired_date_ranges = self_date_ranges & other_hero_date_ranges
+			paired_date_ranges_count = paired_date_ranges.count
+			paired_date_ranges_percentage = (paired_date_ranges_count / self_date_ranges_count.to_f) * 100
+			pairings << {
+				hero: other_hero,
+				date_ranges: paired_date_ranges,
+				count: paired_date_ranges_count,
+				percentage: paired_date_ranges_percentage
+			}
+		end
+		pairings.sort_by!{|i| [-i[:count], i[:hero].name]}
+		return pairings
+	end
 end
 

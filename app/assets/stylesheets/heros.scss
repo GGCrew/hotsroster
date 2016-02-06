@@ -73,3 +73,51 @@ img.icon {
 .history {
 	color: #BBB;
 }
+
+.pairings {
+	.table-striped {
+		border: 1px solid #555;
+
+		th, td {
+			text-align: center;
+			border-right: 1px solid #555;
+		}
+
+		th {
+			padding: 1em;
+		}
+	}
+
+	td {
+		padding: .25em;
+
+		&:first-child {
+			padding-left: 1em;
+			border-right: none;
+			padding-right: 0;
+		}
+
+		&:last-child {
+			padding-right: 1em;
+		}
+
+		&.hero {
+			figure {
+				width: 3em;
+				margin: 0;
+			}
+		}
+
+		&.name {
+			text-align: left;
+			color: #40d0ff;
+		}
+
+		&.count {
+		}
+
+		&.percentage {
+		}
+	}
+}
+

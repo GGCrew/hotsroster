@@ -91,13 +91,34 @@
 
 .container.history
 	.row
-		.col-md-12
+		.col-md-6.rotations
 			%h2 Rotation History
-			- for rotation in @hero.date_ranges.order(:end).order(:start)
+			- for rotation in @hero_rotations
 				%p
 					= link_to format_date_range(rotation), rotation_path(rotation)
 					- roster = Roster.where(hero_id: @hero.id, date_range_id: rotation.id).first
 					- if roster.player_level > 1
 						= "(Restricted: player level #{roster.player_level})"
-			
-						
+		.col-md-6.pairings
+			%h2 Rotation Hero Pairing History
+			%table.table-striped.heroes
+				%thead
+					%tr
+						%th{colspan: 2} Hero
+						%th Count
+						%th Percentage
+				%tbody
+					- for pairing in @hero.rotation_pairings
+						%tr
+							%td.hero
+								%figure
+									= link_to(hero_path(pairing[:hero])) do
+										%span.border
+											= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{pairing[:hero].slug}.jpg", alt: pairing[:hero].name, title: pairing[:hero].name
+							%td.name
+								= pairing[:hero].name
+							%td.count
+								#{pairing[:count]}
+							%td.percentage
+								#{format_percentage(pairing[:percentage])}
+
