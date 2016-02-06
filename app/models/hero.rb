@@ -185,7 +185,7 @@ class Hero < ActiveRecord::Base
 			other_hero_date_ranges = other_hero.date_ranges
 			paired_date_ranges = self_date_ranges & other_hero_date_ranges
 			paired_date_ranges_count = paired_date_ranges.count
-			paired_date_ranges_percentage = (paired_date_ranges_count / self_date_ranges_count.to_f) * 100
+			paired_date_ranges_percentage = (self_date_ranges_count == 0 ? 0.0 : ((paired_date_ranges_count / self_date_ranges_count.to_f) * 100))
 			pairings << {
 				hero: other_hero,
 				date_ranges: paired_date_ranges,
