@@ -108,11 +108,22 @@ class Hero < ActiveRecord::Base
 
 	def self.unrotated
 		rotated_ids = Roster.select(:hero_id).map(&:hero_id).uniq
-		return self.where('id NOT IN (:ids)', {ids: rotated_ids})
+		return self.where.not(id: rotated_ids)
 	end
 
-	def self.launch_heroes
-		self.where(release_date: GAME_LAUNCH_DATE)
+	def self.typical_weeks_between_release_and_first_rotation
+		weeks = []
+		for hero in self.all
+			if hero.first_rotation
+				difference = hero.first_rotation.start - hero.release_date
+				difference = (difference / 1.week).to_i
+				weeks[difference] ||= 0 # Initialize if not already set
+				weeks[difference] += 1
+			end
+		end
+		weeks.map!{|i| i ||= 0} # Initialize any unset values
+		max_count = weeks.max
+		return weeks.index(max_count)
 	end
 
 	#..#
@@ -145,6 +156,12 @@ class Hero < ActiveRecord::Base
 		else
 			return nil
 		end
+	end
+
+	def expected_first_rotation
+		expected_start = self.release_date + Hero.post_launch_heroes.typical_weeks_between_release_and_first_rotation.weeks
+		expected_end = expected_start + 1.week
+		return DateRange.new(start: expected_start, end: expected_end)	
 	end
 
 	def rotations
