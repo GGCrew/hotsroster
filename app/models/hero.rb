@@ -161,7 +161,7 @@ class Hero < ActiveRecord::Base
 	def expected_first_rotation
 		expected_start = self.release_date + Hero.post_launch_heroes.typical_weeks_between_release_and_first_rotation.weeks
 		expected_end = expected_start + 1.week
-		return DateRange.new(start: expected_start, end: expected_end)	
+		return DateRange.new(start: expected_start, end: expected_end)
 	end
 
 	def rotations
