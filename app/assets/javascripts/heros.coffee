@@ -11,41 +11,53 @@ applyFilters = () ->
 		filterdata = $(this).data()
 		if !filterdata.selected
 			selector = '[data-' + filterdata.key + '="' + filterdata.value + '"]'
-			console.log selector
 			$(selector).attr('data-filtered', true)
 			$(this).addClass('filtered')
 		else
 			$(this).removeClass('filtered')
 		return true
 
-	filtered_heroes = $('.heroes figure[data-filtered=true]')
-	unfiltered_heroes = $('.heroes figure[data-filtered=false]')
+	hero_sections = $('.heroes')
+	hero_sections.each (index) ->
+		hero_count = $(this).find('figure').length
+		filtered_heroes = $(this).find('figure[data-filtered=true]')
+		unfiltered_heroes = $(this).find('figure[data-filtered=false]')
 
-	# Hide newly-filtered heroes
-	filtered_heroes.each (index) ->
-		if $(this).css('display') != 'none'
-			#$(this).slideUp()
-			$(this).animate({height: 'toggle', width: 'toggle'})
+		# Hide newly-filtered heroes
+		filtered_heroes.each (index) ->
+			if $(this).css('display') != 'none'
+				$(this).animate({height: 'toggle', width: 'toggle'})
+			return true
+
+		# Reveal newly-unfiltered heroes
+		unfiltered_heroes.each (index) ->
+			if $(this).css('display') == 'none'
+				$(this).animate({height: 'toggle', width: 'toggle'})
+			return true
+
+		unfiltered_count = unfiltered_heroes.length
+		if unfiltered_count == hero_count
+			message = hero_count + " Heroes"
+		else if unfiltered_count > 1
+			message = unfiltered_count + " matching Heroes (out of " + hero_count + ")"
+		else
+			message = unfiltered_count + " matching Hero (out of " + hero_count + ")"
+		
+		this_parent = $(this).parent()
+		if $(this_parent).hasClass('rotation')
+			# Rosters page
+			$(this_parent).find('.hero_count').text(message)
+		else
+			# Heroes page
+			$('.filters .messages').text(message)
 		return true
-
-	# Reveal newly-unfiltered heroes
-	unfiltered_heroes.each (index) ->
-		if $(this).css('display') == 'none'
-			#$(this).slideDown()
-			$(this).animate({height: 'toggle', width: 'toggle'})
-		return true
-
-	hero_count = $('.heroes figure').length
-	unfiltered_count = unfiltered_heroes.length
-	message = unfiltered_count + " matching Heroes (out of " + hero_count + " Heroes)"
-	$('.filters .messages').text(message)
 	return true
 
 $(document).on "ready", ->
 	$('.filters a').click ->
-		#icondata = $(this).data()
-		#icondata.selected = !icondata.selected
-		$(this).data('selected', !$(this).data('selected'))
+		icondata = $(this).data()
+		icondata.selected = !icondata.selected
+		#$(this).data('selected', !$(this).data('selected')) # single-line solution doesn't "read" as well as the two-line solution above
 		applyFilters()
 		return false
 	return true
