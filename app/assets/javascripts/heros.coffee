@@ -49,7 +49,7 @@ applyFilters = () ->
 			$(this_parent).find('.hero_count').text(message)
 		else
 			# Heroes page
-			$('.filters .messages').text(message)
+			$('.filters .messages .hero_count').text(message)
 		return true
 	return true
 

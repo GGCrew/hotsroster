@@ -1,6 +1,7 @@
 .container
 	.row.filters
 		.row.options
+			.col-md-3
 			.col-md-2
 				- Franchise.all.each do |franchise|
 					= link_to '#', data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
