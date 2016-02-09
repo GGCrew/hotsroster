@@ -38,7 +38,7 @@ applyFilters = () ->
 		unfiltered_count = unfiltered_heroes.length
 		if unfiltered_count == hero_count
 			message = hero_count + " Heroes"
-		else if unfiltered_count > 1
+		else if unfiltered_count != 1
 			message = unfiltered_count + " matching Heroes (out of " + hero_count + ")"
 		else
 			message = unfiltered_count + " matching Hero (out of " + hero_count + ")"
