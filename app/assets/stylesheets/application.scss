@@ -171,6 +171,18 @@ h3 {
 
 .filters {
 	font-size: 1.5em;
+
+	a {
+		text-decoration: none;
+		
+		&:hover, &:selected {
+			text-decoration: none;
+		}
+	}
+
+	img.icon {
+		height: 2em;
+	}
 }
 
 .filtered {
