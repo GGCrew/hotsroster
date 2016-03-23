@@ -39,10 +39,10 @@ class Roster < ActiveRecord::Base
 				heroes = []
 				for hero_text in hero_texts
 					# Check for required player levels
-					hero_match = /^(.*) \(Slot unlocked at Player Level (\d{1,2})\)$/.match(hero_text)
+					hero_match = /^(.*)\s*\(Slot unlocked at Player Level (\d{1,2})\)$/.match(hero_text)
 					if hero_match
 						# hero requires a player level
-						hero_name = hero_match[1]
+						hero_name = hero_match[1].strip
 						player_level = hero_match[2].to_i
 					else
 						# hero does not require a player level
