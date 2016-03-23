@@ -16,7 +16,7 @@ class Hero < ActiveRecord::Base
 	#..#
 
 	validates :name, :slug, presence: true
-	validates :name, :slug, uniqueness: true
+	validates :player_character_name, uniqueness: {scope: [:name, :slug]}
 	validates	:role, presence: true
 	validates	:typp, presence: true
 	validates	:franchise, presence: true
