@@ -1,7 +1,13 @@
 - display_categories = true unless local_assigns.has_key?(:display_categories)
 - display_player_level = true unless local_assigns.has_key?(:display_player_level)
 
-%figure
+%figure{data: { |
+	name: hero_portrait.hero.slug, |
+	role: hero_portrait.hero.role.slug, |
+	typp: hero_portrait.hero.typp.slug, |
+	franchise: hero_portrait.hero.franchise.value, |
+	filtered: 'false' |
+	} } |
 	= link_to(hero_path(hero_portrait.hero)) do
 		%span.border
 			= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg", alt: hero_portrait.hero.name, title: hero_portrait.hero.name

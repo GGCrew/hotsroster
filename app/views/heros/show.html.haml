@@ -57,30 +57,32 @@
 								(#{@hero.weeks_between_release_and_first_rotation} weeks after release)
 						- else
 							Has never appeared in the free hero rotation.
+							- if @hero.expected_first_rotation.start >= DateRange.current.start
+								Expected #{format_date_range(@hero.expected_first_rotation)}
 						
 						%br
 						Rotations since game launch:
 						= @hero.rotations
-						= "(#{format_percentage(@hero.rotation_percentage_since_launch)})"
+						(#{format_percentage(@hero.rotation_percentage_since_launch)})
 
 						%br
 						Rotations since latest change in roster size:
 						= @hero.rotations_since_latest_change_in_roster_size
-						= "(#{format_percentage(@hero.rotation_percentage_since_latest_change_in_roster_size)})"
+						(#{format_percentage(@hero.rotation_percentage_since_latest_change_in_roster_size)})
 						
 						%br
 						Rotations since
 						= @hero.name
 						was added to the game:
 						= @hero.rotations
-						= "(#{format_percentage(@hero.rotation_percentage_since_release)})"
+						(#{format_percentage(@hero.rotation_percentage_since_release)})
 
 						%br
 						Rotations since newest hero
-						= "(#{Hero.newest.name})"
+						(#{link_to Hero.newest.name, hero_path(Hero.newest)})
 						was added to the game:
 						= @hero.rotations_since_newest_hero_release
-						= "(#{format_percentage(@hero.rotation_percentage_since_newest_hero_release)})"
+						(#{format_percentage(@hero.rotation_percentage_since_newest_hero_release)})
 
 		.row.navigation
 			.col-md-2.previous
@@ -91,13 +93,39 @@
 
 .container.history
 	.row
-		.col-md-12
+		.col-md-6.rotations
 			%h2 Rotation History
-			- for rotation in @hero.date_ranges.order(:end).order(:start)
+			- for rotation in @hero_rotations
 				%p
 					= link_to format_date_range(rotation), rotation_path(rotation)
 					- roster = Roster.where(hero_id: @hero.id, date_range_id: rotation.id).first
 					- if roster.player_level > 1
-						= "(Restricted: player level #{roster.player_level})"
-			
-						
+						(Restricted: player level #{roster.player_level})
+			- if @hero_rotations.empty?
+				Has never appeared in the free hero rotation.
+				- if @hero.expected_first_rotation.start >= DateRange.current.start
+					%br
+					Expected #{format_date_range(@hero.expected_first_rotation)}
+		.col-md-6.pairings
+			%h2 Rotation Hero Pairing History
+			%table.table-striped.heroes
+				%thead
+					%tr
+						%th{colspan: 2} Hero
+						%th Count
+						%th Percentage
+				%tbody
+					- for pairing in @hero.rotation_pairings
+						%tr
+							%td.hero
+								%figure
+									= link_to(hero_path(pairing[:hero])) do
+										%span.border
+											= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{pairing[:hero].slug}.jpg", alt: pairing[:hero].name, title: pairing[:hero].name
+							%td.name
+								= pairing[:hero].name
+							%td.count
+								#{pairing[:count]}
+							%td.percentage
+								#{format_percentage(pairing[:percentage])}
+

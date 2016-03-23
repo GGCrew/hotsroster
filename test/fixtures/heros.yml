@@ -12,5 +12,7 @@ hero_<%= i %>:
   role: role_<%= (i % 4) + 1 %>
   typp: typp_<%= (i % 4) + 1 %>
   franchise: franchise_<%= (i % 4) + 1 %>
+  release_date: <%= GAME_LAUNCH_DATE + (i % 5 == 0 ? i : 0).weeks %>
+  prerelease_date: <%= GAME_LAUNCH_DATE + (i % 25 == 0 ? (i - 1) : 0).weeks %>
 
 <% end %>

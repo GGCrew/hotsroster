@@ -4,14 +4,22 @@ class Hero < ActiveRecord::Base
 	belongs_to	:typp
 	belongs_to	:franchise
 
-	has_many	:rosters, dependent: :destroy
+	has_many	:rosters, dependent: :destroy, inverse_of: :hero
 	has_many	:date_ranges,	through: :rosters
-	has_many	:alternate_hero_names,	dependent: :destroy
+	has_many	:alternate_hero_names,	dependent: :destroy, inverse_of: :hero
 
 	#..#
 
 	scope	:launch_heroes, -> { where(release_date: GAME_LAUNCH_DATE) }
 	scope	:post_launch_heroes, -> { where.not(release_date: GAME_LAUNCH_DATE) }
+
+	#..#
+
+	validates :name, :slug, presence: true
+	validates :name, :slug, uniqueness: true
+	validates	:role, presence: true
+	validates	:typp, presence: true
+	validates	:franchise, presence: true
 
 	#..#
 
@@ -56,15 +64,18 @@ class Hero < ActiveRecord::Base
 
 		# update heroes
 		json.each do |hero_json|
-			hero = self.find_or_create_by!(name: hero_json['name'])
-			
 			attributes = {
+				name: hero_json['name'],
 				title: hero_json['title'],
 				slug: hero_json['slug'],
 				role: Role.where(name: hero_json['role']['name']).first,
 				typp: Typp.where(name: hero_json['type']['name']).first,
 				franchise: Franchise.where(value: hero_json['franchise']).first
 			}
+
+			hero = self.find_by(slug: hero_json['slug'])
+			hero = self.create!(attributes) unless hero
+			
 			attributes.merge!({release_date: Date.today.to_datetime}) unless hero.release_date
 			attributes.merge!({prerelease_date: Date.today.to_datetime}) unless hero.prerelease_date
 
@@ -97,11 +108,22 @@ class Hero < ActiveRecord::Base
 
 	def self.unrotated
 		rotated_ids = Roster.select(:hero_id).map(&:hero_id).uniq
-		return self.where('id NOT IN (:ids)', {ids: rotated_ids})
+		return self.where.not(id: rotated_ids)
 	end
 
-	def self.launch_heroes
-		self.where(release_date: GAME_LAUNCH_DATE)
+	def self.typical_weeks_between_release_and_first_rotation
+		weeks = []
+		for hero in self.all
+			if hero.first_rotation
+				difference = hero.first_rotation.start - hero.release_date
+				difference = (difference / 1.week).to_i
+				weeks[difference] ||= 0 # Initialize if not already set
+				weeks[difference] += 1
+			end
+		end
+		weeks.map!{|i| i ||= 0} # Initialize any unset values
+		max_count = weeks.max
+		return weeks.index(max_count)
 	end
 
 	#..#
@@ -136,6 +158,12 @@ class Hero < ActiveRecord::Base
 		end
 	end
 
+	def expected_first_rotation
+		expected_start = self.release_date + Hero.post_launch_heroes.typical_weeks_between_release_and_first_rotation.weeks
+		expected_end = expected_start + 1.week
+		return DateRange.new(start: expected_start, end: expected_end)
+	end
+
 	def rotations
 		self.date_ranges.count
 	end
@@ -150,7 +178,7 @@ class Hero < ActiveRecord::Base
 
 
 	def rotation_percentage_since_launch
-		((self.rotations / DateRange.count.to_f) * 100).round(2)
+		(self.rotations / DateRange.count.to_f) * 100
 	end
 
 	def rotation_percentage_since_release
@@ -165,5 +193,25 @@ class Hero < ActiveRecord::Base
 		(self.rotations_since_latest_change_in_roster_size / DateRange.since_start_date(Roster.date_range_of_latest_roster_size_change.start).count.to_f) * 100
 	end
 
+	def rotation_pairings
+		self_date_ranges = self.date_ranges
+		self_date_ranges_count = self_date_ranges.count
+		other_heroes = Hero.where.not(id: self.id).order(name: :asc)
+		pairings = []
+		for other_hero in other_heroes
+			other_hero_date_ranges = other_hero.date_ranges
+			paired_date_ranges = self_date_ranges & other_hero_date_ranges
+			paired_date_ranges_count = paired_date_ranges.count
+			paired_date_ranges_percentage = (self_date_ranges_count == 0 ? 0.0 : ((paired_date_ranges_count / self_date_ranges_count.to_f) * 100))
+			pairings << {
+				hero: other_hero,
+				date_ranges: paired_date_ranges,
+				count: paired_date_ranges_count,
+				percentage: paired_date_ranges_percentage
+			}
+		end
+		pairings.sort_by!{|i| [-i[:count], i[:hero].name]}
+		return pairings
+	end
 end
 

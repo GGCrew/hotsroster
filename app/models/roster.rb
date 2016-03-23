@@ -3,6 +3,13 @@ class Roster < ActiveRecord::Base
 	belongs_to	:hero
 	belongs_to	:date_range
 
+	#..#
+
+	validates	:hero, :date_range, presence: true
+	validates :hero, uniqueness: { scope: :date_range, message: 'and DateRange have already been taken.' }
+
+	#..#
+
 	def self.import_from_blizzard
 		address = 'http://us.battle.net/heroes/en/forum/topic/17936383460'
 		date_search_text = 'Free-to-Play Hero Rotation:'
@@ -57,17 +64,31 @@ class Roster < ActiveRecord::Base
 						if alternate_name
 							hero = alternate_name.hero
 						else
-							AlternateHeroName.create!(name: hero_name)
-							# TODO: Alert Admin of newly-created unrelated record
+							alternate_hero_name = AlternateHeroName.create!(name: hero_name)
+							# Alert Admin of newly-created unrelated record
+							begin
+								AdminMailer.roster_unrecognized_hero_name(hero_name, date_range).deliver_now
+							rescue => e
+								Rails.logger.error "Failed 'AdminMailer.roster_unrecognized_hero_name(hero_name, date_range)' -- #{hero_name} -- #{date_range.try(:id)}"
+								Rails.logger.error e.message
+							end
 						end
 					end
 
-					# TODO: Alert Admin if hero.nil?
+					# Alert Admin if hero.nil?
+					unless hero
+						begin
+							AdminMailer.roster_hero_not_found(hero_text, date_range).deliver_now
+						rescue => e
+							Rails.logger.error "Failed 'AdminMailer.roster_hero_not_found(hero_text, date_range)' -- #{hero_text} -- #{date_range.try(:id)}"
+							Rails.logger.error e.message
+						end
+					end
 
 					heroes << {
 						hero: hero,
 						player_level: player_level
-					}
+					} if hero
 				end
 
 				# Import into Roster
@@ -95,7 +116,7 @@ class Roster < ActiveRecord::Base
 		# The key:value pairs represent date_range_id:roster_size_for_that_date
 		counts = self.joins(:date_range).group(:date_range_id).order('date_ranges.start DESC, date_ranges.end DESC').count
 
-		# This trick only works because Ruby's Array.uniq method maintains the order of the first appearance of a value
+		# This trick works because Ruby's Array.uniq method maintains the order of the first appearance of a value
 		values = counts.values.uniq[0..1]
 		current_size = values.first
 		previous_size = values.last

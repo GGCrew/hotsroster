@@ -1,0 +1,14 @@
+export GEM_HOME=/usr/local/rvm/gems/ruby-2.2-head@hotsroster
+export PATH=/usr/local/rvm/gems/ruby-2.2-head@hotsroster/bin:/usr/local/rvm/gems/ruby-2.2-head@global/bin:/usr/local/rvm/rubies/ruby-2.2-head/bin:/usr/local/rvm/bin:$PATH
+export PWD=/var/www/hotsroster
+export rvm_ruby_string=ruby-2.2-head
+export GEM_PATH=/usr/local/rvm/gems/ruby-2.2-head@hotsroster:/usr/local/rvm/gems/ruby-2.2-head@global:$GEM_PATH
+export rvm_delete_flag=0
+export SECRET_KEY_BASE=<<secret>>
+export SITE_ADMIN=<<secret>>
+export GMAIL_USERNAME=<<secret>>
+export GMAIL_PASSWORD=<<secret>>
+
+cd /var/www/hotsroster/
+rails runner -e production scripts/import_from_blizzard.rb
+

@@ -1,9 +1,34 @@
 .container
-	%h2.title All Heroes
+	%h2.title Heroes
+	.row.filters
+		.row.options
+			.col-md-1
+			.col-md-2
+				- Franchise.all.each do |franchise|
+					= link_to '#', data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
+						= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, alt: franchise.name, class: 'icon')
+			.col-md-2
+				- Role.all.each do |role|
+					= link_to role.slug, data: {key: 'role', value: role.slug, role: role.slug, selected: true} do
+						= image_tag("icons/role/#{role.slug}.png", title: role.name, alt: role.name, class: 'icon')
+			.col-md-2
+				- Typp.all.each do |typp|
+					= link_to typp.slug, data: {key: 'typp', value: typp.slug, typp: typp.slug, selected: true} do
+						= image_tag("icons/typp/#{typp.slug}.png", title: typp.name, alt: typp.name, class: 'icon')
+		.row.messages
+			.col-md-1
+			.col-md-11.hero_count
+				#{@heros.count} Heroes
 	.row
 		.col-md-12.heroes
 			- for hero in @heros
-				%figure
+				%figure{data: {                    |
+					name: hero.slug,                 |
+					role: hero.role.slug,            |
+					typp: hero.typp.slug,            |
+					franchise: hero.franchise.value, |
+					filtered: 'false'                |
+					} }                              |
 					= link_to(hero_path(hero)) do
 						%span.border
 							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero.slug}.jpg", alt: hero.name, title: hero.name

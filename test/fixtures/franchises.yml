@@ -7,6 +7,7 @@
 <% (1..4).each do |i| %>
 franchise_<%= i %>:
   name: Franchise <%= i %>
+  value: franchise-<%= i %>
 
 <% end %>
 

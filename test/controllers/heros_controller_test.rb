@@ -11,39 +11,31 @@ class HerosControllerTest < ActionController::TestCase
     assert_not_nil assigns(:heros)
   end
 
-  test "should get new" do
-    get :new
-    assert_response :success
+  test "should not get new" do
+    assert_raises(Exception) { get :new }
   end
 
-  test "should create hero" do
-    assert_difference('Hero.count') do
-      post :create, hero: {  }
-    end
-
-    assert_redirected_to hero_path(assigns(:hero))
+  test "should not create hero" do
+    assert_raises(Exception) { post :create, hero: {  } }
   end
 
   test "should show hero" do
-    get :show, id: @hero
-    assert_response :success
+  	heroes = Hero.all
+  	heroes.each do |hero|
+	    get :show, id: hero
+	    assert_response :success
+	  end
   end
 
-  test "should get edit" do
-    get :edit, id: @hero
-    assert_response :success
+  test "should not get edit" do
+    assert_raises(Exception) { get :edit, id: @hero }
   end
 
-  test "should update hero" do
-    patch :update, id: @hero, hero: {  }
-    assert_redirected_to hero_path(assigns(:hero))
+  test "should not update hero" do
+    assert_raises(Exception) { patch :update, id: @hero, hero: {  } }
   end
 
-  test "should destroy hero" do
-    assert_difference('Hero.count', -1) do
-      delete :destroy, id: @hero
-    end
-
-    assert_redirected_to heros_path
+  test "should not destroy hero" do
+    assert_raises(Exception) { delete :destroy, id: @hero }
   end
 end

@@ -25,3 +25,9 @@
 # Ignore Windows thumbnail files
 /**/Thumbs.db
 
+# Ignore OS X Desktop Services files
+/**/.DS_Store
+
+# Ignore custom environment files
+.ruby-env
+

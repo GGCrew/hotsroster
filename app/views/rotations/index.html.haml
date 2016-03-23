@@ -1,8 +1,25 @@
 .container
+	.row.filters
+		.row.options
+			.col-md-3
+			.col-md-2
+				- Franchise.all.each do |franchise|
+					= link_to '#', data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
+						= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, alt: franchise.name, class: 'icon')
+			.col-md-2
+				- Role.all.each do |role|
+					= link_to role.slug, data: {key: 'role', value: role.slug, role: role.slug, selected: true} do
+						= image_tag("icons/role/#{role.slug}.png", title: role.name, alt: role.name, class: 'icon')
+			.col-md-2
+				- Typp.all.each do |typp|
+					= link_to typp.slug, data: {key: 'typp', value: typp.slug, typp: typp.slug, selected: true} do
+						= image_tag("icons/typp/#{typp.slug}.png", title: typp.name, alt: typp.name, class: 'icon')
 	- for rotation in @rotations
 		.row.rotation
 			.col-md-3.dates
 				= link_to format_date_range(rotation), rotation_path(rotation)
+				%br
+				%span.hero_count #{pluralize(rotation.rosters.count, 'Hero', 'Heroes')}
 			.col-md-9.heroes
 				= render partial: '/rosters/hero_portrait', collection: rotation.rosters.includes(:hero).order(:player_level).order('heros.name ASC')
 

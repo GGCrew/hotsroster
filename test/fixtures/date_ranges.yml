@@ -4,10 +4,9 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-<% base_date = DateTime.parse('2000-01-01 00:00:00') %>
 <% (1..52).each do |i| %>
 date_range_<%= i %>:
-  start: <%= (base_date + (i - 1).week).to_s %>
-  end: <%= (base_date + (i).week).to_s %>
+  start: <%= (GAME_LAUNCH_DATE + (i - 1).week).to_s %>
+  end: <%= (GAME_LAUNCH_DATE + (i).week).to_s %>
 
 <% end %>

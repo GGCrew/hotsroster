@@ -168,3 +168,23 @@ h3 {
 		padding-right: 2em;
 	}
 }
+
+.filters {
+	font-size: 1.5em;
+
+	a {
+		text-decoration: none;
+		
+		&:hover, &:selected {
+			text-decoration: none;
+		}
+	}
+
+	img.icon {
+		height: 2em;
+	}
+}
+
+.filtered {
+	opacity: .3;
+}
