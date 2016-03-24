@@ -15,20 +15,40 @@
 						%h4.release_date
 							Released
 							= @hero.release_date.to_s(:shortish)
+				
+				- if @hero.multiple_player_character_names?
+					- @hero.player_character_heroes.each do |hero|
+						.row
+							.col-md-1
+								%h4.category.player_character_name
+									= hero.player_character_name
+							.col-md-2
+								%h4.category
+									= image_tag("icons/franchise/#{hero.franchise.value}.png", class: 'icon')
+									= hero.franchise.name
+							.col-md-2
+								%h4.category
+									= image_tag("icons/role/#{hero.role.slug}.png", class: 'icon')
+									= hero.role.name
+							.col-md-2
+								%h4.category
+									= image_tag("icons/typp/#{hero.typp.slug}.png", class: 'icon')
+									= hero.typp.name
 						
-				.row
-					.col-md-2
-						%h4.category
-							= image_tag("icons/franchise/#{@hero.franchise.value}.png", class: 'icon')
-							= @hero.franchise.name
-					.col-md-2
-						%h4.category
-							= image_tag("icons/role/#{@hero.role.slug}.png", class: 'icon')
-							= @hero.role.name
-					.col-md-2
-						%h4.category
-							= image_tag("icons/typp/#{@hero.typp.slug}.png", class: 'icon')
-							= @hero.typp.name
+				- else		
+					.row
+						.col-md-2
+							%h4.category
+								= image_tag("icons/franchise/#{@hero.franchise.value}.png", class: 'icon')
+								= @hero.franchise.name
+						.col-md-2
+							%h4.category
+								= image_tag("icons/role/#{@hero.role.slug}.png", class: 'icon')
+								= @hero.role.name
+						.col-md-2
+							%h4.category
+								= image_tag("icons/typp/#{@hero.typp.slug}.png", class: 'icon')
+								= @hero.typp.name
 
 				.row
 					.col-md-12
@@ -96,16 +116,28 @@
 		.col-md-6.rotations
 			%h2 Rotation History
 			- for rotation in @hero_rotations
-				%p
-					= link_to format_date_range(rotation), rotation_path(rotation)
-					- roster = Roster.where(hero_id: @hero.id, date_range_id: rotation.id).first
-					- if roster.player_level > 1
-						(Restricted: player level #{roster.player_level})
+				.row
+					.col-md-6
+						= link_to format_date_range(rotation), rotation_path(rotation)
+					.col-md-6
+						- if @hero.multiple_player_character_names?
+							- restrictions = []
+							- @hero.player_character_heroes.each do |hero|
+								- roster = Roster.where(hero_id: hero.id, date_range_id: rotation.id).first
+								- if roster.player_level > 1
+									- restrictions << "(#{hero.player_character_name} &mdash; Restricted: player level #{roster.player_level})"
+							= raw restrictions.join('<br>')
+						- else
+							- roster = Roster.where(hero_id: @hero.id, date_range_id: rotation.id).first
+							- if roster.player_level > 1
+								(Restricted: player level #{roster.player_level})
 			- if @hero_rotations.empty?
-				Has never appeared in the free hero rotation.
-				- if @hero.expected_first_rotation.start >= DateRange.current.start
-					%br
-					Expected #{format_date_range(@hero.expected_first_rotation)}
+				.row
+					.col-md-12
+						Has never appeared in the free hero rotation.
+						- if @hero.expected_first_rotation.start >= DateRange.current.start
+							%br
+							Expected #{format_date_range(@hero.expected_first_rotation)}
 		.col-md-6.pairings
 			%h2 Rotation Hero Pairing History
 			%table.table-striped.heroes

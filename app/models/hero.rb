@@ -147,6 +147,14 @@ class Hero < ActiveRecord::Base
 		return Hero.distinct_heroes.find_by(name: self.name)
 	end
 
+	def player_character_heroes
+		return Hero.where(name: self.name).order(player_character_name: :asc)
+	end
+
+	def multiple_player_character_names?
+		return self.player_character_heroes.count > 1
+	end
+
 	def previous
 		hero_ids = Hero.distinct_heroes.select(:id).order(:name).map(&:id)
 		index = hero_ids.index(self.distinct_hero.id)

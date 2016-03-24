@@ -47,6 +47,20 @@
 	.category {
 		margin-top: 0;
 		white-space: nowrap;
+		
+		&.player_character_name {
+			position: relative;
+			top: 37px;
+			font-weight: bold;
+			margin-left: 1em;
+			font-size: 150%;
+		}
+		
+		img {
+			&.icon {
+				margin-right: -.75em;
+			}
+		}
 	}
 
 	.rotation_status {

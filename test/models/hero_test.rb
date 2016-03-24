@@ -112,7 +112,7 @@ class HeroTest < ActiveSupport::TestCase
 	# Instance method tests
 
 	test 'should return next hero' do
-		heroes = Hero.order(:name)
+		heroes = Hero.distinct_heroes.order(:name)
 		heroes.each_with_index do |hero, index|
 			expected_index = index + 1
 			expected_index = 0 if expected_index >= heroes.count
@@ -122,7 +122,7 @@ class HeroTest < ActiveSupport::TestCase
 	end
 
 	test 'should return previous hero' do
-		heroes = Hero.order(:name)
+		heroes = Hero.distinct_heroes.order(:name)
 		heroes.each_with_index do |hero, index|
 			expected_index = index - 1
 			expected_index = (heroes.count - 1) if expected_index < 0
