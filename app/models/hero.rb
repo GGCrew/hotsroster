@@ -94,7 +94,8 @@ class Hero < ActiveRecord::Base
 			duplicate_hero_ids.shift
 			extra_ids << duplicate_hero_ids
 		end
-		extra_ids.flatten!.uniq!
+		extra_ids.flatten!
+		extra_ids.uniq! unless extra_ids.empty?
 		
 		return self.select(:id).where.not(id: extra_ids).map(&:id)
 	end
