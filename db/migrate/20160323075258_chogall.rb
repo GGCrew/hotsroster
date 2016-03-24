@@ -1,23 +1,19 @@
 class Chogall < ActiveRecord::Migration
-  def change
-  	add_column	'heros', 'player_character_name', :string, after: 'name'
+  def up
+		Hero.all.each{|hero| hero.update!(player_character_name: hero.name)}
 
-		reversible do |direction|
-			direction.up do
-				Hero.all.each{|hero| hero.update!(player_character_name: hero.name)}
+		cho = Hero.find_by(slug: "chogall")
+		if cho  # Hero model is empty unless "rails runner scripts/import_from_blizzard.rb" has already run
+			gall = cho.dup
 
-				cho = Hero.find_by(slug: "chogall")
-				gall = cho.dup
-
-				cho.update!(player_character_name: 'Cho')
-				gall.update!(player_character_name: 'Gall', role_id: Role.find_by(slug: 'assassin').id, typp_id: Typp.find_by(slug: 'ranged').id)
-			end
-
-			direction.down do
-				chogall = Hero.find_by(slug: "chogall")
-				chogall.update!(player_character_name: "Cho'gall")
-				Hero.where(slug: 'chogall').where.not(id: chogall.id).destroy_all
-			end
+			cho.update!(player_character_name: 'Cho')
+			gall.update!(player_character_name: 'Gall', role_id: Role.find_by(slug: 'assassin').id, typp_id: Typp.find_by(slug: 'ranged').id)
 		end
+	end
+	
+	def down
+		chogall = Hero.find_by(slug: "chogall")
+		chogall.update!(player_character_name: "Cho'gall")
+		Hero.where(slug: 'chogall').where.not(id: chogall.id).destroy_all
 	end
 end

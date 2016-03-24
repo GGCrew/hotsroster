@@ -79,6 +79,7 @@ class Hero < ActiveRecord::Base
 			
 			attributes.merge!({release_date: Date.today.to_datetime}) unless hero.release_date
 			attributes.merge!({prerelease_date: Date.today.to_datetime}) unless hero.prerelease_date
+			attributes.merge!({player_character_name: hero_json['name']}) unless hero.player_character_name
 
 			hero.update_attributes!(attributes)
 		end
