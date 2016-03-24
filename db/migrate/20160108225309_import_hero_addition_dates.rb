@@ -47,6 +47,7 @@ class ImportHeroAdditionDates < ActiveRecord::Migration
 			{slug: 'tyrande', 					release_date: DateTime.parse('2014-03-13')},
 			{slug: 'uther', 						release_date: DateTime.parse('2014-03-13')},
 			{slug: 'valla', 						release_date: DateTime.parse('2014-03-13')},
+			{slug: 'xul', 							release_date: DateTime.parse('2016-02-26')},
 			{slug: 'zagara', 						release_date: DateTime.parse('2014-06-26')},
 			{slug: 'zeratul', 					release_date: DateTime.parse('2014-03-13')}
   	]
