@@ -128,7 +128,7 @@ class Hero < ActiveRecord::Base
 
 	def self.typical_weeks_between_release_and_first_rotation
 		weeks = []
-		for hero in self.all
+		for hero in self.distinct_heroes
 			if hero.first_rotation
 				difference = hero.first_rotation.start - hero.release_date
 				difference = (difference / 1.week).to_i
