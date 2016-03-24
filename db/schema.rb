@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160110082325) do
+ActiveRecord::Schema.define(version: 20160323075258) do
 
   create_table "alternate_hero_names", force: :cascade do |t|
     t.integer  "hero_id"
@@ -41,10 +41,11 @@ ActiveRecord::Schema.define(version: 20160110082325) do
     t.integer  "role_id"
     t.integer  "typp_id"
     t.integer  "franchise_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
     t.datetime "release_date"
     t.datetime "prerelease_date"
+    t.string   "player_character_name"
   end
 
   create_table "roles", force: :cascade do |t|

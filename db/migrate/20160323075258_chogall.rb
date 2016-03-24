@@ -10,7 +10,7 @@ class Chogall < ActiveRecord::Migration
 				gall = cho.dup
 
 				cho.update!(player_character_name: 'Cho')
-				gall.update!(player_character_name: 'Gall')
+				gall.update!(player_character_name: 'Gall', role_id: Role.find_by(slug: 'assassin').id, typp_id: Typp.find_by(slug: 'ranged').id)
 			end
 
 			direction.down do

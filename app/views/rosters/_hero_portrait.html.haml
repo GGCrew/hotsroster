@@ -8,11 +8,11 @@
 	franchise: hero_portrait.hero.franchise.value, |
 	filtered: 'false' |
 	} } |
-	= link_to(hero_path(hero_portrait.hero)) do
+	= link_to(hero_path(hero_portrait.hero.distinct_hero)) do
 		%span.border
-			= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg", alt: hero_portrait.hero.name, title: hero_portrait.hero.name
+			= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg", alt: hero_portrait.hero.player_character_name, title: hero_portrait.hero.player_character_name
 	%figcaption
-		= hero_portrait.hero.name
+		= hero_portrait.hero.player_character_name
 		- if display_categories
 			%br
 			%span.category
