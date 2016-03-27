@@ -102,7 +102,7 @@ class Hero < ActiveRecord::Base
 	end
 
 	def self.newest
-		return self.order(:release_date).last
+		return self.order(:release_date).where(["release_date <= :now", {now: DateTime.now}]).last
 	end
 
 	def self.percentage_by_franchise(franchise)
