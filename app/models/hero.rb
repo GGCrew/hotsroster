@@ -147,6 +147,21 @@ class Hero < ActiveRecord::Base
 		return weeks.index(max_count)
 	end
 
+	def self.typical_weeks_between_hero_releases
+		weeks = []
+		heroes = self.distinct_heroes.post_launch_heroes.order(release_date: :asc)
+		
+		heroes.each_with_index do |hero, index|
+			difference = hero.release_date - (index == 0 ? GAME_LAUNCH_DATE : heroes[index-1].release_date)
+			difference = (difference / 1.week).to_i
+			weeks[difference] ||= 0 # Initialize if not already set
+			weeks[difference] += 1
+		end
+		weeks.map!{|i| i ||= 0} # Initialize any unset values
+		max_count = weeks.max
+		return weeks.index(max_count)
+	end
+
 	#..#
 
 	def distinct_hero
