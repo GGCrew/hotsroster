@@ -76,12 +76,17 @@ class Hero < ActiveRecord::Base
 
 			hero = self.find_by(slug: hero_json['slug'])
 			hero = self.create!(attributes) unless hero
+
+			# Assumes Blizzard continues to release new heroes on Tuesdays
+			release_date = Date.today
+			(release_date += (2 - release_date.wday).days) if release_date.wday < 2 # Sun, Mon
+			(release_date += (9 - release_date.wday).days) if release_date.wday > 2 # Wed, Thu, Fri, Sat
 			
-			attributes.merge!({release_date: Date.today.to_datetime}) unless hero.release_date
-			attributes.merge!({prerelease_date: Date.today.to_datetime}) unless hero.prerelease_date
+			attributes.merge!({release_date: release_date}) unless hero.release_date
+			attributes.merge!({prerelease_date: release_date}) unless hero.prerelease_date
 			attributes.merge!({player_character_name: hero_json['name']}) unless hero.player_character_name
 
-			hero.update_attributes!(attributes)
+			hero.update!(attributes)
 		end
 		
 		return json
