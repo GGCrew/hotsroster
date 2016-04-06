@@ -34,6 +34,28 @@ class DateRangeTest < ActiveSupport::TestCase
 		assert date_range.save
 	end
 
+	# Class method tests
+	
+	test "should return normal rotations" do
+		expected_date_ranges = DateRange.all.select{|i| !i.special_event}
+		assert_equal expected_date_ranges.count, DateRange.normal_rotations.count
+		assert_empty DateRange.normal_rotations - expected_date_ranges
+	end
+
+	test "should return special events" do
+		expected_date_ranges = DateRange.all.select{|i| i.special_event}
+		assert_equal expected_date_ranges.count, DateRange.special_events.count
+		assert_empty DateRange.special_events - expected_date_ranges
+	end
+
+	test "should return current date range" do
+		date_ranges = DateRange.all
+		date_ranges.reject!{|i| i.start > Date.today}
+		date_ranges.sort_by!{|i| [i.end, i.start]}
+		expected_date_range = date_ranges.last
+		assert_equal DateRange.current, expected_date_range
+	end
+
 	# Method tests
 
 	test "should import date test" do

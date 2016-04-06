@@ -164,6 +164,9 @@ class HeroTest < ActiveSupport::TestCase
 			unless rosters.empty?
 				date_ranges = DateRange.find(rosters.map(&:date_range_id))
 
+				# Omit any future rotations
+				date_ranges.reject!{|i| i[:start] > Date.today}
+
 				# Find the latest end date and toss out any data with an earlier end date
 				max_end = date_ranges.map(&:end).max
 				date_ranges.select!{|i| i[:end] == max_end}

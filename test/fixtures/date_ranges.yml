@@ -6,7 +6,19 @@
 #
 <% (1..52).each do |i| %>
 date_range_<%= i %>:
+  <% special_event = ((i % 13) == 0) %>
   start: <%= (GAME_LAUNCH_DATE + (i - 1).week).to_s %>
   end: <%= (GAME_LAUNCH_DATE + (i).week).to_s %>
+  special_event: <%= special_event.to_s %>
+  special_event_name: <%= special_event ? "Special Event #{i / 13}" : '' %>
 
+<% end %>
+
+<% (1..8).each do |i| %>
+date_range_<%= 52 + i %>:
+  start: <%= (Date.today + (i).week).to_s %>
+  end: <%= (Date.today + (i + 1).week).to_s %>
+  special_event: false
+  special_event_name: 
+  
 <% end %>

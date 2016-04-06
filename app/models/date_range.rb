@@ -6,6 +6,8 @@ class DateRange < ActiveRecord::Base
 	#..#
 	
 	scope :since_start_date, -> (date) { where(['start >= :date', {date: date}]) }
+	scope :special_events, -> { where(special_event: true) }
+	scope :normal_rotations, -> { where(special_event: false) }
 
 	#..#
 
@@ -43,7 +45,7 @@ class DateRange < ActiveRecord::Base
 	end		
 
 	def self.current
-		return self.order([:end, :start]).last
+		return self.where(['start <= :today', {today: Date.today}]).order([:end, :start]).last
 	end
 
 	def end_is_after_start

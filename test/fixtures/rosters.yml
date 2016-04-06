@@ -4,14 +4,14 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-<% (1..52).each do |date_range| %>
+<% (1..60).each do |date_range| %>
 # Gradually increasing roster size to assist with testing
 <% roster_size = 8 + (date_range / 20).floor %>
 <% (1..roster_size).each do |counter| %>
 <% 
 	heroes = []
 	while heroes.count < roster_size
-		heroes << rand(30 - 5) + 1  # heros fixtures defines 30 heroes.  Intentionally omitting some from roster to test Hero.rotated and Hero.unrotated
+		heroes << rand(30 - 5) + 1  # heros fixture defines 30 heroes.  Intentionally omitting some from roster to test Hero.rotated and Hero.unrotated
 		heroes.uniq!
 	end
 %>
