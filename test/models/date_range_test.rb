@@ -49,7 +49,7 @@ class DateRangeTest < ActiveSupport::TestCase
 	end
 
 	test "should return current date range" do
-		date_ranges = DateRange.all
+		date_ranges = DateRange.all.to_a
 		date_ranges.reject!{|i| i.start > Date.today}
 		date_ranges.sort_by!{|i| [i.end, i.start]}
 		expected_date_range = date_ranges.last
