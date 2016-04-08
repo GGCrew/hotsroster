@@ -133,49 +133,66 @@ class HeroTest < ActiveSupport::TestCase
 
 	test 'should return hero\'s first rotation' do
 		# Yes, this could be waaaay more efficient.
-		# Intentionally doing a simple step-by-step Ruby-based process to test the (hopefully!) more effiecient model code
+		# Intentionally doing a simple step-by-step Ruby-based process to test the (hopefully!) more efficient model code
 		heroes = Hero.all
 		heroes.each do |hero|
 			rosters = Roster.where(hero: hero)
 			unless rosters.empty?
 				date_ranges = DateRange.find(rosters.map(&:date_range_id))
 
-				# Find the earliest start date and toss out any data with a more-recent start date
-				min_start = date_ranges.map(&:start).min
-				date_ranges.select!{|i| i[:start] == min_start}
+				# Omit any special events
+				date_ranges.reject!{|i| i[:special_event]}
 
-				# Find the earliest end date within the subset
-				min_end = date_ranges.map(&:end).min
+				unless date_ranges.empty?
+					# Find the earliest start date and toss out any data with a more-recent start date
+					min_start = date_ranges.map(&:start).min
+					date_ranges.select!{|i| i[:start] == min_start}
 
-				expected_date_range = DateRange.find_by!(start: min_start, end: min_end)
-				assert_equal hero.first_rotation, expected_date_range
+					# Find the earliest end date within the subset
+					min_end = date_ranges.map(&:end).min
+
+					# Kludge for intermittent db:datetime-to-ruby:datetime-to-db:datetime bug
+					expected_date_range = DateRange.find_by(start: min_start, end: min_end)
+					expected_date_range = DateRange.find_by(start: min_start.to_date, end: min_end.to_date) unless expected_date_range
+
+					assert_equal hero.first_rotation, expected_date_range
+				else # date_ranges.empty?
+					assert_nil hero.first_rotation
+				end
 			else # rosters.empty?
 				assert_nil hero.first_rotation
 			end
 		end
 	end
 
-	test 'should return hero\s most recent rotation' do
+	test 'should return hero\'s most recent rotation' do
 		# Yes, this could be waaaay more efficient.
-		# Intentionally doing a simple step-by-step Ruby-based process to test the (hopefully!) more effiecient model code
+		# Intentionally doing a simple step-by-step Ruby-based process to test the (hopefully!) more efficient model code
 		heroes = Hero.all
 		heroes.each do |hero|
 			rosters = Roster.where(hero: hero)
 			unless rosters.empty?
 				date_ranges = DateRange.find(rosters.map(&:date_range_id))
 
+				# Omit any special events
+				date_ranges.reject!{|i| i[:special_event]}
+
 				# Omit any future rotations
 				date_ranges.reject!{|i| i[:start] > Date.today}
 
-				# Find the latest end date and toss out any data with an earlier end date
-				max_end = date_ranges.map(&:end).max
-				date_ranges.select!{|i| i[:end] == max_end}
+				unless date_ranges.empty?
+					# Find the latest end date and toss out any data with an earlier end date
+					max_end = date_ranges.map(&:end).max
+					date_ranges.select!{|i| i[:end] == max_end}
 
-				# Find the latest start date within the subset
-				max_start = date_ranges.map(&:start).max
+					# Find the latest start date within the subset
+					max_start = date_ranges.map(&:start).max
 
-				expected_date_range = DateRange.find_by!(start: max_start, end: max_end)
-				assert_equal hero.last_rotation, expected_date_range
+					expected_date_range = DateRange.find_by!(start: max_start, end: max_end)
+					assert_equal hero.last_rotation, expected_date_range
+				else
+					assert_nil hero.last_rotation
+				end
 			else # rosters.empty?
 				assert_nil hero.last_rotation
 			end
