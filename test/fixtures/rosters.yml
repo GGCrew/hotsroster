@@ -4,6 +4,7 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
+<% roster_counter = 0 %>
 <% (1..60).each do |date_range| %>
 # Gradually increasing roster size to assist with testing
 <% roster_size = 8 + (date_range / 20).floor %>
@@ -15,7 +16,8 @@
 		heroes.uniq!
 	end
 %>
-roster_<%= date_range + counter - 1 %>:
+<% roster_counter += 1 %>
+roster_<%= roster_counter %>:
   hero: hero_<%= heroes[counter - 1] %>
   date_range: date_range_<%= date_range %>
   player_level: <%= counter == 8 ? 15 : (counter == 7 ? 7 : 1) %>
