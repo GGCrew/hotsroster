@@ -15,7 +15,7 @@ class RosterTest < ActiveSupport::TestCase
 		)
 	}
 
-	# Validatino tests
+	# Validation tests
 
 	test "should not save roster without hero" do
 		roster = Roster.new attributes.reject{|k,v| k == :hero}
@@ -41,6 +41,8 @@ class RosterTest < ActiveSupport::TestCase
 
 	test 'should return date range of latest roster size change' do
 		date_ranges_and_roster_counts = Roster.joins(:date_range).group(:date_range).order('date_ranges.start ASC').count.map{|k,v| {date_range: k, count: v}}
+		date_ranges_and_roster_counts.reject!{|i| i[:date_range].special_event}
+		date_ranges_and_roster_counts.reject!{|i| i[:date_range].start.to_date > Date.today}
 		unless date_ranges_and_roster_counts.empty?
 			# This algorithm will get progressively slower if the roster size doesn't change
 			date_range_and_roster_count = nil # Defining outside the loop, otherwise the variable's scope is limited to the loop

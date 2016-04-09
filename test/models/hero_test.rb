@@ -222,8 +222,8 @@ class HeroTest < ActiveSupport::TestCase
 	test 'should return count of hero\'s rotations' do
 		heroes = Hero.all
 		heroes.each do |hero|
-			#roster_count = Roster.where(hero: hero).count
 			rosters = Roster.where(hero: hero).to_a
+
 			# Omit special events
 			rosters.reject!{|i| i.date_range.special_event}
 			# Omit future rotations
@@ -255,7 +255,13 @@ class HeroTest < ActiveSupport::TestCase
 
 		latest_roster_size_change = Roster.date_range_of_latest_roster_size_change
 		if latest_roster_size_change
-			date_ranges = DateRange.where('start >= :date', {date: latest_roster_size_change[:start]})
+			date_ranges = DateRange.where('start >= :date', {date: latest_roster_size_change[:start]}).to_a
+
+			# Omit special events
+			date_ranges.reject!{|i| i.special_event}
+			# Omit future rotations
+			date_ranges.reject!{|i| i.start.to_date > Date.today}
+
 			heroes.each do |hero|
 				roster_count = Roster.where(hero: hero, date_range: date_ranges).count
 				assert_equal hero.rotations_since_latest_change_in_roster_size, roster_count
@@ -266,12 +272,10 @@ class HeroTest < ActiveSupport::TestCase
 	end
 
 	test 'should return percentage of hero\'s rotations since game launch' do
-		#rotation_count = DateRange.count
 		rotations = DateRange.all.to_a
 
 		# Omit special events
 		rotations.reject!{|i| i.special_event}
-
 		# Omit future events
 		rotations.reject!{|i| i.start.to_date > Date.today}
 
@@ -279,12 +283,10 @@ class HeroTest < ActiveSupport::TestCase
 		
 		heros = Hero.all
 		heros.each do |hero|
-			#hero_rotation_count = Roster.where(hero: hero).count
 			hero_rotations = Roster.where(hero: hero).to_a
 
 			# Omit special events
 			hero_rotations.reject!{|i| i.date_range.special_event}
-
 			# Omit future events
 			hero_rotations.reject!{|i| i.date_range.start.to_date > Date.today}
 
@@ -297,9 +299,7 @@ class HeroTest < ActiveSupport::TestCase
 	test 'should return percentage of hero\'s rotations since hero was released' do
 		heros = Hero.all
 		heros.each do |hero|
-			#rotation_count = DateRange.where('start >= :date', {date: hero.release_date}).count
 			rotations = DateRange.where('start >= :date', {date: hero.release_date}).to_a
-			#hero_rotation_count = Roster.where(hero: hero).count
 			hero_rotations = Roster.where(hero: hero).to_a
 
 			# Omit special events
@@ -338,11 +338,9 @@ class HeroTest < ActiveSupport::TestCase
 		date_ranges.reject!{|i| i.special_event}
 		date_ranges.reject!{|i| i.start.to_date > Date.today}
 		rotation_count = date_ranges.count
-		p rotation_count
 
 		heros = Hero.all
 		heros.each do |hero|
-			p hero[:id]
 			hero_rotation_count = Roster.where(hero: hero, date_range: date_ranges).count
 			expected_percentage = (hero_rotation_count.to_f / rotation_count) * 100
 			assert_in_delta expected_percentage, hero.rotation_percentage_since_latest_change_in_roster_size, 0.005 # Leave some wiggle room for rounding
