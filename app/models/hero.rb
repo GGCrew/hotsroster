@@ -138,8 +138,10 @@ class Hero < ActiveRecord::Base
 			if hero.first_rotation
 				difference = hero.first_rotation.start - hero.release_date
 				difference = (difference / 1.week).to_i
-				weeks[difference] ||= 0 # Initialize if not already set
-				weeks[difference] += 1
+				if difference >= 0 # primarily here due to invalid test data (eg: first rotation is before release date)
+					weeks[difference] ||= 0 # Initialize if not already set
+					weeks[difference] += 1
+				end
 			end
 		end
 		weeks.map!{|i| i ||= 0} # Initialize any unset values
@@ -191,7 +193,7 @@ class Hero < ActiveRecord::Base
 	end
 	
 	def first_rotation
-		self.date_ranges.where(special_event: false).order([:start, :end]).first
+		self.date_ranges.where(special_event: false).where(['start <= :start', {start: Date.today}]).order([:start, :end]).first
 	end
 
 	def last_rotation

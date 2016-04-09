@@ -143,6 +143,9 @@ class HeroTest < ActiveSupport::TestCase
 				# Omit any special events
 				date_ranges.reject!{|i| i[:special_event]}
 
+				# Omit any future rotations
+				date_ranges.reject!{|i| i[:start] > Date.today}
+
 				unless date_ranges.empty?
 					# Find the earliest start date and toss out any data with a more-recent start date
 					min_start = date_ranges.map(&:start).min
