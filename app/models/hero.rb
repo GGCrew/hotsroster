@@ -213,41 +213,41 @@ class Hero < ActiveRecord::Base
 	end
 
 	def rotations
-		self.date_ranges.count
+		self.date_ranges.where(special_event: false).where(['start <= :start', {start: Date.today}]).count
 	end
 
 	def rotations_since_newest_hero_release
-		self.date_ranges.since_start_date(Hero.distinct_heroes.newest.release_date).count
+		self.date_ranges.where(special_event: false).where(['start <= :start', {start: Date.today}]).since_start_date(Hero.distinct_heroes.newest.release_date).count
 	end
 
 	def rotations_since_latest_change_in_roster_size
-		self.date_ranges.since_start_date(Roster.date_range_of_latest_roster_size_change.start).count
+		self.date_ranges.where(special_event: false).where(['start <= :start', {start: Date.today}]).since_start_date(Roster.date_range_of_latest_roster_size_change.start).count
 	end
 
 
 	def rotation_percentage_since_launch
-		(self.rotations / DateRange.count.to_f) * 100
+		(self.rotations / DateRange.where(special_event: false).where(['start <= :start', {start: Date.today}]).count.to_f) * 100
 	end
 
 	def rotation_percentage_since_release
-		(self.rotations / DateRange.since_start_date(self.release_date).count.to_f) * 100
+		(self.rotations / DateRange.where(special_event: false).where(['start <= :start', {start: Date.today}]).since_start_date(self.release_date).count.to_f) * 100
 	end
 
 	def rotation_percentage_since_newest_hero_release
-		(self.rotations_since_newest_hero_release / DateRange.since_start_date(Hero.newest.release_date).count.to_f) * 100
+		(self.rotations_since_newest_hero_release / DateRange.where(special_event: false).where(['start <= :start', {start: Date.today}]).since_start_date(Hero.newest.release_date).count.to_f) * 100
 	end
 
 	def rotation_percentage_since_latest_change_in_roster_size
-		(self.rotations_since_latest_change_in_roster_size / DateRange.since_start_date(Roster.date_range_of_latest_roster_size_change.start).count.to_f) * 100
+		(self.rotations_since_latest_change_in_roster_size / DateRange.where(special_event: false).where(['start <= :start', {start: Date.today}]).since_start_date(Roster.date_range_of_latest_roster_size_change.start.to_date).count.to_f) * 100
 	end
 
 	def rotation_pairings
-		self_date_ranges = self.date_ranges
+		self_date_ranges = self.date_ranges.where(special_event: false).where(['start <= :start', {start: Date.today}])
 		self_date_ranges_count = self_date_ranges.count
 		other_heroes = Hero.distinct_heroes.where.not(id: self.id).order(name: :asc)
 		pairings = []
 		for other_hero in other_heroes
-			other_hero_date_ranges = other_hero.date_ranges
+			other_hero_date_ranges = other_hero.date_ranges.where(special_event: false).where(['start <= :start', {start: Date.today}])
 			paired_date_ranges = self_date_ranges & other_hero_date_ranges
 			paired_date_ranges_count = paired_date_ranges.count
 			paired_date_ranges_percentage = (self_date_ranges_count == 0 ? 0.0 : ((paired_date_ranges_count / self_date_ranges_count.to_f) * 100))
