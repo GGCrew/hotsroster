@@ -20,7 +20,7 @@ class HerosControllerTest < ActionController::TestCase
   end
 
   test "should show hero" do
-  	heroes = Hero.all
+  	heroes = Hero.distinct_heroes
   	heroes.each do |hero|
 	    get :show, id: hero
 	    assert_response :success

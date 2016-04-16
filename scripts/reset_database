@@ -1,0 +1,15 @@
+rake db:drop
+rake db:create
+rake db:migrate --trace
+
+# import real data
+rails runner scripts/import_from_blizzard.rb
+
+# re-run migrations that alter existing data
+sqlite3 db/development.sqlite3 "delete from schema_migrations where version='20160108225309';"
+sqlite3 db/development.sqlite3 "delete from schema_migrations where version='20160323075258';"
+rake db:migrate --trace
+
+# import real data again, now that some import-related data has changed
+rails runner scripts/import_from_blizzard.rb
+

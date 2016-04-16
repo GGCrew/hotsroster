@@ -21,5 +21,5 @@
 				%br
 				%span.hero_count #{pluralize(rotation.rosters.count, 'Hero', 'Heroes')}
 			.col-md-9.heroes
-				= render partial: '/rosters/hero_portrait', collection: rotation.rosters.includes(:hero).order(:player_level).order('heros.name ASC')
+				= render partial: '/rosters/hero_portrait', collection: rotation.rosters.includes(:hero).order(:player_level).order('heros.name ASC, heros.player_character_name ASC')
 

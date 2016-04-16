@@ -4,6 +4,7 @@ class HeroTest < ActiveSupport::TestCase
 	attributes = {
 		name: 'Hero Name',
 		slug: 'hero-slug',
+		player_character_name: 'Player Character Name',
 		franchise: Franchise.find_or_create_by(name: 'Hero Franchise Name', value: 'hero_franchise_value'),
 		role: Role.find_or_create_by(name: 'Hero Role Name', slug: 'hero-role-slug'),
 		typp: Typp.find_or_create_by(name: 'Hero Typp Name', slug: 'hero-typp-slug')
@@ -44,14 +45,8 @@ class HeroTest < ActiveSupport::TestCase
 		assert_not hero.save
 	end
 
-	test "show not save hero with duplicate name" do
-		Hero.create! bogus_attributes.merge(name: attributes[:name])
-		hero = Hero.new attributes
-		assert_not hero.save
-	end
-
-	test "show not save hero with duplicate slug" do
-		Hero.create! bogus_attributes.merge(slug: attributes[:slug])
+	test "show not save hero with duplicate name, slug, and player_character_name" do
+		Hero.create! bogus_attributes.merge(name: attributes[:name], slug: attributes[:slug], player_character_name: attributes[:player_character_name])
 		hero = Hero.new attributes
 		assert_not hero.save
 	end
@@ -117,7 +112,7 @@ class HeroTest < ActiveSupport::TestCase
 	# Instance method tests
 
 	test 'should return next hero' do
-		heroes = Hero.order(:name)
+		heroes = Hero.distinct_heroes.order(:name)
 		heroes.each_with_index do |hero, index|
 			expected_index = index + 1
 			expected_index = 0 if expected_index >= heroes.count
@@ -127,7 +122,7 @@ class HeroTest < ActiveSupport::TestCase
 	end
 
 	test 'should return previous hero' do
-		heroes = Hero.order(:name)
+		heroes = Hero.distinct_heroes.order(:name)
 		heroes.each_with_index do |hero, index|
 			expected_index = index - 1
 			expected_index = (heroes.count - 1) if expected_index < 0

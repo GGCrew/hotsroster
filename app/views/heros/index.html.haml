@@ -5,6 +5,8 @@
 			.col-md-1
 			.col-md-2
 				- Franchise.all.each do |franchise|
+					-#
+						= link_to url_for(filter: role.slug), data: {key: 'role', value: role.slug, role: role.slug, selected: true} do
 					= link_to '#', data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
 						= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, alt: franchise.name, class: 'icon')
 			.col-md-2

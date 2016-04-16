@@ -11,6 +11,8 @@ class Roster < ActiveRecord::Base
 	#..#
 
 	def self.import_from_blizzard
+		# TODO: split into import_from_hero_page and import_from_forum
+
 		address = 'http://us.battle.net/heroes/en/forum/topic/17936383460'
 		date_search_text = 'Free-to-Play Hero Rotation:'
 
@@ -59,6 +61,7 @@ class Roster < ActiveRecord::Base
 
 					# Check for hero name
 					hero = Hero.where(name: hero_name).first
+					hero = Hero.where(player_character_name: hero_name).first unless hero
 					unless hero
 						alternate_name = AlternateHeroName.where(name: hero_name).first
 						if alternate_name

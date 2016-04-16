@@ -7,6 +7,7 @@
 <% (1..30).each do |i| %>
 hero_<%= i %>:
   name: Hero <%= i %>
+  player_character_name: Player Character Name <%= i %>
   title: Title for Hero <%= i %>
   slug: hero-<%= i %>
   role: role_<%= (i % 4) + 1 %>
@@ -16,3 +17,17 @@ hero_<%= i %>:
   prerelease_date: <%= GAME_LAUNCH_DATE + (i % 25 == 0 ? (i - 1) : 0).weeks %>
 
 <% end %>
+
+# Create "shared" hero (a la Cho'gall)
+<% i = 15 %>
+hero_31:
+  name: Hero <%= i %>
+  player_character_name: Player Character Name 31
+  title: Title for Hero <%= i %>
+  slug: hero-<%= i %>
+  role: role_<%= (i % 4) + 1 %>
+  typp: typp_<%= (i % 4) + 1 %>
+  franchise: franchise_<%= (i % 4) + 1 %>
+  release_date: <%= GAME_LAUNCH_DATE + (i % 5 == 0 ? i : 0).weeks %>
+  prerelease_date: <%= GAME_LAUNCH_DATE + (i % 25 == 0 ? (i - 1) : 0).weeks %>
+

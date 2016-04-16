@@ -10,11 +10,12 @@ class ImportHeroAdditionDates < ActiveRecord::Migration
 			{slug: 'brightwing', 				release_date: DateTime.parse('2014-03-13')},
 			{slug: 'chen', 							release_date: DateTime.parse('2014-09-10')},
 			{slug: 'chogall', 					release_date: DateTime.parse('2015-11-17')},
+			{slug: 'dehaka', 						release_date: DateTime.parse('2016-03-29')},
 			{slug: 'diablo', 						release_date: DateTime.parse('2014-03-13')},
 			{slug: 'etc', 							release_date: DateTime.parse('2014-03-13')},
 			{slug: 'falstad', 					release_date: DateTime.parse('2014-03-13')},
 			{slug: 'gazlowe', 					release_date: DateTime.parse('2014-03-13')},
-			{slug: 'greymane', 					release_date: DateTime.parse('2016-01-24')},
+			{slug: 'greymane', 					release_date: DateTime.parse('2016-01-12')},
 			{slug: 'illidan', 					release_date: DateTime.parse('2014-03-13')},
 			{slug: 'jaina', 						release_date: DateTime.parse('2014-12-02')},
 			{slug: 'johanna', 					release_date: DateTime.parse('2015-06-02')},
@@ -47,6 +48,7 @@ class ImportHeroAdditionDates < ActiveRecord::Migration
 			{slug: 'tyrande', 					release_date: DateTime.parse('2014-03-13')},
 			{slug: 'uther', 						release_date: DateTime.parse('2014-03-13')},
 			{slug: 'valla', 						release_date: DateTime.parse('2014-03-13')},
+			{slug: 'xul', 							release_date: DateTime.parse('2016-03-01')},
 			{slug: 'zagara', 						release_date: DateTime.parse('2014-06-26')},
 			{slug: 'zeratul', 					release_date: DateTime.parse('2014-03-13')}
   	]

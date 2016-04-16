@@ -7,7 +7,7 @@ class HerosController < ApplicationController
   	@head[:title] = 'All Heroes'
   	@head[:meta][:description] = "All currently released heroes for Heroes of the Storm."
 
-    @heros = Hero.order(:name)
+    @heros = Hero.distinct_heroes.order(:name).order(:player_character_name)
   end
 
   # GET /heros/1

@@ -12,11 +12,12 @@ class Hero < ActiveRecord::Base
 
 	scope	:launch_heroes, -> { where(release_date: GAME_LAUNCH_DATE) }
 	scope	:post_launch_heroes, -> { where.not(release_date: GAME_LAUNCH_DATE) }
+	scope :distinct_heroes, -> { where(id: Hero.distinct_hero_ids) }
 
 	#..#
 
 	validates :name, :slug, presence: true
-	validates :name, :slug, uniqueness: true
+	validates :player_character_name, uniqueness: {scope: [:name, :slug]}
 	validates	:role, presence: true
 	validates	:typp, presence: true
 	validates	:franchise, presence: true
@@ -75,18 +76,38 @@ class Hero < ActiveRecord::Base
 
 			hero = self.find_by(slug: hero_json['slug'])
 			hero = self.create!(attributes) unless hero
-			
-			attributes.merge!({release_date: Date.today.to_datetime}) unless hero.release_date
-			attributes.merge!({prerelease_date: Date.today.to_datetime}) unless hero.prerelease_date
 
-			hero.update_attributes!(attributes)
+			# Assumes Blizzard continues to release new heroes on Tuesdays
+			release_date = Date.today
+			(release_date += (2 - release_date.wday).days) if release_date.wday < 2 # Sun, Mon
+			(release_date += (9 - release_date.wday).days) if release_date.wday > 2 # Wed, Thu, Fri, Sat
+			
+			attributes.merge!({release_date: release_date}) unless hero.release_date
+			attributes.merge!({prerelease_date: release_date}) unless hero.prerelease_date
+			attributes.merge!({player_character_name: hero_json['name']}) unless hero.player_character_name
+
+			hero.update!(attributes)
 		end
 		
 		return json
 	end
 
+	def self.distinct_hero_ids
+		duplicate_counts = self.group(:name).count.select{|k,v| v>1}
+		extra_ids = []
+		duplicate_counts.keys.each do |name|
+			duplicate_hero_ids = self.where(name: name).order(:id).map(&:id)
+			duplicate_hero_ids.shift
+			extra_ids << duplicate_hero_ids
+		end
+		extra_ids.flatten!
+		extra_ids.uniq! unless extra_ids.empty?
+		
+		return self.select(:id).where.not(id: extra_ids).map(&:id)
+	end
+
 	def self.newest
-		return self.order(:release_date).last
+		return self.order(:release_date).where(["release_date <= :now", {now: DateTime.now}]).last
 	end
 
 	def self.percentage_by_franchise(franchise)
@@ -113,7 +134,7 @@ class Hero < ActiveRecord::Base
 
 	def self.typical_weeks_between_release_and_first_rotation
 		weeks = []
-		for hero in self.all
+		for hero in self.distinct_heroes
 			if hero.first_rotation
 				difference = hero.first_rotation.start - hero.release_date
 				difference = (difference / 1.week).to_i
@@ -126,18 +147,45 @@ class Hero < ActiveRecord::Base
 		return weeks.index(max_count)
 	end
 
+	def self.typical_weeks_between_hero_releases
+		weeks = []
+		heroes = self.distinct_heroes.post_launch_heroes.order(release_date: :asc)
+		
+		heroes.each_with_index do |hero, index|
+			difference = hero.release_date - (index == 0 ? GAME_LAUNCH_DATE : heroes[index-1].release_date)
+			difference = (difference / 1.week).to_i
+			weeks[difference] ||= 0 # Initialize if not already set
+			weeks[difference] += 1
+		end
+		weeks.map!{|i| i ||= 0} # Initialize any unset values
+		max_count = weeks.max
+		return weeks.index(max_count)
+	end
+
 	#..#
 
+	def distinct_hero
+		return Hero.distinct_heroes.find_by(name: self.name)
+	end
+
+	def player_character_heroes
+		return Hero.where(name: self.name).order(player_character_name: :asc)
+	end
+
+	def multiple_player_character_names?
+		return self.player_character_heroes.count > 1
+	end
+
 	def previous
-		hero_ids = Hero.select(:id).order(:name).map(&:id)
-		index = hero_ids.index(self.id)
+		hero_ids = Hero.distinct_heroes.select(:id).order(:name).map(&:id)
+		index = hero_ids.index(self.distinct_hero.id)
 		index = hero_ids.count if index == 0
 		return Hero.find(hero_ids[index - 1])
 	end
 	
 	def next
-		hero_ids = Hero.select(:id).order(:name).map(&:id)
-		index = hero_ids.index(self.id)
+		hero_ids = Hero.distinct_heroes.select(:id).order(:name).map(&:id)
+		index = hero_ids.index(self.distinct_hero.id)
 		index = -1 if self.id == hero_ids.last
 		return Hero.find(hero_ids[index + 1])
 	end
@@ -159,7 +207,7 @@ class Hero < ActiveRecord::Base
 	end
 
 	def expected_first_rotation
-		expected_start = self.release_date + Hero.post_launch_heroes.typical_weeks_between_release_and_first_rotation.weeks
+		expected_start = self.release_date + Hero.distinct_heroes.post_launch_heroes.typical_weeks_between_release_and_first_rotation.weeks
 		expected_end = expected_start + 1.week
 		return DateRange.new(start: expected_start, end: expected_end)
 	end
@@ -169,7 +217,7 @@ class Hero < ActiveRecord::Base
 	end
 
 	def rotations_since_newest_hero_release
-		self.date_ranges.since_start_date(Hero.newest.release_date).count
+		self.date_ranges.since_start_date(Hero.distinct_heroes.newest.release_date).count
 	end
 
 	def rotations_since_latest_change_in_roster_size
@@ -196,7 +244,7 @@ class Hero < ActiveRecord::Base
 	def rotation_pairings
 		self_date_ranges = self.date_ranges
 		self_date_ranges_count = self_date_ranges.count
-		other_heroes = Hero.where.not(id: self.id).order(name: :asc)
+		other_heroes = Hero.distinct_heroes.where.not(id: self.id).order(name: :asc)
 		pairings = []
 		for other_hero in other_heroes
 			other_hero_date_ranges = other_hero.date_ranges
