@@ -8,10 +8,10 @@
 							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{@hero.slug}.jpg", alt: @hero.name, title: @hero.name
 			.col-md-9.callout
 				.row
-					.col-md-9
+					.col-md-8
 						%h2.name= @hero.name
 						%h3.title= @hero.title
-					.col-md-3
+					.col-md-4
 						%h4.release_date
 							Released
 							= @hero.release_date.to_s(:shortish)
