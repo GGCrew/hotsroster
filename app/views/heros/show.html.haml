@@ -15,6 +15,8 @@
 						%h4.release_date
 							Released
 							= @hero.release_date.to_s(:shortish)
+							%br
+							= link_to 'Blizzard Hero Profile', "http://us.battle.net/heroes/en/heroes/#{@hero.slug}/"
 				
 				- if @hero.multiple_player_character_names?
 					- @hero.player_character_heroes.each do |hero|
