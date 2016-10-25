@@ -13,7 +13,7 @@ class Roster < ActiveRecord::Base
 	def self.import_from_blizzard
 		# TODO: split into import_from_hero_page and import_from_forum
 
-		address = 'http://us.battle.net/heroes/en/forum/topic/17936383460'
+		address = 'http://us.battle.net/forums/en/heroes/topic/17936383460'
 		date_search_text = 'Free-to-Play Hero Rotation:'
 
 		date_search_regex = Regexp.new(Regexp.quote(date_search_text))
@@ -23,11 +23,19 @@ class Roster < ActiveRecord::Base
 		loop do
 			url = URI.parse(address + page_query_string)
 			html = Net::HTTP.get(url) # TODO: error handling
+			if html.blank?
+				# TODO: Send alert to admin
+			end
+
 			page = Nokogiri::HTML(html)
-			post_list = page.css('div.post-list div.topic-post')
+			post_list = page.css('div.Topic-content div.TopicPost')
+			if post_list.empty?
+				# TODO: Send alert to admin
+			end
+
 			for post in post_list
 				date_text = nil
-				post_detail = post.css('div.post-detail')
+				post_detail = post.css('div.TopicPost-bodyContent')
 				post_detail.first.traverse do |node|
 					if node.text?
 						date_text = node.text.dup if (date_search_regex =~ node.text)
@@ -105,9 +113,10 @@ class Roster < ActiveRecord::Base
 			end
 
 			# Check for pagination
-			next_page_link = page.css('ul.ui-pagination a.page-next').first
+			next_page_link = page.css('div.Topic-pagination--header a.Pagination-button--next').first
 			break unless next_page_link # Exit loop if there isn't a "next page" link
 			page_query_string = next_page_link[:href]
+			break if page_query_string.nil?  # Exit loop if there isn't a valid "href" value
 		end # END: Loop through all pages via pagination
 		
 		return true
