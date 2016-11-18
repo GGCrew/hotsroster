@@ -20,7 +20,6 @@ class Hero < ActiveRecord::Base
 
 	validates :name, :slug, presence: true
 	validates :player_character_name, uniqueness: {scope: [:name, :slug]}
-	validates	:role, presence: true
 	validates	:typp, presence: true
 	validates	:franchise, presence: true
 
@@ -71,7 +70,6 @@ class Hero < ActiveRecord::Base
 				name: hero_json['name'],
 				title: hero_json['title'],
 				slug: hero_json['slug'],
-				role: Role.where(name: hero_json['role']['name']).first,
 				typp: Typp.where(name: hero_json['type']['name']).first,
 				franchise: Franchise.where(value: hero_json['franchise']).first
 			}

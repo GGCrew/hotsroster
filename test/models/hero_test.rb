@@ -6,7 +6,6 @@ class HeroTest < ActiveSupport::TestCase
 		slug: 'hero-slug',
 		player_character_name: 'Player Character Name',
 		franchise: Franchise.find_or_create_by(name: 'Hero Franchise Name', value: 'hero_franchise_value'),
-		role: Role.find_or_create_by(name: 'Hero Role Name', slug: 'hero-role-slug'),
 		typp: Typp.find_or_create_by(name: 'Hero Typp Name', slug: 'hero-typp-slug')
 	}
 
@@ -14,7 +13,6 @@ class HeroTest < ActiveSupport::TestCase
 		name: 'Bogus Hero Name',
 		slug: 'bogus-hero-slug',
 		franchise: attributes[:franchise],
-		role: attributes[:role],
 		typp: attributes[:typp]
 	}
 
@@ -32,11 +30,6 @@ class HeroTest < ActiveSupport::TestCase
 
 	test "should not save hero without franchise" do
 		hero = Hero.new attributes.reject{|k,v| k == :franchise}
-		assert_not hero.save
-	end
-
-	test "should not save hero without role" do
-		hero = Hero.new attributes.reject{|k,v| k == :role}
 		assert_not hero.save
 	end
 

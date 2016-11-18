@@ -26,7 +26,7 @@
 			- for hero in @heros
 				%figure{data: {                    |
 					name: hero.slug,                 |
-					role: hero.role.slug,            |
+					roles: hero.roles.map(&:slug).join,            |
 					typp: hero.typp.slug,            |
 					franchise: hero.franchise.value, |
 					filtered: 'false'                |

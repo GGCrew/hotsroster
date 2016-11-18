@@ -30,8 +30,9 @@
 									= hero.franchise.name
 							.col-md-2
 								%h4.category
-									= image_tag("icons/role/#{hero.role.slug}.png", class: 'icon')
-									= hero.role.name
+									- hero.roles.each do |role|
+										= image_tag("icons/role/#{role.slug}.png", class: 'icon')
+										= role.name
 							.col-md-2
 								%h4.category
 									= image_tag("icons/typp/#{hero.typp.slug}.png", class: 'icon')
@@ -45,8 +46,9 @@
 								= @hero.franchise.name
 						.col-md-2
 							%h4.category
-								= image_tag("icons/role/#{@hero.role.slug}.png", class: 'icon')
-								= @hero.role.name
+								- @hero.roles.each do |role|
+									= image_tag("icons/role/#{role.slug}.png", class: 'icon')
+									= role.name
 						.col-md-2
 							%h4.category
 								= image_tag("icons/typp/#{@hero.typp.slug}.png", class: 'icon')
