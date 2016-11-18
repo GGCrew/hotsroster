@@ -1,9 +1,11 @@
 class Hero < ActiveRecord::Base
 
-	belongs_to	:role
+#	belongs_to	:role
 	belongs_to	:typp
 	belongs_to	:franchise
 
+	has_many	:hero_roles,	dependent: :destroy, inverse_of: :hero
+	has_many	:roles, through: :hero_roles
 	has_many	:rosters, dependent: :destroy, inverse_of: :hero
 	has_many	:date_ranges,	through: :rosters
 	has_many	:alternate_hero_names,	dependent: :destroy, inverse_of: :hero
