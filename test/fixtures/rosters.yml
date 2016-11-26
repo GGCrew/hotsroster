@@ -22,7 +22,7 @@
 		date_range_record = DateRange.find(date_range_record_id)
 		#Rails.logger.debug("release_date: #{hero_record.release_date}")
 		#Rails.logger.debug("  date_range: #{date_range_record.start}")
-		valid = (hero_record.release_date <= date_range_record.start)
+		valid &= (hero_record.release_date <= date_range_record.start)
 
 		if valid
 			heroes << hero
