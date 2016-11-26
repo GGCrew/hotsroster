@@ -11,8 +11,23 @@
 <% 
 	heroes = []
 	while heroes.count < roster_size
-		heroes << rand(30 - 5) + 1  # heros fixtures defines 30 heroes.  Intentionally omitting some from roster to test Hero.rotated and Hero.unrotated
-		heroes.uniq!
+		hero = rand(30 - 5) + 1  # heros fixtures defines 30 heroes.  Intentionally omitting some from roster to test Hero.rotated and Hero.unrotated
+		valid = true	# Hope that validations will pass!
+
+		# Minor data validation:
+		# The hero's release_date should always be before (or on) the hero's first rotation date
+		hero_record_id = ActiveRecord::FixtureSet.identify("hero_#{hero}".to_sym)
+		date_range_record_id = ActiveRecord::FixtureSet.identify("date_range_#{date_range}".to_sym)
+		hero_record = Hero.find(hero_record_id)
+		date_range_record = DateRange.find(date_range_record_id)
+		#Rails.logger.debug("release_date: #{hero_record.release_date}")
+		#Rails.logger.debug("  date_range: #{date_range_record.start}")
+		valid = (hero_record.release_date <= date_range_record.start)
+
+		if valid
+			heroes << hero
+			heroes.uniq!
+		end
 	end
 %>
 roster_<%= date_range + counter - 1 %>:
