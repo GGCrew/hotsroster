@@ -6,7 +6,7 @@
 #
 <% (1..52).each do |i| %>
 date_range_<%= i %>:
-  start: <%= (GAME_LAUNCH_DATE + (i - 1).week).to_s %>
-  end: <%= (GAME_LAUNCH_DATE + (i).week).to_s %>
+  start: <%= (GAME_LAUNCH_DATE + 8.weeks + (i - 1).week).to_s %>
+  end: <%= (GAME_LAUNCH_DATE + 8.weeks + (i).week).to_s %>
 
 <% end %>

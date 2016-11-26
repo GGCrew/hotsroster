@@ -7,15 +7,15 @@
 				- Franchise.all.each do |franchise|
 					-#
 						= link_to url_for(filter: role.slug), data: {key: 'role', value: role.slug, role: role.slug, selected: true} do
-					= link_to '#', data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
+					= link_to franchise.value, class: '', data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
 						= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, alt: franchise.name, class: 'icon')
 			.col-md-3
 				- Role.all.each do |role|
-					= link_to role.slug, data: {key: 'role', value: role.slug, role: role.slug, selected: true} do
+					= link_to role.slug, class: '', data: {key: 'roles', value: role.slug, role: role.slug, selected: true} do
 						= image_tag("icons/role/#{role.slug}.png", title: role.name, alt: role.name, class: 'icon')
 			.col-md-2
 				- Typp.all.each do |typp|
-					= link_to typp.slug, data: {key: 'typp', value: typp.slug, typp: typp.slug, selected: true} do
+					= link_to typp.slug, class: '', data: {key: 'typp', value: typp.slug, typp: typp.slug, selected: true} do
 						= image_tag("icons/typp/#{typp.slug}.png", title: typp.name, alt: typp.name, class: 'icon')
 		.row.messages
 			.col-md-1

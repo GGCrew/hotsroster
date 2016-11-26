@@ -115,7 +115,8 @@ class Hero < ActiveRecord::Base
 	end
 
 	def self.percentage_by_role(role)
-		(self.where(role: role).count / self.count.to_f) * 100
+		#(self.where(role: role).count / self.count.to_f) * 100
+		(self.joins(:hero_roles).where(hero_roles: {role: role}).count / self.count.to_f) * 100
 	end
 
 	def self.percentage_by_typp(typp)
@@ -136,8 +137,10 @@ class Hero < ActiveRecord::Base
 		weeks = []
 		for hero in self.distinct_heroes
 			if hero.first_rotation
+				#logger.debug("hero.first_rotation.start: #{hero.first_rotation.start} - hero.release_date: #{hero.release_date}")
 				difference = hero.first_rotation.start - hero.release_date
 				difference = (difference / 1.week).to_i
+				#logger.debug("difference: #{difference}")
 				weeks[difference] ||= 0 # Initialize if not already set
 				weeks[difference] += 1
 			end

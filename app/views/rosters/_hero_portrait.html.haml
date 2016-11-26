@@ -3,7 +3,7 @@
 
 %figure{data: { |
 	name: hero_portrait.hero.slug, |
-	roles: hero_portrait.hero.roles.map(&:slug).join, |
+	roles: hero_portrait.hero.roles.map(&:slug).join(' '), |
 	typp: hero_portrait.hero.typp.slug, |
 	franchise: hero_portrait.hero.franchise.value, |
 	filtered: 'false' |
