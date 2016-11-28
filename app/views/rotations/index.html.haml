@@ -8,7 +8,7 @@
 						= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, alt: franchise.name, class: 'icon')
 			.col-md-2
 				- Role.all.each do |role|
-					= link_to role.slug, data: {key: 'role', value: role.slug, role: role.slug, selected: true} do
+					= link_to role.slug, data: {key: 'roles', value: role.slug, role: role.slug, selected: true} do
 						= image_tag("icons/role/#{role.slug}.png", title: role.name, alt: role.name, class: 'icon')
 			.col-md-2
 				- Typp.all.each do |typp|

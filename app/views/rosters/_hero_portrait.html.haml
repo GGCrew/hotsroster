@@ -17,8 +17,9 @@
 			%br
 			%span.category
 				= image_tag("icons/franchise/#{hero_portrait.hero.franchise.value}.png", title: hero_portrait.hero.franchise.name, class: 'icon')
-				- hero_portrait.hero.roles.each do |role|
-					= image_tag("icons/role/#{role.slug}.png", title: role.name, class: 'icon')
+				- hero_roles_count = (hero_portrait.hero.roles.count - 1)
+				- hero_portrait.hero.roles.each_with_index do |role, index|
+					= image_tag("icons/role/#{role.slug}.png", title: role.name, class: ['icon', ('multi' if index < hero_roles_count)])
 				= image_tag("icons/typp/#{hero_portrait.hero.typp.slug}.png", title: hero_portrait.hero.typp.name, class: 'icon')
 		- if display_player_level	
 			- if hero_portrait.player_level > 1
