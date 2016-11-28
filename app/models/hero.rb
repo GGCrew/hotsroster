@@ -1,6 +1,5 @@
 class Hero < ActiveRecord::Base
 
-#	belongs_to	:role
 	belongs_to	:typp
 	belongs_to	:franchise
 
@@ -116,7 +115,6 @@ class Hero < ActiveRecord::Base
 	end
 
 	def self.percentage_by_role(role)
-		#(self.where(role: role).count / self.count.to_f) * 100
 		(self.joins(:hero_roles).where(hero_roles: {role: role}).count / self.count.to_f) * 100
 	end
 
