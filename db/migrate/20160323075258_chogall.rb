@@ -7,7 +7,17 @@ class Chogall < ActiveRecord::Migration
 			gall = cho.dup
 
 			cho.update!(player_character_name: 'Cho')
-			gall.update!(player_character_name: 'Gall', role_id: Role.find_by(slug: 'assassin').id, typp_id: Typp.find_by(slug: 'ranged').id)
+
+			if gall.respond_to?(:role_id)
+				# If multiclass migration has not been applied
+				gall.update!(player_character_name: 'Gall', role_id: Role.find_by(slug: 'assassin').id, typp_id: Typp.find_by(slug: 'ranged').id)
+			end
+			if gall.respond_to?(:hero_roles)
+				# If multiclass migration has been applied
+				gall.update!(player_character_name: 'Gall', typp_id: Typp.find_by(slug: 'ranged').id)
+				gall.hero_roles.create!(role_id: Role.find_by(slug: 'assassin').id)
+			end
+
 		end
 	end
 	

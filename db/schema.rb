@@ -23,10 +23,8 @@ ActiveRecord::Schema.define(version: 20161118000003) do
   create_table "date_ranges", force: :cascade do |t|
     t.datetime "start"
     t.datetime "end"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.boolean  "special_event",      default: false
-    t.string   "special_event_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "franchises", force: :cascade do |t|
