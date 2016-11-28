@@ -45,10 +45,13 @@
 								= image_tag("icons/franchise/#{@hero.franchise.value}.png", class: 'icon')
 								= @hero.franchise.name
 						.col-md-2
-							%h4.category
-								- @hero.roles.each do |role|
+							%h4.category(class="multi_#{@hero.roles.count}")
+								- hero_roles_count = (@hero.roles.count - 1)
+								- @hero.roles.each_with_index do |role, index|
 									= image_tag("icons/role/#{role.slug}.png", class: 'icon')
 									= role.name
+									- if index < hero_roles_count
+										%br
 						.col-md-2
 							%h4.category
 								= image_tag("icons/typp/#{@hero.typp.slug}.png", class: 'icon')

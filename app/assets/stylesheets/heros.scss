@@ -57,7 +57,20 @@
 			margin-left: 1em;
 			font-size: 150%;
 		}
-		
+
+		&.multi_2 {
+			padding-top: 0.75em;
+			padding-left: 0.75em;
+
+			img {
+				&.icon {
+					height: 3em;
+					margin-top: -0.5em;
+					margin-bottom: -0.5em;
+				}
+			}
+		}
+
 		img {
 			&.icon {
 				margin-right: -.75em;
