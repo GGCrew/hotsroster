@@ -22,6 +22,9 @@
 /*.*~
 /*~
 
+# Ignore temp backup files
+/**/*.bak
+
 # Ignore Windows thumbnail files
 /**/Thumbs.db
 
