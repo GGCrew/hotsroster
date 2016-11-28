@@ -2,7 +2,7 @@
 	.row.filters
 		.row.options
 			.col-md-3
-			.col-md-2
+			.col-md-3
 				- Franchise.all.each do |franchise|
 					= link_to '#', data: {key: 'franchise', value: franchise.value, franchise: franchise.value, selected: true} do
 						= image_tag("icons/franchise/#{franchise.value}.png", title: franchise.name, alt: franchise.name, class: 'icon')
