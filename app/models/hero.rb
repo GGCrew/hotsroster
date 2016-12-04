@@ -89,6 +89,7 @@ class Hero < ActiveRecord::Base
 			hero.update!(attributes)
 
 			# update hero roles
+			# TODO: delete existing hero role records that don't match the imported JSON data
 			case hero.slug
 				when 'chogall'
 					# Cho is a Warrior, Gall is an Assassin
