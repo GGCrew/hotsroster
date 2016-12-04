@@ -205,6 +205,16 @@ class Hero < ActiveRecord::Base
 		return self.player_character_heroes.count > 1
 	end
 
+	def role_slugs
+		if self.multiple_player_character_names?
+			slugs = self.player_character_heroes.map{|i| i.roles.map(&:slug)}.flatten
+		else
+			slugs = self.roles.map(&:slug)
+		end
+		slugs.uniq!
+		return slugs
+	end
+
 	def previous
 		hero_ids = Hero.distinct_heroes.select(:id).order(:name).map(&:id)
 		index = hero_ids.index(self.distinct_hero.id)

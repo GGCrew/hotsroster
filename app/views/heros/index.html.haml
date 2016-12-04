@@ -24,14 +24,9 @@
 	.row
 		.col-md-12.heroes
 			- for hero in @heros
-				- if hero.multiple_player_character_names?
-					- roles = hero.player_character_heroes.map{|i| i.roles.map(&:slug)}.flatten
-				- else
-					- roles = hero.roles.map(&:slug)
-				- roles.uniq!
 				%figure{data: {                    |
 					name: hero.slug,                 |
-					roles: roles.join,               |
+					roles: hero.role_slugs.join,     |
 					typp: hero.typp.slug,            |
 					franchise: hero.franchise.value, |
 					filtered: 'false'                |
