@@ -6,7 +6,6 @@ class RosterTest < ActiveSupport::TestCase
 			name: 'Roster Hero Name',
 			slug: 'roster-hero-slug',
 			franchise: Franchise.find_or_create_by(name: 'Hero Franchise Name', value: 'hero_franchise_value'),
-			role: Role.find_or_create_by(name: 'Hero Role Name', slug: 'hero-role-slug'),
 			typp: Typp.find_or_create_by(name: 'Hero Typp Name', slug: 'hero-typp-slug')
 		),
 		date_range: DateRange.find_or_create_by(
@@ -15,7 +14,7 @@ class RosterTest < ActiveSupport::TestCase
 		)
 	}
 
-	# Validatino tests
+	# Validation tests
 
 	test "should not save roster without hero" do
 		roster = Roster.new attributes.reject{|k,v| k == :hero}

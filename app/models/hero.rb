@@ -1,9 +1,10 @@
 class Hero < ActiveRecord::Base
 
-	belongs_to	:role
 	belongs_to	:typp
 	belongs_to	:franchise
 
+	has_many	:hero_roles,	dependent: :destroy, inverse_of: :hero
+	has_many	:roles, through: :hero_roles
 	has_many	:rosters, dependent: :destroy, inverse_of: :hero
 	has_many	:date_ranges,	through: :rosters
 	has_many	:alternate_hero_names,	dependent: :destroy, inverse_of: :hero
@@ -13,12 +14,12 @@ class Hero < ActiveRecord::Base
 	scope	:launch_heroes, -> { where(release_date: GAME_LAUNCH_DATE) }
 	scope	:post_launch_heroes, -> { where.not(release_date: GAME_LAUNCH_DATE) }
 	scope :distinct_heroes, -> { where(id: Hero.distinct_hero_ids) }
+	scope :multiclass_heroes, -> { joins(:hero_roles).group(:id).having('count(hero_roles.id) > 1') }
 
 	#..#
 
 	validates :name, :slug, presence: true
 	validates :player_character_name, uniqueness: {scope: [:name, :slug]}
-	validates	:role, presence: true
 	validates	:typp, presence: true
 	validates	:franchise, presence: true
 
@@ -69,7 +70,6 @@ class Hero < ActiveRecord::Base
 				name: hero_json['name'],
 				title: hero_json['title'],
 				slug: hero_json['slug'],
-				role: Role.where(name: hero_json['role']['name']).first,
 				typp: Typp.where(name: hero_json['type']['name']).first,
 				franchise: Franchise.where(value: hero_json['franchise']).first
 			}
@@ -115,7 +115,7 @@ class Hero < ActiveRecord::Base
 	end
 
 	def self.percentage_by_role(role)
-		(self.where(role: role).count / self.count.to_f) * 100
+		(self.joins(:hero_roles).where(hero_roles: {role: role}).count / self.count.to_f) * 100
 	end
 
 	def self.percentage_by_typp(typp)
@@ -138,6 +138,10 @@ class Hero < ActiveRecord::Base
 			if hero.first_rotation
 				difference = hero.first_rotation.start - hero.release_date
 				difference = (difference / 1.week).to_i
+				if difference < 0
+					logger.debug("difference: #{difference}")
+					logger.debug("hero.first_rotation.start: #{hero.first_rotation.start}, hero.release_date: #{hero.release_date}")
+				end
 				weeks[difference] ||= 0 # Initialize if not already set
 				weeks[difference] += 1
 			end

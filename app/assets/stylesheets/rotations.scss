@@ -28,6 +28,10 @@
 			.category {
 				.icon {
 					height: 1.5em;
+
+					&.multi {
+						margin-right: -0.5em;
+					}
 				}
 			}
 		}

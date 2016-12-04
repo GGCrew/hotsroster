@@ -17,6 +17,36 @@ applyFilters = () ->
 			$(this).removeClass('filtered')
 		return true
 
+	# Multiclass
+	getCombinations = (array) ->
+		result = []
+		f = (prefix, array) ->
+		  for index in [0...array.length]
+		    do (index) ->
+		      result.push prefix.concat [array[index]]
+		      f prefix.concat([array[index]]), array.slice(index + 1)
+		f [], array
+		return result
+
+	roles = $('[data-key="roles"]').filter (index, element) ->
+		!$(element).data().selected
+
+	roles = $.map roles, (element, index) ->
+		$(element).data().value
+
+	combinations = getCombinations roles
+	combinations = combinations.filter (element) ->
+		element.length > 1
+
+	for combination in combinations
+		do (combination) ->
+			selector = (
+			  combination.map (element) ->
+			    return '[data-roles*="' + element + '"]'
+			  ).join('')
+			$(selector).attr 'data-filtered', true
+
+	# Show/hide and update counts
 	hero_sections = $('.heroes')
 	hero_sections.each (index) ->
 		hero_count = $(this).find('figure').length

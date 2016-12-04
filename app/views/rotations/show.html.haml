@@ -26,7 +26,7 @@
 						.col-md-12
 							%span.category
 								= image_tag("icons/role/#{role.slug}.png", title: role.name, class: 'icon')
-							#{@rotation.heroes.where(role: role).count}
+							#{@rotation.heroes.joins(:hero_roles).where(hero_roles: {role: role}).count}
 							(#{format_percentage(@rotation.heroes.percentage_by_role(role))})
 
 			.col-md-2

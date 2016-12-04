@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160323075258) do
+ActiveRecord::Schema.define(version: 20161118000003) do
 
   create_table "alternate_hero_names", force: :cascade do |t|
     t.integer  "hero_id"
@@ -34,11 +34,17 @@ ActiveRecord::Schema.define(version: 20160323075258) do
     t.string   "value"
   end
 
+  create_table "hero_roles", force: :cascade do |t|
+    t.integer  "hero_id"
+    t.integer  "role_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "heros", force: :cascade do |t|
     t.string   "name"
     t.string   "title"
     t.string   "slug"
-    t.integer  "role_id"
     t.integer  "typp_id"
     t.integer  "franchise_id"
     t.datetime "created_at",            null: false

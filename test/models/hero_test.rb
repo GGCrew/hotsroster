@@ -6,7 +6,6 @@ class HeroTest < ActiveSupport::TestCase
 		slug: 'hero-slug',
 		player_character_name: 'Player Character Name',
 		franchise: Franchise.find_or_create_by(name: 'Hero Franchise Name', value: 'hero_franchise_value'),
-		role: Role.find_or_create_by(name: 'Hero Role Name', slug: 'hero-role-slug'),
 		typp: Typp.find_or_create_by(name: 'Hero Typp Name', slug: 'hero-typp-slug')
 	}
 
@@ -14,7 +13,6 @@ class HeroTest < ActiveSupport::TestCase
 		name: 'Bogus Hero Name',
 		slug: 'bogus-hero-slug',
 		franchise: attributes[:franchise],
-		role: attributes[:role],
 		typp: attributes[:typp]
 	}
 
@@ -32,11 +30,6 @@ class HeroTest < ActiveSupport::TestCase
 
 	test "should not save hero without franchise" do
 		hero = Hero.new attributes.reject{|k,v| k == :franchise}
-		assert_not hero.save
-	end
-
-	test "should not save hero without role" do
-		hero = Hero.new attributes.reject{|k,v| k == :role}
 		assert_not hero.save
 	end
 
@@ -90,14 +83,14 @@ class HeroTest < ActiveSupport::TestCase
 	test 'should return rotated heroes' do
 		hero_ids = Roster.select(:hero_id).map(&:hero_id).uniq
 		expected_heroes = Hero.find(hero_ids)
-		assert_equal expected_heroes.count, Hero.rotated.count
+		assert_equal expected_heroes.length, Hero.rotated.length
 		assert_empty expected_heroes - Hero.rotated
 	end
 
 	test 'should return unrotated heroes' do
 		hero_ids = Roster.select(:hero_id).map(&:hero_id).uniq
 		expected_heroes = Hero.all - Hero.find(hero_ids)
-		assert_equal expected_heroes.count, Hero.unrotated.count
+		assert_equal expected_heroes.length, Hero.unrotated.length
 		assert_empty Hero.unrotated - expected_heroes
 	end
 
@@ -105,9 +98,19 @@ class HeroTest < ActiveSupport::TestCase
 		heroes = Hero.all
 		min_release_date = heroes.map(&:release_date).min # Earliest release date will coincide with game launch
 		expected_heroes = heroes.select{|hero| hero.release_date == min_release_date}
-		assert_equal expected_heroes.count, Hero.launch_heroes.count
+		assert_equal expected_heroes.length, Hero.launch_heroes.length
 		assert_empty expected_heroes - Hero.launch_heroes
 	end
+
+	test 'should return multiclass heroes' do
+		hero_ids = HeroRole.all.map(&:hero_id)
+		hero_ids.sort!
+		multiclass_hero_ids = hero_ids.select{|id| hero_ids.count(id) > 1 }.uniq
+		multiclass_heroes = Hero.find(multiclass_hero_ids)
+		assert_equal multiclass_heroes.length, Hero.multiclass_heroes.length
+		assert_empty multiclass_heroes - Hero.multiclass_heroes
+	end
+		
 
 	# Instance method tests
 
@@ -115,7 +118,7 @@ class HeroTest < ActiveSupport::TestCase
 		heroes = Hero.distinct_heroes.order(:name)
 		heroes.each_with_index do |hero, index|
 			expected_index = index + 1
-			expected_index = 0 if expected_index >= heroes.count
+			expected_index = 0 if expected_index >= heroes.length
 			expected_hero = heroes[expected_index]
 			assert_equal hero.next, expected_hero
 		end
@@ -125,7 +128,7 @@ class HeroTest < ActiveSupport::TestCase
 		heroes = Hero.distinct_heroes.order(:name)
 		heroes.each_with_index do |hero, index|
 			expected_index = index - 1
-			expected_index = (heroes.count - 1) if expected_index < 0
+			expected_index = (heroes.length - 1) if expected_index < 0
 			expected_hero = heroes[expected_index]
 			assert_equal hero.previous, expected_hero
 		end

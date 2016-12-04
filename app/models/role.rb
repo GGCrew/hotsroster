@@ -1,6 +1,7 @@
 class Role < ActiveRecord::Base
 
-	has_many	:heroes, dependent: :nullify, inverse_of: :role
+	has_many	:hero_roles,	dependent: :destroy,	inverse_of:	:role
+	has_many	:heroes,	through: :hero_roles
 
 	#..#
 
