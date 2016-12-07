@@ -13,7 +13,7 @@ class Roster < ActiveRecord::Base
 	def self.import_from_blizzard
 		# TODO: split into import_from_hero_page and import_from_forum
 
-		address = 'http://us.battle.net/forums/en/heroes/topic/17936383460'
+		address = SOURCE_URLS[:rotations][:us]
 		date_search_text = 'Free-to-Play Hero Rotation:'
 
 		date_search_regex = Regexp.new(Regexp.quote(date_search_text))

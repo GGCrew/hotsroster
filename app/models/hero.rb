@@ -26,7 +26,7 @@ class Hero < ActiveRecord::Base
 	#..#
 
 	def self.import_from_blizzard
-		address = 'http://us.battle.net/heroes/en/heroes/'
+		address = SOURCE_URLS[:heroes][:us]
 		url = URI.parse(address)
 		html = Net::HTTP.get(url) # TODO: error handling
 		page = Nokogiri::HTML(html)
