@@ -46,10 +46,10 @@ class DateRange < ActiveRecord::Base
 			#	date_text = "Dec 29 - Jan 5, 2016"
 
 			when "December 29 - January 4"
-				date_text = "#{date_text}, 2016"
+				date_text = "#{date_text}, 2015"
 
-			when "August 23- 29, 2016"
-				date_text = "August 23 - 29, 2016"
+			#when "August 23- 29, 2016"
+			#	date_text = "August 23 - 29, 2016"
 
 		end
 
@@ -62,7 +62,7 @@ class DateRange < ActiveRecord::Base
 		# - January 26 - February 02, 2016
 		# - July 05 - July 12, 2016
 		# - August 23- 29, 2016    (NOTE: no whitespace between "23" and hyphen)
-		date_match = /^([a-zA-Z]*) (\d{1,2}) . ([a-zA-Z]*) ?(\d{1,2}), (\d{4})$/.match(date_text)
+		date_match = /^([a-zA-Z]*) (\d{1,2}) ?. ([a-zA-Z]*) ?(\d{1,2}), (\d{4})$/.match(date_text)
 		if date_match
 			start_month = date_match[1]
 			start_day = date_match[2]
@@ -78,7 +78,7 @@ class DateRange < ActiveRecord::Base
 			start_day = date_match[2]
 			year = date_match[3]
 			calculated_date = DateTime.parse("#{start_month} #{start_day}, #{year}") + 1.week
-			end_day = calculated_date..strftime('%d')
+			end_day = calculated_date.strftime('%d')
 			end_month = calculated_date.strftime('%B')
 		end
 
@@ -104,6 +104,10 @@ class DateRange < ActiveRecord::Base
 		end
 
 		if year && start_month && start_day && end_day
+			# end_day should always be 7 days later than start_day (both on a Tuesday)
+			(end_day = (end_day.to_i + 1).to_s) if (end_day.to_i == (start_day.to_i + 6))
+
+			# if no end_month, assume start_month and end_month are the same
 			(end_month = start_month) if (end_month.blank? && (end_day.to_i == (start_day.to_i + 7)))
 
 			start_date = DateTime.parse("#{start_month} #{start_day}, #{year}")
@@ -111,7 +115,8 @@ class DateRange < ActiveRecord::Base
 
 			# Kludge for funky end-of-year date text like "Dec 29 - Jan 5, 2015"
 			if start_date > end_date
-				if ((start_date + 1.week).month == end_date.month) && ((start_date + 1.week).day == end_date.day)
+				if ((start_date + 1.week).month == end_date.month) && 
+					(((start_date + 1.week).day == end_date.day) || ((start_date + 6.days).day == end_date.day))
 					end_date = start_date + 1.week
 				end
 			end
@@ -121,6 +126,7 @@ class DateRange < ActiveRecord::Base
 			return date_range
 		else
 			# We should never get to here!
+			logger.info "---- UNEXPECTED date text: #{date_text} ----"
 			return nil
 		end
 	end		

@@ -37,7 +37,33 @@ class DateRangeTest < ActiveSupport::TestCase
 	# Method tests
 
 	test "should import date test" do
-		assert_instance_of DateRange, DateRange.import_date_text('Jan 01 - Jan 08, 2000')
+		# US forum samples
+		# - June 2 - 9, 2015
+		# - June 30 - July 7, 2015
+		# - Dec 29 - Jan 5, 2015   (NOTE: year for the ending date is obviously wrong!)
+		assert_instance_of DateRange, DateRange.import_date_text('June 2 - 9, 2015')
+		assert_instance_of DateRange, DateRange.import_date_text('June 30 - July 7, 2015')
+		assert_instance_of DateRange, DateRange.import_date_text('Dec 29 - Jan 5, 2015')
+
+		# EU forum samples:
+		# - February 10, 2015
+		# - December 8 - 15, 2015
+		# - December 29 - January 4    (NOTE: This specific entry is missing the year value)
+		# - January 26 - February 02, 2016
+		# - 02 - 09 February, 2016
+		# - 23 February - 01 March, 2016
+		# - 05 April - 12, 2016
+		# - July 05 - July 12, 2016
+		# - August 23- 29, 2016    (NOTE: no whitespace between "23" and hyphen)
+		assert_instance_of DateRange, DateRange.import_date_text('February 10, 2015')
+		assert_instance_of DateRange, DateRange.import_date_text('December 8 - 15, 2015')
+		assert_instance_of DateRange, DateRange.import_date_text('December 29 - January 4')
+		assert_instance_of DateRange, DateRange.import_date_text('January 26 - February 02, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('02 - 09 February, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('23 February - 01 March, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('05 April - 12, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('July 05 - July 12, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('August 23- 29, 2016')
 	end
 
 	test "should pass if start is before end" do
