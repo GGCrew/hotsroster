@@ -95,15 +95,16 @@ class Hero < ActiveRecord::Base
 					# Cho is a Warrior, Gall is an Assassin
 					# I really hate that I'm hard-coding this...
 
-					# Let's assume Cho is 'role' and Gall is 'roleSecondary'
 					cho = Hero.find_by(slug: 'chogall', player_character_name: 'Cho')
-					attributes = { hero_id: cho.id, role_id: Role.find_by(slug: hero_json['role']['slug']).id }
-					HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
-
 					gall = Hero.find_by(slug: 'chogall', player_character_name: 'Gall')
-					attributes = { hero_id: gall.id, role_id: Role.find_by(slug: hero_json['roleSecondary']['slug']).id }
-					HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
+					if cho && gall
+						# Let's assume Cho is 'role' and Gall is 'roleSecondary'
+						attributes = { hero_id: cho.id, role_id: Role.find_by(slug: hero_json['role']['slug']).id }
+						HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
 
+						attributes = { hero_id: gall.id, role_id: Role.find_by(slug: hero_json['roleSecondary']['slug']).id }
+						HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
+					end
 				else
 					['role', 'roleSecondary'].each do |role_key|
 						unless hero_json[role_key].empty?
