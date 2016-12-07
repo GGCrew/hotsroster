@@ -16,6 +16,52 @@ class DateRange < ActiveRecord::Base
 	#..#
 
 	def self.import_date_text(date_text)
+		# US forum samples:
+		# - June 2 - 9, 2015
+		# - June 30 - July 7, 2015
+		# - Dec 29 - Jan 5, 2015   (NOTE: year for the ending date is obviously wrong!)
+
+		# EU forum samples:
+		# - February 10, 2015
+		# - December 8 - 15, 2015
+		# - December 29 - January 4    (NOTE: This specific entry is missing the year value)
+		# - January 26 - February 02, 2016
+		# - 02 - 09 February, 2016
+		# - 23 February - 01 March, 2016
+		# - 05 April - 12, 2016
+		# - July 05 - July 12, 2016
+		# - August 23- 29, 2016    (NOTE: no whitespace between "23" and hyphen)
+		# (Man, the EU folks need to get their act together!)  :)
+
+		# Initialize variables
+		start_month = nil
+		start_day = nil
+		end_month = nil
+		end_day = nil
+		year = nil
+
+		# Special cases for incomplete/invalid dates
+		case date_text
+			#when "Dec 29 - Jan 5, 2015"
+			#	date_text = "Dec 29 - Jan 5, 2016"
+
+			when "December 29 - January 4"
+				date_text = "#{date_text}, 2016"
+
+			when "August 23- 29, 2016"
+				date_text = "August 23 - 29, 2016"
+
+		end
+
+
+		# - June 2 - 9, 2015
+		# - June 30 - July 7, 2015
+		# - Dec 29 - Jan 5, 2015   (NOTE: year for the ending date is obviously wrong!)
+		# - December 8 - 15, 2015
+		# - December 29 - January 4    (NOTE: This specific entry is missing the year value)
+		# - January 26 - February 02, 2016
+		# - July 05 - July 12, 2016
+		# - August 23- 29, 2016    (NOTE: no whitespace between "23" and hyphen)
 		date_match = /^([a-zA-Z]*) (\d{1,2}) . ([a-zA-Z]*) ?(\d{1,2}), (\d{4})$/.match(date_text)
 		if date_match
 			start_month = date_match[1]
@@ -23,10 +69,46 @@ class DateRange < ActiveRecord::Base
 			end_month = date_match[3]
 			end_day = date_match[4]
 			year = date_match[5]
-			start_date = DateTime.parse("#{start_month} #{start_day}, #{year}")
+		end
+
+		# - February 10, 2015
+		date_match = /^([a-zA-Z]*) (\d{1,2}), (\d{4})$/.match(date_text)
+		if date_match
+			start_month = date_match[1]
+			start_day = date_match[2]
+			year = date_match[3]
+			calculated_date = DateTime.parse("#{start_month} #{start_day}, #{year}") + 1.week
+			end_day = calculated_date..strftime('%d')
+			end_month = calculated_date.strftime('%B')
+		end
+
+		# - 02 - 09 February, 2016
+		date_match = /^(\d{1,2}) - (\d{1,2}) ([a-zA-Z]*), (\d{4})$/.match(date_text)
+		if date_match
+			start_month = date_match[3]
+			start_day = date_match[1]
+			end_month = date_match[3]
+			end_day = date_match[2]
+			year = date_match[4]
+		end
+
+		# - 23 February - 01 March, 2016
+		# - 05 April - 12, 2016
+		date_match = /^(\d{1,2}) ([a-zA-Z]*) - (\d{1,2}) ?([a-zA-Z]*), (\d{4})$/.match(date_text)
+		if date_match
+			start_month = date_match[2]
+			start_day = date_match[1]
+			end_month = date_match[4]
+			end_day = date_match[3]
+			year = date_match[5]
+		end
+
+		if year && start_month && start_day && end_day
 			(end_month = start_month) if (end_month.blank? && (end_day.to_i == (start_day.to_i + 7)))
+
+			start_date = DateTime.parse("#{start_month} #{start_day}, #{year}")
 			end_date = DateTime.parse("#{end_month} #{end_day}, #{year}")
-		
+
 			# Kludge for funky end-of-year date text like "Dec 29 - Jan 5, 2015"
 			if start_date > end_date
 				if ((start_date + 1.week).month == end_date.month) && ((start_date + 1.week).day == end_date.day)
@@ -38,6 +120,7 @@ class DateRange < ActiveRecord::Base
 
 			return date_range
 		else
+			# We should never get to here!
 			return nil
 		end
 	end		
