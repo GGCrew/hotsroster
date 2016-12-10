@@ -26,7 +26,7 @@ class Hero < ActiveRecord::Base
 	#..#
 
 	def self.import_from_blizzard
-		address = SOURCE_URLS[:heroes][:us]
+		SOURCE_URLS[:heroes].each do |country, address|
 		url = URI.parse(address)
 		html = Net::HTTP.get(url) # TODO: error handling
 		page = Nokogiri::HTML(html)
@@ -113,8 +113,9 @@ class Hero < ActiveRecord::Base
 					end
 			end
 		end
-		
-		return json
+		end
+
+		return true
 	end
 
 	def self.parse_from_post(post_detail)
