@@ -117,6 +117,65 @@ class Hero < ActiveRecord::Base
 		return json
 	end
 
+	def self.parse_from_post(post_detail)
+		# parse heroes and player levels
+		# Note: I spent time developing a RegEx to check for the presense or absense
+		#       of the "(Slot unlocked...)" text, but it was becoming overly complex.
+		#       Only checking for the presense of the text is much clearer,
+		#       as is a simple if-else for handling the RegEx match results.
+		hero_texts = post_detail.css('ul li').map{|i| i.text.strip}
+		heroes = []
+		for hero_text in hero_texts
+			# Check for required player levels
+			hero_match = /^(.*)\s*\(Slot unlocked at Player Level (\d{1,2})\)$/.match(hero_text)
+			if hero_match
+				# hero requires a player level
+				hero_name = hero_match[1].strip
+				player_level = hero_match[2].to_i
+			else
+				# hero does not require a player level
+				hero_name = hero_text
+				player_level = 1
+			end
+
+			# Check for hero name
+			hero = Hero.where(name: hero_name).first
+			hero = Hero.where(player_character_name: hero_name).first unless hero
+			unless hero
+				alternate_name = AlternateHeroName.where(name: hero_name).first
+				if alternate_name
+					hero = alternate_name.hero
+				else
+					alternate_hero_name = AlternateHeroName.create!(name: hero_name)
+					# Alert Admin of newly-created unrelated record
+					begin
+						AdminMailer.unrecognized_hero_name(hero_name).deliver_now
+					rescue => e
+						Rails.logger.error "Failed 'AdminMailer.unrecognized_hero_name(hero_name)' -- #{hero_name}"
+						Rails.logger.error e.message
+					end
+				end
+			end
+
+			# Alert Admin if hero.nil?
+			unless hero
+				begin
+					AdminMailer.hero_not_found(hero_text).deliver_now
+				rescue => e
+					Rails.logger.error "Failed 'AdminMailer.hero_not_found(hero_text)' -- #{hero_text}"
+					Rails.logger.error e.message
+				end
+			end
+
+			heroes << {
+				hero: hero,
+				player_level: player_level
+			} if hero
+		end
+
+		return heroes
+	end
+
 	def self.distinct_hero_ids
 		duplicate_counts = self.group(:name).count.select{|k,v| v>1}
 		extra_ids = []

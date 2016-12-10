@@ -35,60 +35,7 @@ class Roster < ActiveRecord::Base
 
 				date_range = DateRange.import_from_post(post_detail)
 
-				# parse heroes and player levels
-				# Note: I spent time developing a RegEx to check for the presense or absense
-				#       of the "(Slot unlocked...)" text, but it was becoming overly complex.
-				#       Only checking for the presense of the text is much clearer,
-				#       as is a simple if-else for handling the RegEx match results.
-				hero_texts = post_detail.css('ul li').map{|i| i.text.strip}
-				heroes = []
-				for hero_text in hero_texts
-					# Check for required player levels
-					hero_match = /^(.*)\s*\(Slot unlocked at Player Level (\d{1,2})\)$/.match(hero_text)
-					if hero_match
-						# hero requires a player level
-						hero_name = hero_match[1].strip
-						player_level = hero_match[2].to_i
-					else
-						# hero does not require a player level
-						hero_name = hero_text
-						player_level = 1
-					end
-
-					# Check for hero name
-					hero = Hero.where(name: hero_name).first
-					hero = Hero.where(player_character_name: hero_name).first unless hero
-					unless hero
-						alternate_name = AlternateHeroName.where(name: hero_name).first
-						if alternate_name
-							hero = alternate_name.hero
-						else
-							alternate_hero_name = AlternateHeroName.create!(name: hero_name)
-							# Alert Admin of newly-created unrelated record
-							begin
-								AdminMailer.roster_unrecognized_hero_name(hero_name, date_range).deliver_now
-							rescue => e
-								Rails.logger.error "Failed 'AdminMailer.roster_unrecognized_hero_name(hero_name, date_range)' -- #{hero_name} -- #{date_range.try(:id)}"
-								Rails.logger.error e.message
-							end
-						end
-					end
-
-					# Alert Admin if hero.nil?
-					unless hero
-						begin
-							AdminMailer.roster_hero_not_found(hero_text, date_range).deliver_now
-						rescue => e
-							Rails.logger.error "Failed 'AdminMailer.roster_hero_not_found(hero_text, date_range)' -- #{hero_text} -- #{date_range.try(:id)}"
-							Rails.logger.error e.message
-						end
-					end
-
-					heroes << {
-						hero: hero,
-						player_level: player_level
-					} if hero
-				end
+				heroes = Hero.parse_from_post(post_detail)
 
 				# Import into Roster
 				for hero in heroes
