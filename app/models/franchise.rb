@@ -21,8 +21,8 @@ class Franchise < ActiveRecord::Base
 		#</label>
 		universe_options = page.css('#warcraft-check').first.parent.parent.css('label')
 		for option in universe_options
-			name = option.attributes['title'].value	# Warcraft
-			value = option.attributes['for'].value	# warcraft-check
+			name = option.attributes['title'].value	# eg Warcraft
+			value = option.attributes['for'].value	# eg warcraft-check
 
 			name.strip!
 			value.strip!
