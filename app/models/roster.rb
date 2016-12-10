@@ -13,46 +13,46 @@ class Roster < ActiveRecord::Base
 	def self.import_from_blizzard
 		# TODO: split into import_from_hero_page and import_from_forum
 
-		address = SOURCE_URLS[:rotations][:us]
-
-		# Loop through all pages via pagination
-		page_query_string = '?page=1'
-		loop do
-			url = URI.parse(address + page_query_string)
-			html = Net::HTTP.get(url) # TODO: error handling
-			if html.blank?
-				# TODO: Send alert to admin
-			end
-
-			page = Nokogiri::HTML(html)
-			post_list = page.css('div.Topic-content div.TopicPost')
-			if post_list.empty?
-				# TODO: Send alert to admin
-			end
-
-			for post in post_list
-				post_detail = post.css('div.TopicPost-bodyContent')
-
-				date_range = DateRange.import_from_post(post_detail)
-
-				heroes = Hero.parse_from_post(post_detail)
-
-				# Import into Roster
-				for hero in heroes
-					Roster.find_or_create_by!({
-						date_range: date_range,
-						hero: hero[:hero],
-						player_level: hero[:player_level]
-					})
+		SOURCE_URLS[:rosters].each do |country, address|
+			# Loop through all pages via pagination
+			page_query_string = '?page=1'
+			loop do
+				url = URI.parse(address + page_query_string)
+				html = Net::HTTP.get(url) # TODO: error handling
+				if html.blank?
+					# TODO: Send alert to admin
 				end
-			end
 
-			# Check for pagination
-			next_page_link = page.css('div.Topic-pagination--header a.Pagination-button--next').first
-			break unless next_page_link # Exit loop if there isn't a "next page" link
-			page_query_string = next_page_link[:href]
-			break if page_query_string.nil?  # Exit loop if there isn't a valid "href" value
-		end # END: Loop through all pages via pagination
+				page = Nokogiri::HTML(html)
+				post_list = page.css('div.Topic-content div.TopicPost')
+				if post_list.empty?
+					# TODO: Send alert to admin
+				end
+
+				for post in post_list
+					post_detail = post.css('div.TopicPost-bodyContent')
+
+					date_range = DateRange.import_from_post(post_detail)
+
+					heroes = Hero.parse_from_post(post_detail)
+
+					# Import into Roster
+					for hero in heroes
+						Roster.find_or_create_by!({
+							date_range: date_range,
+							hero: hero[:hero],
+							player_level: hero[:player_level]
+						})
+					end
+				end
+
+				# Check for pagination
+				next_page_link = page.css('div.Topic-pagination--header a.Pagination-button--next').first
+				break unless next_page_link # Exit loop if there isn't a "next page" link
+				page_query_string = next_page_link[:href]
+				break if page_query_string.nil?  # Exit loop if there isn't a valid "href" value
+			end # END: Loop through all pages via pagination
+		end
 		
 		return true
 	end
