@@ -27,92 +27,92 @@ class Hero < ActiveRecord::Base
 
 	def self.import_from_blizzard
 		SOURCE_URLS[:heroes].each do |country, address|
-		url = URI.parse(address)
-		html = Net::HTTP.get(url) # TODO: error handling
-		page = Nokogiri::HTML(html)
+			url = URI.parse(address)
+			html = Net::HTTP.get(url) # TODO: error handling
+			page = Nokogiri::HTML(html)
 
-		json_start_string = 'window.heroes = '
-		json_end_string = '}];'
+			json_start_string = 'window.heroes = '
+			json_end_string = '}];'
 
-		json_start_regex = Regexp.new(Regexp.quote(json_start_string))
-		json_end_regex = Regexp.new(Regexp.quote(json_end_string))
+			json_start_regex = Regexp.new(Regexp.quote(json_start_string))
+			json_end_regex = Regexp.new(Regexp.quote(json_end_string))
 
-		hero_script = nil
-		page.css('script').each do |script|
-			hero_script = script.to_s if (json_start_regex =~ script)
-		end
-		#TODO: error handling (hero_script == nil)
-
-		json_start = (json_start_regex =~ hero_script) + json_start_string.length
-		json_end = (json_end_regex =~ hero_script) + json_end_string.length - 1 - 1  #...and trim trailing semicolon
-		json_string = hero_script[json_start..json_end]
-		json = JSON.parse(json_string)
-	
-		# update related tables
-		roles = []
-		typps = []
-		franchises = []
-		json.each do |hero_json|
-			roles << hero_json['role']
-			typps << hero_json['type']
-			franchises << hero_json['franchise']
-		end
-		roles.uniq!
-		typps.uniq!
-		franchises.uniq!
-		Role.import_from_json(roles)
-		Typp.import_from_json(typps)
-		Franchise.import_from_json(franchises)
-
-		# update heroes
-		json.each do |hero_json|
-			attributes = {
-				name: hero_json['name'],
-				title: hero_json['title'],
-				slug: hero_json['slug'],
-				typp: Typp.where(name: hero_json['type']['name']).first,
-				franchise: Franchise.where(value: hero_json['franchise']).first
-			}
-
-			hero = self.find_by(slug: hero_json['slug'])
-			hero = self.create!(attributes) unless hero
-
-			# Assumes Blizzard continues to release new heroes on Tuesdays
-			release_date = Date.today
-			(release_date += (2 - release_date.wday).days) if release_date.wday < 2 # Sun, Mon
-			(release_date += (9 - release_date.wday).days) if release_date.wday > 2 # Wed, Thu, Fri, Sat
-			
-			attributes.merge!({release_date: release_date}) unless hero.release_date
-			attributes.merge!({prerelease_date: release_date}) unless hero.prerelease_date
-			attributes.merge!({player_character_name: hero_json['name']}) unless hero.player_character_name
-
-			hero.update!(attributes)
-
-			# update hero roles
-			# TODO: delete existing hero role records that don't match the imported JSON data
-			case hero.slug
-				when 'chogall'
-					# Cho is a Warrior, Gall is an Assassin
-					# I really hate that I'm hard-coding this...
-
-					# Let's assume Cho is 'role' and Gall is 'roleSecondary'
-					cho = Hero.find_by(slug: 'chogall', player_character_name: 'Cho')
-					attributes = { hero_id: cho.id, role_id: Role.find_by(slug: hero_json['role']['slug']).id }
-					HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
-
-					gall = Hero.find_by(slug: 'chogall', player_character_name: 'Gall')
-					attributes = { hero_id: gall.id, role_id: Role.find_by(slug: hero_json['roleSecondary']['slug']).id }
-					HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
-
-				else
-					['role', 'roleSecondary'].each do |role_key|
-						unless hero_json[role_key].empty?
-							attributes = { hero_id: hero.id, role_id: Role.find_by(slug: hero_json[role_key]['slug']).id }
-							HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
-						end
-					end
+			hero_script = nil
+			page.css('script').each do |script|
+				hero_script = script.to_s if (json_start_regex =~ script)
 			end
-		end
+			#TODO: error handling (hero_script == nil)
+
+			json_start = (json_start_regex =~ hero_script) + json_start_string.length
+			json_end = (json_end_regex =~ hero_script) + json_end_string.length - 1 - 1  #...and trim trailing semicolon
+			json_string = hero_script[json_start..json_end]
+			json = JSON.parse(json_string)
+	
+			# update related tables
+			roles = []
+			typps = []
+			franchises = []
+			json.each do |hero_json|
+				roles << hero_json['role']
+				typps << hero_json['type']
+				franchises << hero_json['franchise']
+			end
+			roles.uniq!
+			typps.uniq!
+			franchises.uniq!
+			Role.import_from_json(roles)
+			Typp.import_from_json(typps)
+			Franchise.import_from_json(franchises)
+
+			# update heroes
+			json.each do |hero_json|
+				attributes = {
+					name: hero_json['name'],
+					title: hero_json['title'],
+					slug: hero_json['slug'],
+					typp: Typp.where(name: hero_json['type']['name']).first,
+					franchise: Franchise.where(value: hero_json['franchise']).first
+				}
+
+				hero = self.find_by(slug: hero_json['slug'])
+				hero = self.create!(attributes) unless hero
+
+				# Assumes Blizzard continues to release new heroes on Tuesdays
+				release_date = Date.today
+				(release_date += (2 - release_date.wday).days) if release_date.wday < 2 # Sun, Mon
+				(release_date += (9 - release_date.wday).days) if release_date.wday > 2 # Wed, Thu, Fri, Sat
+			
+				attributes.merge!({release_date: release_date}) unless hero.release_date
+				attributes.merge!({prerelease_date: release_date}) unless hero.prerelease_date
+				attributes.merge!({player_character_name: hero_json['name']}) unless hero.player_character_name
+
+				hero.update!(attributes)
+
+				# update hero roles
+				# TODO: delete existing hero role records that don't match the imported JSON data
+				case hero.slug
+					when 'chogall'
+						# Cho is a Warrior, Gall is an Assassin
+						# I really hate that I'm hard-coding this...
+
+						# Let's assume Cho is 'role' and Gall is 'roleSecondary'
+						cho = Hero.find_by(slug: 'chogall', player_character_name: 'Cho')
+						attributes = { hero_id: cho.id, role_id: Role.find_by(slug: hero_json['role']['slug']).id }
+						HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
+
+						gall = Hero.find_by(slug: 'chogall', player_character_name: 'Gall')
+						attributes = { hero_id: gall.id, role_id: Role.find_by(slug: hero_json['roleSecondary']['slug']).id }
+						HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
+
+					else
+						['role', 'roleSecondary'].each do |role_key|
+							unless hero_json[role_key].empty?
+								attributes = { hero_id: hero.id, role_id: Role.find_by(slug: hero_json[role_key]['slug']).id }
+								HeroRole.create!(attributes) unless HeroRole.find_by(attributes)
+							end
+						end
+				end
+			end
 		end
 
 		return true
