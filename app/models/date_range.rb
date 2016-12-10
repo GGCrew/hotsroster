@@ -31,6 +31,7 @@ class DateRange < ActiveRecord::Base
 		# - 05 April - 12, 2016
 		# - July 05 - July 12, 2016
 		# - August 23- 29, 2016    (NOTE: no whitespace between "23" and hyphen)
+		# - September 27 - October 04 , 2016    (NOTE: whitespace before comma)
 		# (Man, the EU folks need to get their act together!)  :)
 
 		# Initialize variables
@@ -62,7 +63,8 @@ class DateRange < ActiveRecord::Base
 		# - January 26 - February 02, 2016
 		# - July 05 - July 12, 2016
 		# - August 23- 29, 2016    (NOTE: no whitespace between "23" and hyphen)
-		date_match = /^([a-zA-Z]*) (\d{1,2}) ?. ([a-zA-Z]*) ?(\d{1,2}), (\d{4})$/.match(date_text)
+		# - September 27 - October 04 , 2016    (NOTE: whitespace before comma)
+		date_match = /^([a-zA-Z]*) (\d{1,2}) ?. ([a-zA-Z]*) ?(\d{1,2}) ?, (\d{4})$/.match(date_text)
 		if date_match
 			start_month = date_match[1]
 			start_day = date_match[2]
@@ -133,6 +135,7 @@ class DateRange < ActiveRecord::Base
 	end		
 
 	def self.import_from_post(post_detail)
+		# TODO: test for this method
 		date_range = nil	# Assume failure
 
 		if post_detail.class == Nokogiri::XML::NodeSet
