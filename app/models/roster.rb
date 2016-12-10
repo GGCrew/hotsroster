@@ -14,9 +14,6 @@ class Roster < ActiveRecord::Base
 		# TODO: split into import_from_hero_page and import_from_forum
 
 		address = SOURCE_URLS[:rotations][:us]
-		date_search_text = 'Free-to-Play Hero Rotation:'
-
-		date_search_regex = Regexp.new(Regexp.quote(date_search_text))
 
 		# Loop through all pages via pagination
 		page_query_string = '?page=1'
@@ -34,25 +31,16 @@ class Roster < ActiveRecord::Base
 			end
 
 			for post in post_list
-				date_text = nil
 				post_detail = post.css('div.TopicPost-bodyContent')
-				post_detail.first.traverse do |node|
-					if node.text?
-						date_text = node.text.dup if (date_search_regex =~ node.text)
-					end
-				end
-				hero_texts = post_detail.css('ul li').map{|i| i.text.strip}
-			
-				# parse dates into DateRange
-				date_text.gsub!(date_search_text, '')
-				date_text.strip!
-				date_range = DateRange.import_date_text(date_text)
+
+				date_range = DateRange.import_from_post(post_detail)
 
 				# parse heroes and player levels
 				# Note: I spent time developing a RegEx to check for the presense or absense
 				#       of the "(Slot unlocked...)" text, but it was becoming overly complex.
 				#       Only checking for the presense of the text is much clearer,
 				#       as is a simple if-else for handling the RegEx match results.
+				hero_texts = post_detail.css('ul li').map{|i| i.text.strip}
 				heroes = []
 				for hero_text in hero_texts
 					# Check for required player levels

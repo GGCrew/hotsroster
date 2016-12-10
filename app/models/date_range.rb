@@ -126,10 +126,52 @@ class DateRange < ActiveRecord::Base
 			return date_range
 		else
 			# We should never get to here!
+			# TODO: Send alert to admin
 			logger.info "---- UNEXPECTED date text: #{date_text} ----"
 			return nil
 		end
 	end		
+
+	def self.import_from_post(post_detail)
+		date_range = nil	# Assume failure
+
+		if post_detail.class == Nokogiri::XML::NodeSet
+			date_search_texts = [
+				'Free-to-Play Hero Rotation:',
+				'Week of Tuesday,'
+			]
+
+			date_searches = []
+			date_search_texts.each{ |i| date_searches << {text: i, regex: Regexp.new(Regexp.quote(i))} }
+
+			date_text = nil
+			post_detail.first.traverse do |node|
+				if node.text?
+					if date_text.nil?
+						date_searches.each do |date_search|
+							if date_search[:regex].match(node.text)
+								date_text = node.text.dup
+								date_text.gsub!(date_search[:text], '')
+								date_text.strip!
+								date_text.chop! while /[^[a-zA-Z0-9]]$/ =~ date_text
+								date_range = DateRange.import_date_text(date_text)
+
+								break	# exit the date_searches.each loop
+							end
+						end
+					end
+				end
+			end
+
+			if date_text.nil?
+				# TODO: Send alert to admin
+				logger.info "---- UNEXPECTED DateRange text in Blizzard forum post: #{post_detail.text}"
+			end
+		end
+
+		return date_range
+	end
+
 
 	def self.current
 		return self.order([:end, :start]).last
