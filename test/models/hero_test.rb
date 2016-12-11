@@ -102,6 +102,14 @@ class HeroTest < ActiveSupport::TestCase
 		assert_empty expected_heroes - Hero.launch_heroes
 	end
 
+	test 'should return post-launch heroes' do
+		heroes = Hero.all
+		min_release_date = heroes.map(&:release_date).min # Earliest release date will coincide with game launch
+		expected_heroes = heroes.select{|hero| hero.release_date != min_release_date}
+		assert_equal expected_heroes.length, Hero.post_launch_heroes.length
+		assert_empty expected_heroes - Hero.post_launch_heroes
+	end
+
 	test 'should return multiclass heroes' do
 		hero_ids = HeroRole.all.map(&:hero_id)
 		hero_ids.sort!
@@ -111,6 +119,38 @@ class HeroTest < ActiveSupport::TestCase
 		assert_empty multiclass_heroes - Hero.multiclass_heroes
 	end
 		
+	test 'should return distinct hero ids' do
+		hero_ids = []
+		hero_slugs = Hero.all.select(:slug).map(&:slug)
+		hero_slugs.uniq!
+		hero_slugs.each{ |slug| hero_ids << Hero.order(:id).find_by(slug: slug).id }
+		hero_ids.uniq!
+		assert_equal hero_ids.length, Hero.distinct_hero_ids.length
+		assert_empty hero_ids - Hero.distinct_hero_ids
+	end
+
+	test 'should return distinct heroes' do
+		heroes = []
+		hero_slugs = Hero.all.select(:slug).map(&:slug)
+		hero_slugs.uniq!
+		hero_slugs.each{ |slug| heroes << Hero.order(:id).find_by(slug: slug) }
+		heroes.uniq!
+		assert_equal heroes.length, Hero.distinct_heroes.length
+		assert_empty heroes - Hero.distinct_heroes
+	end
+
+	test 'should return typical weeks between hero releases' do
+		assert true
+	end
+
+	test 'should return typical weeks between release and first rotation' do
+		assert true
+	end
+
+	test 'should return hero array when parsing from post' do
+		assert true
+	end
+
 
 	# Instance method tests
 
