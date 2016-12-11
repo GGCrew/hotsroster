@@ -140,14 +140,17 @@ class HeroTest < ActiveSupport::TestCase
 	end
 
 	test 'should return typical weeks between hero releases' do
+		# TODO
 		assert true
 	end
 
 	test 'should return typical weeks between release and first rotation' do
+		# TODO
 		assert true
 	end
 
 	test 'should return hero array when parsing from post' do
+		# TODO
 		assert true
 	end
 
