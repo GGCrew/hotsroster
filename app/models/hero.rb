@@ -187,11 +187,11 @@ class Hero < ActiveRecord::Base
 	end
 
 	def self.distinct_hero_ids
-		duplicate_counts = self.group(:name).count.select{|k,v| v>1}
+		duplicate_counts = self.group(:slug).count.select{|k,v| v>1}
 		extra_ids = []
-		duplicate_counts.keys.each do |name|
-			duplicate_hero_ids = self.where(name: name).order(:id).map(&:id)
-			duplicate_hero_ids.shift
+		duplicate_counts.keys.each do |slug|
+			duplicate_hero_ids = self.where(slug: slug).order(:id).map(&:id)
+			duplicate_hero_ids.shift # drop the lowest-value ID, which represents the "unique" record
 			extra_ids << duplicate_hero_ids
 		end
 		extra_ids.flatten!
