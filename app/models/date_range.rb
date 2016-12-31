@@ -16,6 +16,12 @@ class DateRange < ActiveRecord::Base
 	#..#
 
 	def self.import_date_text(date_text)
+		# US website samples:
+		# - Dec 27, 2016 – Jan 3, 2017
+
+		# EU website samples:
+		# - 27-Dec-2016 – 03-Jan-2017
+
 		# US forum samples:
 		# - June 2 - 9, 2015
 		# - June 30 - July 7, 2015
@@ -55,6 +61,28 @@ class DateRange < ActiveRecord::Base
 		end
 
 
+		# - Dec 27, 2016 – Jan 3, 2017
+		date_match = /^([A-Za-z]{3}) (\d{1,2}), (\d{4})\s.\s([A-Za-z]{3}) (\d{1,2}), (\d{4})$/.match(date_text)
+		if date_match
+			start_month = date_match[1]
+			start_day = date_match[2]
+			start_year = date_match[3]
+			end_month = date_match[4]
+			end_day = date_match[5]
+			end_year = date_match[6]
+		end
+
+		# - 27-Dec-2016 – 03-Jan-2017
+		date_match = /^(\d{1,2})-([A-Za-z]{3})-(\d{4})\s.\s(\d{1,2})-([A-Za-z]{3})-(\d{4})$/.match(date_text)
+		if date_match
+			start_day = date_match[1]
+			start_month = date_match[2]
+			start_year = date_match[3]
+			end_day = date_match[4]
+			end_month = date_match[5]
+			end_year = date_match[6]
+		end
+
 		# - June 2 - 9, 2015
 		# - June 30 - July 7, 2015
 		# - Dec 29 - Jan 5, 2015   (NOTE: year for the ending date is obviously wrong!)
@@ -70,7 +98,10 @@ class DateRange < ActiveRecord::Base
 			start_day = date_match[2]
 			end_month = date_match[3]
 			end_day = date_match[4]
-			year = date_match[5]
+			start_year = date_match[5]
+			end_year = date_match[5]
+
+			end_month = start_month if end_month.blank?
 		end
 
 		# - February 10, 2015
@@ -78,39 +109,42 @@ class DateRange < ActiveRecord::Base
 		if date_match
 			start_month = date_match[1]
 			start_day = date_match[2]
-			year = date_match[3]
-			calculated_date = DateTime.parse("#{start_month} #{start_day}, #{year}") + 1.week
+			start_year = date_match[3]
+
+			calculated_date = DateTime.parse("#{start_month} #{start_day}, #{start_year}") + 1.week
 			end_day = calculated_date.strftime('%d')
 			end_month = calculated_date.strftime('%B')
+			end_year = calculated_date.strftime('%Y')
 		end
 
 		# - 02 - 09 February, 2016
 		date_match = /^(\d{1,2}) - (\d{1,2}) ([a-zA-Z]*), (\d{4})$/.match(date_text)
 		if date_match
-			start_month = date_match[3]
 			start_day = date_match[1]
-			end_month = date_match[3]
 			end_day = date_match[2]
-			year = date_match[4]
+			start_month = date_match[3]
+			end_month = date_match[3]
+			start_year = date_match[4]
+			end_year = date_match[4]
 		end
 
 		# - 23 February - 01 March, 2016
 		# - 05 April - 12, 2016
 		date_match = /^(\d{1,2}) ([a-zA-Z]*) - (\d{1,2}) ?([a-zA-Z]*), (\d{4})$/.match(date_text)
 		if date_match
-			start_month = date_match[2]
 			start_day = date_match[1]
-			end_month = date_match[4]
+			start_month = date_match[2]
 			end_day = date_match[3]
-			year = date_match[5]
+			end_month = date_match[4]
+			start_year = date_match[5]
+			end_year = date_match[5]
+
+			end_month = start_month if end_month.blank?
 		end
 
-		if year && start_month && start_day && end_day
+		if start_year && start_month && start_day && end_year && end_month && end_day
 			# end_day should always be 7 days later than start_day (both on a Tuesday)
 			(end_day = (end_day.to_i + 1).to_s) if (end_day.to_i == (start_day.to_i + 6))
-
-			# if no end_month, assume start_month and end_month are the same
-			(end_month = start_month) if (end_month.blank? && (end_day.to_i == (start_day.to_i + 7)))
 
 			start_date = DateTime.parse("#{start_month} #{start_day}, #{year}")
 			end_date = DateTime.parse("#{end_month} #{end_day}, #{year}")
@@ -175,6 +209,22 @@ class DateRange < ActiveRecord::Base
 		return date_range
 	end
 
+	def self.import_from_blizzard_hero_page
+		#	<p class="free-rotation">
+		#		<span class="free-rotation__text">Free to play:</span>
+		#		<span class="free-rotation__date">Dec 27, 2016 – Jan 3, 2017</span>
+		#	</p>
+
+		country, address = SOURCE_URLS[:heroes].first
+		url = URI.parse(address)
+		html = Net::HTTP.get(url) # TODO: error handling
+		page = Nokogiri::HTML(html)
+
+		date_text = page.css('.free-rotation .free-rotation__date').text
+		date_range = self.import_date_text(date_text)
+
+		return date_range
+	end
 
 	def self.current
 		return self.order([:end, :start]).last
