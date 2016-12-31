@@ -25,7 +25,7 @@ class Hero < ActiveRecord::Base
 
 	#..#
 
-	def self.import_from_blizzard
+	def self.get_heroes_json
 		jsons = []
 		SOURCE_URLS[:heroes].each do |country, address|
 			url = URI.parse(address)
@@ -48,9 +48,16 @@ class Hero < ActiveRecord::Base
 			json_end = (json_end_regex =~ hero_script) + json_end_string.length - 1 - 1  #...and trim trailing semicolon
 			json_string = hero_script[json_start..json_end]
 			json = JSON.parse(json_string)
+			jsons << json
 		end
 		json = jsons.flatten.uniq
 		
+		return json
+	end
+
+	def self.import_from_blizzard_hero_page
+		json = self.get_heroes_json
+
 		# update related tables
 		roles = []
 		typps = []
@@ -73,8 +80,8 @@ class Hero < ActiveRecord::Base
 				name: hero_json['name'],
 				title: hero_json['title'],
 				slug: hero_json['slug'],
-				typp: Typp.where(name: hero_json['type']['name']).first,
-				franchise: Franchise.where(value: hero_json['franchise']).first
+				typp: Typp.find_by(name: hero_json['type']['name']),
+				franchise: Franchise.find_by(value: hero_json['franchise'])
 			}
 
 			hero = self.find_by(slug: hero_json['slug'])
