@@ -10,9 +10,31 @@ class Roster < ActiveRecord::Base
 
 	#..#
 
-	def self.import_from_blizzard
-		# TODO: split into import_from_hero_page and import_from_forum
+	def self.import_from_blizzard_hero_page
+		country, address = SOURCE_URLS[:heroes].first
+		heroes_json = Hero.get_heroes_json(address)
+		date_range = DateRange.import_from_blizzard_hero_page(address)
 
+		heroes_json.select!{|hero_json| hero_json['inFreeHeroRotation']}
+		if heroes_json.empty?
+			# TODO: Send alert to admin
+		end
+
+		heroes_json.each do |hero_json|
+			slug = hero_json['slug']
+			player_level = (hero_json['freeRotationMinLevel'] == 0 ? 1 : hero_json['freeRotationMinLevel'])
+			hero = Hero.find_by(slug: slug)
+			if hero
+				roster = Roster.find_or_create_by(date_range_id: date_range.id, hero_id: hero.id)
+				roster.update!(player_level: player_level)
+			else
+				# Should never get here!
+				# TODO: Send alert to admin
+			end
+		end
+	end
+
+	def self.import_from_blizzard_forum
 		SOURCE_URLS[:rosters].each do |country, address|
 			# Loop through all pages via pagination
 			page_query_string = '?page=1'
