@@ -209,13 +209,12 @@ class DateRange < ActiveRecord::Base
 		return date_range
 	end
 
-	def self.import_from_blizzard_hero_page
+	def self.import_from_blizzard_hero_page(address)
 		#	<p class="free-rotation">
 		#		<span class="free-rotation__text">Free to play:</span>
 		#		<span class="free-rotation__date">Dec 27, 2016 – Jan 3, 2017</span>
 		#	</p>
 
-		country, address = SOURCE_URLS[:heroes].first
 		url = URI.parse(address)
 		html = Net::HTTP.get(url) # TODO: error handling
 		page = Nokogiri::HTML(html)

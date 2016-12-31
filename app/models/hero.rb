@@ -25,38 +25,33 @@ class Hero < ActiveRecord::Base
 
 	#..#
 
-	def self.get_heroes_json
-		jsons = []
-		SOURCE_URLS[:heroes].each do |country, address|
-			url = URI.parse(address)
-			html = Net::HTTP.get(url) # TODO: error handling
-			page = Nokogiri::HTML(html)
+	def self.get_heroes_json(address)
+		url = URI.parse(address)
+		html = Net::HTTP.get(url) # TODO: error handling
+		page = Nokogiri::HTML(html)
 
-			json_start_string = 'window.heroes = '
-			json_end_string = '}];'
+		json_start_string = 'window.heroes = '
+		json_end_string = '}];'
 
-			json_start_regex = Regexp.new(Regexp.quote(json_start_string))
-			json_end_regex = Regexp.new(Regexp.quote(json_end_string))
+		json_start_regex = Regexp.new(Regexp.quote(json_start_string))
+		json_end_regex = Regexp.new(Regexp.quote(json_end_string))
 
-			hero_script = nil
-			page.css('script').each do |script|
-				hero_script = script.to_s if (json_start_regex =~ script)
-			end
-			#TODO: error handling (hero_script == nil)
-
-			json_start = (json_start_regex =~ hero_script) + json_start_string.length
-			json_end = (json_end_regex =~ hero_script) + json_end_string.length - 1 - 1  #...and trim trailing semicolon
-			json_string = hero_script[json_start..json_end]
-			json = JSON.parse(json_string)
-			jsons << json
+		hero_script = nil
+		page.css('script').each do |script|
+			hero_script = script.to_s if (json_start_regex =~ script)
 		end
-		json = jsons.flatten.uniq
+		#TODO: error handling (hero_script == nil)
+
+		json_start = (json_start_regex =~ hero_script) + json_start_string.length
+		json_end = (json_end_regex =~ hero_script) + json_end_string.length - 1 - 1  #...and trim trailing semicolon
+		json_string = hero_script[json_start..json_end]
+		json = JSON.parse(json_string)
 		
 		return json
 	end
 
-	def self.import_from_blizzard_hero_page
-		json = self.get_heroes_json
+	def self.import_from_blizzard_hero_page(address)
+		json = self.get_heroes_json(address)
 
 		# update related tables
 		roles = []
