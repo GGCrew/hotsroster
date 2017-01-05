@@ -233,6 +233,7 @@ class Hero < ActiveRecord::Base
 				difference = hero.first_rotation.start - hero.release_date
 				difference = (difference / 1.week).to_i
 				if difference < 0
+					logger.debug("hero: #{hero.id} #{hero.name}")
 					logger.debug("difference: #{difference}")
 					logger.debug("hero.first_rotation.start: #{hero.first_rotation.start}, hero.release_date: #{hero.release_date}")
 				end
@@ -299,11 +300,11 @@ class Hero < ActiveRecord::Base
 	end
 	
 	def first_rotation
-		self.date_ranges.order([:start, :end]).first
+		self.date_ranges.where('start >= ?', GAME_LAUNCH_DATE).order([:start, :end]).first
 	end
 
 	def last_rotation
-		self.date_ranges.order([:end, :start]).last
+		self.date_ranges.where('start >= ?', GAME_LAUNCH_DATE).order([:end, :start]).last
 	end
 
 	def weeks_between_release_and_first_rotation
