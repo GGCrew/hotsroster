@@ -228,6 +228,14 @@ class DateRange < ActiveRecord::Base
 		return date_range
 	end
 
+	def self.import_from_blizzard_hero_pages
+		date_range_hash = {}
+		SOURCE_URLS[:heroes].each do |country, address|
+			date_range_hash.merge!(country.to_sym => self.import_from_blizzard_hero_page(address))
+		end
+		return date_range_hash
+	end
+
 	def self.current
 		return self.order([:end, :start]).last
 	end

@@ -10,8 +10,7 @@ class Roster < ActiveRecord::Base
 
 	#..#
 
-	def self.import_from_blizzard_hero_page
-		country, address = SOURCE_URLS[:heroes].first
+	def self.import_from_blizzard_hero_page(address)
 		heroes_json = Hero.get_heroes_json(address)
 		date_range = DateRange.import_from_blizzard_hero_page(address)
 
@@ -32,6 +31,16 @@ class Roster < ActiveRecord::Base
 				# TODO: Send alert to admin
 			end
 		end
+
+		return date_range.rosters
+	end
+
+	def self.import_from_blizzard_hero_pages
+		roster_hash = {}
+		SOURCE_URLS[:heroes].each do |country, address|
+			roster_hash.merge!(country.to_sym => self.import_from_blizzard_hero_page(address))
+		end
+		return roster_hash
 	end
 
 	def self.import_from_blizzard_forum
