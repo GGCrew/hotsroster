@@ -54,4 +54,11 @@ class Franchise < ActiveRecord::Base
 		return true
 	end
 
+	def self.import_from_heroes_json(heroes_json)
+		json = heroes_json.map{|i| i['franchise']}
+		json.uniq!
+
+		return self.import_from_json(json)
+	end
+
 end

@@ -25,4 +25,13 @@ class Role < ActiveRecord::Base
 		return true
 	end
 
+	def self.import_from_heroes_json(heroes_json)
+		json = heroes_json.map{|i| [i['role'], i['roleSecondary']]}
+		json.flatten!
+		json.uniq!
+		json.reject!{|i| i.empty?}
+
+		return self.import_from_json(json)
+	end
+
 end

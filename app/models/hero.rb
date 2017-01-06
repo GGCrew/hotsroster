@@ -54,20 +54,9 @@ class Hero < ActiveRecord::Base
 		heroes_json = self.get_heroes_json(address)
 
 		# update related tables
-		roles = []
-		typps = []
-		franchises = []
-		heroes_json.each do |hero_json|
-			roles << hero_json['role']
-			typps << hero_json['type']
-			franchises << hero_json['franchise']
-		end
-		roles.uniq!
-		typps.uniq!
-		franchises.uniq!
-		Role.import_from_json(roles)
-		Typp.import_from_json(typps)
-		Franchise.import_from_json(franchises)
+		Role.import_from_heroes_json(heroes_json)
+		Typp.import_from_heroes_json(heroes_json)
+		Franchise.import_from_heroes_json(heroes_json)
 
 		# update heroes
 		heroes_json.each do |hero_json|
