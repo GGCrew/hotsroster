@@ -51,13 +51,13 @@ class Hero < ActiveRecord::Base
 	end
 
 	def self.import_from_blizzard_hero_page(address)
-		json = self.get_heroes_json(address)
+		heroes_json = self.get_heroes_json(address)
 
 		# update related tables
 		roles = []
 		typps = []
 		franchises = []
-		json.each do |hero_json|
+		heroes_json.each do |hero_json|
 			roles << hero_json['role']
 			typps << hero_json['type']
 			franchises << hero_json['franchise']
@@ -70,7 +70,7 @@ class Hero < ActiveRecord::Base
 		Franchise.import_from_json(franchises)
 
 		# update heroes
-		json.each do |hero_json|
+		heroes_json.each do |hero_json|
 			attributes = {
 				name: hero_json['name'],
 				title: hero_json['title'],
@@ -120,7 +120,15 @@ class Hero < ActiveRecord::Base
 			end
 		end
 
-		return json
+		return heroes_json
+	end
+
+	def self.import_from_blizzard_hero_pages
+		json_hash = {}
+		SOURCE_URLS[:heroes].each do |country, address|
+			json_hash.merge!(country.to_sym => self.import_from_blizzard_hero_page(address))
+		end
+		return json_hash
 	end
 
 	def self.parse_from_post(post_detail)
