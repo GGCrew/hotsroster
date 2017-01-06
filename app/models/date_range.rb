@@ -58,6 +58,9 @@ class DateRange < ActiveRecord::Base
 			#when "August 23- 29, 2016"
 			#	date_text = "August 23 - 29, 2016"
 
+			when "Jan 3 - 10, 2016"
+				date_text = "Jan 3 - 10, 2017"
+
 		end
 
 
