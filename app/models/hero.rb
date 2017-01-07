@@ -299,11 +299,11 @@ class Hero < ActiveRecord::Base
 	end
 	
 	def first_rotation
-		self.date_ranges.where('start >= ?', GAME_LAUNCH_DATE).order([:start, :end]).first
+		self.date_ranges.since_game_launch.order([:start, :end]).first
 	end
 
 	def last_rotation
-		self.date_ranges.where('start >= ?', GAME_LAUNCH_DATE).order([:end, :start]).last
+		self.date_ranges.since_game_launch.order([:end, :start]).last
 	end
 
 	def weeks_between_release_and_first_rotation
@@ -321,7 +321,7 @@ class Hero < ActiveRecord::Base
 	end
 
 	def rotations
-		self.date_ranges.count
+		self.date_ranges.since_game_launch.count
 	end
 
 	def rotations_since_newest_hero_release
@@ -334,7 +334,7 @@ class Hero < ActiveRecord::Base
 
 
 	def rotation_percentage_since_launch
-		(self.rotations / DateRange.count.to_f) * 100
+		(self.rotations / DateRange.since_game_launch.count.to_f) * 100
 	end
 
 	def rotation_percentage_since_release
@@ -350,12 +350,12 @@ class Hero < ActiveRecord::Base
 	end
 
 	def rotation_pairings
-		self_date_ranges = self.date_ranges
+		self_date_ranges = self.date_ranges.since_game_launch
 		self_date_ranges_count = self_date_ranges.count
 		other_heroes = Hero.distinct_heroes.where.not(id: self.id).order(name: :asc)
 		pairings = []
 		for other_hero in other_heroes
-			other_hero_date_ranges = other_hero.date_ranges
+			other_hero_date_ranges = other_hero.date_ranges.since_game_launch
 			paired_date_ranges = self_date_ranges & other_hero_date_ranges
 			paired_date_ranges_count = paired_date_ranges.count
 			paired_date_ranges_percentage = (self_date_ranges_count == 0 ? 0.0 : ((paired_date_ranges_count / self_date_ranges_count.to_f) * 100))

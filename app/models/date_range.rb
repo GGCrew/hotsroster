@@ -6,6 +6,7 @@ class DateRange < ActiveRecord::Base
 	#..#
 	
 	scope :since_start_date, -> (date) { where(['start >= :date', {date: date}]) }
+	scope :since_game_launch, -> { where(['start >= :date', {date: GAME_LAUNCH_DATE}]) }
 
 	#..#
 
