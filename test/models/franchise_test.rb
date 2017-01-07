@@ -46,6 +46,10 @@ class FranchiseTest < ActiveSupport::TestCase
 		assert Franchise.import_from_blizzard
 	end
 
+	test 'should import from heroes json' do
+		assert Franchise.import_from_heroes_json(heroes_json)
+	end
+
 	test 'should import from json' do
 		assert Franchise.import_from_json([attributes[:value], bogus_attributes[:value]])
 	end
