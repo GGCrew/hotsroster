@@ -42,8 +42,14 @@ class FranchiseTest < ActiveSupport::TestCase
 
 	# Method tests
 
-	test 'should import from blizzard' do
-		assert Franchise.import_from_blizzard
+	test 'should import from blizzard hero pages' do
+		assert Franchise.import_from_blizzard_hero_pages
+	end
+
+	test 'should import from specific blizzard hero pages' do
+		SOURCE_URLS[:heroes].each do |country, address|
+			assert Franchise.import_from_blizzard_hero_page(address)
+		end
 	end
 
 	test 'should import from heroes json' do
