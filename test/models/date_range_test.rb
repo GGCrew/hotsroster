@@ -34,41 +34,6 @@ class DateRangeTest < ActiveSupport::TestCase
 		assert date_range.save
 	end
 
-	# Method tests
-
-	test "should import date test" do
-		# US forum samples
-		# - June 2 - 9, 2015
-		# - June 30 - July 7, 2015
-		# - Dec 29 - Jan 5, 2015   (NOTE: year for the ending date is obviously wrong!)
-
-		# EU forum samples:
-		# - February 10, 2015
-		# - December 8 - 15, 2015
-		# - December 29 - January 4    (NOTE: This specific entry is missing the year value)
-		# - January 26 - February 02, 2016
-		# - 02 - 09 February, 2016
-		# - 23 February - 01 March, 2016
-		# - 05 April - 12, 2016
-		# - July 05 - July 12, 2016
-		# - August 23- 29, 2016    (NOTE: no whitespace between "23" and hyphen)
-		# - September 27 - October 04 , 2016    (NOTE: whitespace before comma)
-
-		assert_instance_of DateRange, DateRange.import_date_text('June 2 - 9, 2015')
-		assert_instance_of DateRange, DateRange.import_date_text('June 30 - July 7, 2015')
-		assert_instance_of DateRange, DateRange.import_date_text('Dec 29 - Jan 5, 2015')
-		assert_instance_of DateRange, DateRange.import_date_text('February 10, 2015')
-		assert_instance_of DateRange, DateRange.import_date_text('December 8 - 15, 2015')
-		assert_instance_of DateRange, DateRange.import_date_text('December 29 - January 4')
-		assert_instance_of DateRange, DateRange.import_date_text('January 26 - February 02, 2016')
-		assert_instance_of DateRange, DateRange.import_date_text('02 - 09 February, 2016')
-		assert_instance_of DateRange, DateRange.import_date_text('23 February - 01 March, 2016')
-		assert_instance_of DateRange, DateRange.import_date_text('05 April - 12, 2016')
-		assert_instance_of DateRange, DateRange.import_date_text('July 05 - July 12, 2016')
-		assert_instance_of DateRange, DateRange.import_date_text('August 23- 29, 2016')
-		assert_instance_of DateRange, DateRange.import_date_text('September 27 - October 04 , 2016')
-	end
-
 	test "should pass if start is before end" do
 		date_range = DateRange.new(start: attributes[:start], end: attributes[:start] + 1.week)
 		assert date_range.end_is_after_start
@@ -93,4 +58,117 @@ class DateRangeTest < ActiveSupport::TestCase
 		date_range = DateRange.new(start: attributes[:start], end: nil)
 		assert_not date_range.end_is_after_start
 	end
+
+
+	# Scope tests
+
+	test "should return date ranges since game launch" do
+		expected_date_ranges = DateRange.all
+		expected_date_ranges = expected_date_ranges.reject{|i| i.start < GAME_LAUNCH_DATE}
+		expected_date_range_ids = expected_date_ranges.map(&:id)
+
+		date_range_ids = DateRange.since_game_launch.select(:id).map(&:id)
+
+		assert_equal expected_date_range_ids.length, date_range_ids.length
+		assert_empty expected_date_range_ids - date_range_ids
+	end
+
+	test "should return date ranges since specific start dates" do
+		20.times do
+			start_date = DateRange.all.sample.start
+
+			expected_date_ranges = DateRange.all
+			expected_date_ranges = expected_date_ranges.reject{|i| i.start < start_date}
+			expected_date_range_ids = expected_date_ranges.map(&:id)
+
+			date_range_ids = DateRange.since_start_date(start_date).select(:id).map(&:id)
+
+			assert_equal expected_date_range_ids.length, date_range_ids.length
+			assert_empty expected_date_range_ids - date_range_ids
+		end
+	end
+
+
+	# Method tests
+
+	test "should import date text" do
+		# US website samples:
+		# - Dec 27, 2016 – Jan 3, 2017
+
+		# EU website samples:
+		# - 27-Dec-2016 – 03-Jan-2017
+
+		# US forum samples
+		# - June 2 - 9, 2015
+		# - June 30 - July 7, 2015
+		# - Dec 29 - Jan 5, 2015   (NOTE: year for the ending date is obviously wrong!  Should be 2016)
+		# - Jan 3 - 10, 2016 (NOTE: Should be 2017)
+
+		# EU forum samples:
+		# - February 10, 2015
+		# - December 8 - 15, 2015
+		# - December 29 - January 4    (NOTE: This specific entry is missing the year value)
+		# - January 26 - February 02, 2016
+		# - 02 - 09 February, 2016
+		# - 23 February - 01 March, 2016
+		# - 05 April - 12, 2016
+		# - July 05 - July 12, 2016
+		# - August 23- 29, 2016    (NOTE: no whitespace between "23" and hyphen)
+		# - September 27 - October 04 , 2016    (NOTE: whitespace before comma)
+
+		assert_instance_of DateRange, DateRange.import_date_text('Dec 27, 2016 – Jan 3, 2017')
+		assert_instance_of DateRange, DateRange.import_date_text('27-Dec-2016 – 03-Jan-2017')
+		assert_instance_of DateRange, DateRange.import_date_text('June 2 - 9, 2015')
+		assert_instance_of DateRange, DateRange.import_date_text('June 30 - July 7, 2015')
+		assert_instance_of DateRange, DateRange.import_date_text('Dec 29 - Jan 5, 2015')
+		assert_instance_of DateRange, DateRange.import_date_text('Jan 3 - 10, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('February 10, 2015')
+		assert_instance_of DateRange, DateRange.import_date_text('December 8 - 15, 2015')
+		assert_instance_of DateRange, DateRange.import_date_text('December 29 - January 4')
+		assert_instance_of DateRange, DateRange.import_date_text('January 26 - February 02, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('02 - 09 February, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('23 February - 01 March, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('05 April - 12, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('July 05 - July 12, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('August 23- 29, 2016')
+		assert_instance_of DateRange, DateRange.import_date_text('September 27 - October 04 , 2016')
+	end
+
+	test "should import from specific blizzard hero pages" do
+		SOURCE_URLS[:heroes].each do |country, address|
+			assert DateRange.import_from_blizzard_hero_page(address)
+		end
+	end
+
+	test "should import from blizzard hero pages" do
+		assert DateRange.import_from_blizzard_hero_pages
+	end
+
+	test "should import from post" do
+		# <div class="TopicPost-bodyContent" data-topic-post-body-content="true">
+		# 	<span class="underline">
+		# 		<strong>Free-to-Play Hero Rotation: Jan 3 - 10, 2016</strong>
+		# 	</span>
+		# 	<br />
+		# 	<ul>
+		# 		<li>Malfurion</li>
+		# 		<li>Valla</li>
+		# 		<li>Tyrael</li>
+		# 		<li>Kael'thas</li>
+		# 		<li>Zarya</li>
+		# 		<li>Sylvanas</li>
+		# 		<li>Artanis (Slot unlocked at Player Level 5)</li>
+		# 		<li>Brightwing (Slot unlocked at Player Level 7)</li>
+		# 		<li>Alarak (Slot unlocked at Player Level 12)</li>
+		# 		<li>Medivh (Slot unlocked at Player Level 15)</li>
+		# 	</ul>
+		# </div>
+
+		html = '<div class="TopicPost-bodyContent" data-topic-post-body-content="true"><span class="underline"><strong>Free-to-Play Hero Rotation: Jan 3 - 10, 2016</strong></span><br /><ul><li>Malfurion</li><li>Valla</li><li>Tyrael</li><li>Kael\'thas</li><li>Zarya</li><li>Sylvanas</li><li>Artanis (Slot unlocked at Player Level 5)</li><li>Brightwing (Slot unlocked at Player Level 7)</li><li>Alarak (Slot unlocked at Player Level 12)</li><li>Medivh (Slot unlocked at Player Level 15)</li></ul></div>'
+		fragment = Nokogiri::XML.fragment(html)
+		post_detail = fragment.children
+
+		assert_instance_of DateRange, DateRange.import_from_post(post_detail)
+	end
+
 end

@@ -27,6 +27,7 @@ class DateRange < ActiveRecord::Base
 		# - June 2 - 9, 2015
 		# - June 30 - July 7, 2015
 		# - Dec 29 - Jan 5, 2015   (NOTE: year for the ending date is obviously wrong!)
+		# - Jan 3 - 10, 2016 (NOTE: Should be 2017)
 
 		# EU forum samples:
 		# - February 10, 2015
