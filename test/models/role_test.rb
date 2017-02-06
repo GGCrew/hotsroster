@@ -42,6 +42,10 @@ class RoleTest < ActiveSupport::TestCase
 
 	# Model tests
 
+	test 'should import from heroes json' do
+		assert Role.import_from_heroes_json(heroes_json)
+	end
+
 	test 'should import from json' do
 		json = [
 			HashWithIndifferentAccess.new(attributes),
