@@ -61,8 +61,8 @@ class Hero < ActiveRecord::Base
 		# update heroes
 		heroes_json.each do |hero_json|
 			attributes = {
-				name: hero_json['name'],
-				title: hero_json['title'],
+				name: Nokogiri::HTML.parse(hero_json['name']).text,
+				title: Nokogiri::HTML.parse(hero_json['title']).text,
 				slug: hero_json['slug'],
 				typp: Typp.find_by(name: hero_json['type']['name']),
 				franchise: Franchise.find_by(value: hero_json['franchise'])
@@ -75,10 +75,11 @@ class Hero < ActiveRecord::Base
 			release_date = Date.today
 			(release_date += (2 - release_date.wday).days) if release_date.wday < 2 # Sun, Mon
 			(release_date += (9 - release_date.wday).days) if release_date.wday > 2 # Wed, Thu, Fri, Sat
-		
+
+			# Avoid overwriting existing (possibly custom) data
 			attributes.merge!({release_date: release_date}) unless hero.release_date
 			attributes.merge!({prerelease_date: release_date}) unless hero.prerelease_date
-			attributes.merge!({player_character_name: hero_json['name']}) unless hero.player_character_name
+			attributes.merge!({player_character_name: attributes[:name]}) unless hero.player_character_name
 
 			hero.update!(attributes)
 
