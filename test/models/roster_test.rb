@@ -34,8 +34,8 @@ class RosterTest < ActiveSupport::TestCase
 
 	# Model tests
 
-	test 'should import from blizzard' do
-		assert Roster.import_from_blizzard
+	test 'should import from blizzard hero pages' do
+		assert Roster.import_from_blizzard_hero_pages
 	end
 
 	test 'should return date range of latest roster size change' do

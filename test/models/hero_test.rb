@@ -51,8 +51,8 @@ class HeroTest < ActiveSupport::TestCase
 
 	# Class method tests
 
-	test 'should import from blizzard' do
-		assert_instance_of Array, Hero.import_from_blizzard
+	test 'should import from blizzard hero pages' do
+		assert_instance_of Hash, Hero.import_from_blizzard_hero_pages
 	end
 
 	test 'should return newest hero' do
@@ -150,6 +150,11 @@ class HeroTest < ActiveSupport::TestCase
 	end
 
 	test 'should return hero array when parsing from post' do
+		# TODO
+		assert true
+	end
+
+	test 'should return hero JSON object' do
 		# TODO
 		assert true
 	end
