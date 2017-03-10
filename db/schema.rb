@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161118000003) do
+ActiveRecord::Schema.define(version: 20170310000002) do
 
   create_table "alternate_hero_names", force: :cascade do |t|
     t.integer  "hero_id"
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 20161118000003) do
     t.datetime "release_date"
     t.datetime "prerelease_date"
     t.string   "player_character_name"
+    t.string   "gender"
   end
 
   create_table "roles", force: :cascade do |t|
