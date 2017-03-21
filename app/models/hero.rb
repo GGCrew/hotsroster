@@ -15,6 +15,9 @@ class Hero < ActiveRecord::Base
 	scope	:post_launch_heroes, -> { where.not(release_date: GAME_LAUNCH_DATE) }
 	scope :distinct_heroes, -> { where(id: Hero.distinct_hero_ids) }
 	scope :multiclass_heroes, -> { joins(:hero_roles).group(:id).having('count(hero_roles.id) > 1') }
+	scope	:males, -> { where(gender: 'male') }
+	scope	:females, -> { where(gender: 'female') }
+	scope	:unknown_gender, -> { where(gender: nil) }
 
 	#..#
 
