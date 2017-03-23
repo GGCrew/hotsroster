@@ -24,20 +24,6 @@ module RostersHelper
 			roster_start_index = roster_end_index + 1
 		end
 
-=begin
-		if roster_count > 7 # 7 is max amount per row/group
-			# TODO: algorithm for even distribution when more than 2 groups
-
-			break_point = roster_count / 2
-			break_point += 1 if roster_count.odd? # Put "extra" item on top row  -- aesthetics!
-
-			groups << roster[0..(break_point  - 1)]
-			groups << roster[break_point..-1]
-		else
-			groups << roster
-		end
-=end
-
 		return groups
 	end
 
