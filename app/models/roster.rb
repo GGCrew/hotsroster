@@ -5,6 +5,11 @@ class Roster < ActiveRecord::Base
 
 	#..#
 
+	scope :unrestricted, -> { where(player_level: 1) }
+	scope :restricted, -> { where.not(player_level: 1) }
+
+	#..#
+
 	validates	:hero, :date_range, presence: true
 	validates :hero, uniqueness: { scope: :date_range, message: 'and DateRange have already been taken.' }
 
