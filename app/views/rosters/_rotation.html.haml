@@ -11,12 +11,18 @@
 .all
 	%h3 Heroes available to all players
 	.heroes
-		- for roster in rotation[:roster].where(player_level: 1)
-			= render(partial: 'rosters/hero_portrait', object: roster)
+		- roster_groups = create_roster_groups(rotation[:roster].unrestricted)
+		- roster_groups.each_with_index do |roster_group, index|
+			= render(partial: 'rosters/hero_portrait', collection: roster_group)
+			- unless roster_group.equal?(roster_groups.last)
+				%br
 
 .restricted
 	%h3 Restricted Heroes
 	.heroes
-		- for roster in rotation[:roster].where.not(player_level: 1)
-			= render(partial: 'rosters/hero_portrait', object: roster)
+		- roster_groups = create_roster_groups(rotation[:roster].restricted)
+		- roster_groups.each_with_index do |roster_group, index|
+			= render(partial: 'rosters/hero_portrait', collection: roster_group)
+			- unless roster_group.equal?(roster_groups.last)
+				%br
 
