@@ -5,7 +5,7 @@
 				.hero
 					%figure
 						%span.border
-							= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{@hero.slug}.jpg", alt: @hero.name, title: @hero.name
+							= hero_image_tag(@hero)
 			.col-md-9.callout
 				.row
 					.col-md-8
@@ -160,7 +160,7 @@
 								%figure
 									= link_to(hero_path(pairing[:hero])) do
 										%span.border
-											= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{pairing[:hero].slug}.jpg", alt: pairing[:hero].name, title: pairing[:hero].name
+											= hero_image_tag(pairing[:hero])
 							%td.name
 								= pairing[:hero].name
 							%td.count

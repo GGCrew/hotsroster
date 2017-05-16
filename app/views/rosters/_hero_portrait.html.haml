@@ -10,7 +10,7 @@
 	} } |
 	= link_to(hero_path(hero_portrait.hero.distinct_hero)) do
 		%span.border
-			= image_tag "http://us.battle.net/heroes/static/images/heroes/busts/#{hero_portrait.hero.slug}.jpg", alt: hero_portrait.hero.player_character_name, title: hero_portrait.hero.player_character_name
+			= hero_image_tag(hero_portrait.hero)
 	%figcaption
 		= hero_portrait.hero.player_character_name
 		- if display_categories
