@@ -44,6 +44,8 @@ class Roster < ActiveRecord::Base
 	end
 
 	def self.import_from_blizzard_forum
+		require 'net/http'
+
 		SOURCE_URLS[:rosters].each do |country, address|
 			# Loop through all pages via pagination
 			page_query_string = '?page=1'

@@ -26,6 +26,8 @@ class Hero < ActiveRecord::Base
 	#..#
 
 	def self.get_heroes_json(address)
+		require 'net/http'
+
 		url = URI.parse(address)
 		html = Net::HTTP.get(url) # TODO: error handling
 		page = Nokogiri::HTML(html)

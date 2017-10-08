@@ -9,6 +9,8 @@ class Franchise < ActiveRecord::Base
 	#..#
 
 	def self.import_from_blizzard_hero_page(address)
+		require 'net/http'
+
 		url = URI.parse(address)
 		html = Net::HTTP.get(url) # TODO: error handling
 		page = Nokogiri::HTML(html)

@@ -220,6 +220,8 @@ class DateRange < ActiveRecord::Base
 		#		<span class="free-rotation__date">Dec 27, 2016 – Jan 3, 2017</span>
 		#	</p>
 
+		require 'net/http'
+
 		url = URI.parse(address)
 		html = Net::HTTP.get(url) # TODO: error handling
 		page = Nokogiri::HTML(html)
