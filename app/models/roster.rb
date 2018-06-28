@@ -50,20 +50,27 @@ class Roster < ActiveRecord::Base
 			# Loop through all pages via pagination
 			page_query_string = '?page=1'
 			loop do
-				url = URI.parse(address + page_query_string)
-				html = Net::HTTP.get(url) # TODO: error handling
+        if READ_DATA_FROM_LOCAL_DOCS
+          html = File.read('docs/free_hero_rotation.html')
+        else
+          url = URI.parse(address + page_query_string)
+          html = Net::HTTP.get(url) # TODO: error handling
+        end
 				if html.blank?
 					# TODO: Send alert to admin
 				end
 
 				page = Nokogiri::HTML(html)
-				post_list = page.css('div.Topic-content div.TopicPost')
+				#post_list = page.css('div.Topic-content div.TopicPost')
+        post_list = page.css('div#post-list div.topic-post')
+
 				if post_list.empty?
 					# TODO: Send alert to admin
 				end
 
 				for post in post_list
-					post_detail = post.css('div.TopicPost-bodyContent')
+					#post_detail = post.css('div.TopicPost-bodyContent')
+          post_detail = post.css('div.post-detail')
 
 					date_range = DateRange.import_from_post(post_detail)
 
