@@ -1,10 +1,14 @@
 GAME_LAUNCH_DATE = DateTime.parse('2015-06-02')
 
 SOURCE_URLS = {
+#	heroes: {
+#		us: 'http://us.battle.net/heroes/en/heroes/',
+#		eu: 'http://eu.battle.net/heroes/en/heroes/'
+#	},
 	heroes: {
-		us: 'http://us.battle.net/heroes/en/heroes/',
-		eu: 'http://eu.battle.net/heroes/en/heroes/'
-	},
+		us: 'https://heroesofthestorm.com/en-us/heroes/'
+		#eu: 'https://heroesofthestorm.com/en-eu/heroes/'
+	},  
 	rosters: {
 		us: 'https://us.battle.net/forums/en/heroes/topic/17936383460',
 		eu: 'https://eu.battle.net/forums/en/heroes/topic/13604571130'
@@ -19,3 +23,4 @@ SOURCE_URLS = {
 	}
 }
 
+READ_DATA_FROM_LOCAL_DOCS = true

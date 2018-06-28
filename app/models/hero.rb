@@ -28,8 +28,12 @@ class Hero < ActiveRecord::Base
 	def self.get_heroes_json(address)
 		require 'net/http'
 
-		url = URI.parse(address)
-		html = Net::HTTP.get(url) # TODO: error handling
+    if READ_DATA_FROM_LOCAL_DOCS
+      html = File.read('docs/heroes.html')
+    else
+      url = URI.parse(address)
+      html = Net::HTTP.get(url) # TODO: error handling
+    end
 		page = Nokogiri::HTML(html)
 
 		json_start_string = 'window.heroes = '
@@ -67,7 +71,7 @@ class Hero < ActiveRecord::Base
 				title: Nokogiri::HTML.parse(hero_json['title']).text,
 				slug: hero_json['slug'],
 				typp: Typp.find_by(name: hero_json['type']['name']),
-				franchise: Franchise.find_by(value: hero_json['franchise'])
+				franchise: Franchise.find_by(value: hero_json['franchise'].downcase)
 			}
 
 			hero = self.find_by(slug: hero_json['slug'])

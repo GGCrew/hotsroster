@@ -11,8 +11,12 @@ class Franchise < ActiveRecord::Base
 	def self.import_from_blizzard_hero_page(address)
 		require 'net/http'
 
-		url = URI.parse(address)
-		html = Net::HTTP.get(url) # TODO: error handling
+    if READ_DATA_FROM_LOCAL_DOCS
+      html = File.read('docs/heroes.html')
+    else
+      url = URI.parse(address)
+      html = Net::HTTP.get(url) # TODO: error handling
+    end
 		page = Nokogiri::HTML(html)
 
 		#<input type="checkbox" id="warcraft-check" data-ng-model="gameFilters.warcraft" data-ng-change="filterChampions()" />
@@ -49,8 +53,9 @@ class Franchise < ActiveRecord::Base
 	end
 
 	def self.import_from_json(json)
-		for value in json
-			name = value.titlecase
+		for item in json
+			name = item.titlecase
+      value = item.downcase
 			franchise = self.find_by(value: value)
 			if franchise
 				franchise.update_attributes!(name: name) if franchise.name.blank?

@@ -222,8 +222,12 @@ class DateRange < ActiveRecord::Base
 
 		require 'net/http'
 
-		url = URI.parse(address)
-		html = Net::HTTP.get(url) # TODO: error handling
+    if READ_DATA_FROM_LOCAL_DOCS
+      html = File.read('docs/heroes.html')
+    else
+      url = URI.parse(address)
+      html = Net::HTTP.get(url) # TODO: error handling
+    end
 		page = Nokogiri::HTML(html)
 
 		date_text = page.css('.free-rotation .free-rotation__date').text
