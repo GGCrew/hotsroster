@@ -345,7 +345,12 @@ class Hero < ActiveRecord::Base
 	end
 
 	def rotation_percentage_since_release
-		(self.rotations / DateRange.since_start_date(self.release_date).count.to_f) * 100
+    total_possible_rotations = DateRange.since_start_date(self.release_date).count
+    if total_possible_rotations == 0
+      return 0
+    else
+      return (self.rotations / total_possible_rotations.to_f) * 100
+    end
 	end
 
 	def rotation_percentage_since_newest_hero_release
