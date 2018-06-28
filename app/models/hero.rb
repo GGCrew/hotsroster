@@ -354,11 +354,21 @@ class Hero < ActiveRecord::Base
 	end
 
 	def rotation_percentage_since_newest_hero_release
-		(self.rotations_since_newest_hero_release / DateRange.since_start_date(Hero.newest.release_date).count.to_f) * 100
+    total_possible_rotations = DateRange.since_start_date(Hero.newest.release_date).count
+    if total_possible_rotations == 0
+      return 0
+    else
+      return (self.rotations_since_newest_hero_release / total_possible_rotations.to_f) * 100
+    end
 	end
 
 	def rotation_percentage_since_latest_change_in_roster_size
-		(self.rotations_since_latest_change_in_roster_size / DateRange.since_start_date(Roster.date_range_of_latest_roster_size_change.start).count.to_f) * 100
+    total_possible_rotations = DateRange.since_start_date(Roster.date_range_of_latest_roster_size_change.start).count
+    if total_possible_rotations == 0
+      return 0
+    else
+      return (self.rotations_since_latest_change_in_roster_size / total_possible_rotations.to_f) * 100
+    end
 	end
 
 	def rotation_pairings
