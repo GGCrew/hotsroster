@@ -151,8 +151,8 @@ class DateRange < ActiveRecord::Base
 			# end_day should always be 7 days later than start_day (both on a Tuesday)
 			(end_day = (end_day.to_i + 1).to_s) if (end_day.to_i == (start_day.to_i + 6))
 
-			start_date = DateTime.parse("#{start_month} #{start_day}, #{year}")
-			end_date = DateTime.parse("#{end_month} #{end_day}, #{year}")
+			start_date = DateTime.parse("#{start_month} #{start_day}, #{start_year}")
+			end_date = DateTime.parse("#{end_month} #{end_day}, #{end_year}")
 
 			# Kludge for funky end-of-year date text like "Dec 29 - Jan 5, 2015"
 			if start_date > end_date
@@ -222,12 +222,12 @@ class DateRange < ActiveRecord::Base
 
 		require 'net/http'
 
-    if READ_DATA_FROM_LOCAL_DOCS
-      html = File.read('docs/heroes.html')
-    else
-      url = URI.parse(address)
-      html = Net::HTTP.get(url) # TODO: error handling
-    end
+		if READ_DATA_FROM_LOCAL_DOCS
+			html = File.read('docs/heroes.html')
+		else
+			url = URI.parse(address)
+			html = Net::HTTP.get(url) # TODO: error handling
+		end
 		page = Nokogiri::HTML(html)
 
 		date_text = page.css('.free-rotation .free-rotation__date').text
