@@ -1,10 +1,10 @@
 Heroes:
-	http://us.battle.net/heroes/en/heroes/
+	https://heroesofthestorm.com/en-us/heroes/
 
 Free Hero Rotation:
-	http://us.battle.net/heroes/en/forum/topic/17936383460
+	https://us.battle.net/forums/en/heroes/topic/17936383460
 
 Hero Detail (sample):
-	http://us.battle.net/heroes/en/heroes/murky/
+	https://heroesofthestorm.com/en-us/heroes/murky/
 
 
