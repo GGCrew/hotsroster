@@ -2,7 +2,7 @@ GAME_LAUNCH_DATE = DateTime.parse('2015-06-02')
 
 SOURCE_URLS = {
 	heroes: {
-		us: 'https://heroesofthestorm.com/en-us/heroes/'
+		us: 'https://heroesofthestorm.com/en-us/heroes/',
 		eu: 'https://heroesofthestorm.com/en-gb/heroes/'
 	},  
 	rosters: {
