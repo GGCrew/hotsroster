@@ -11,8 +11,38 @@ class ActiveSupport::TestCase
   fixtures :rosters
 
   # Add more helper methods to be used by all tests here...
-  def heroes_json 
-  	# {"name"=>"Zeratul", "title"=>"Dark Prelate", "role"=>{"name"=>"Assassin", "slug"=>"assassin"}, "roleSecondary"=>{}, "type"=>{"name"=>"Melee", "slug"=>"melee"}, "stats"=>{"damage"=>0, "utility"=>0, "survivability"=>0, "complexity"=>0}, "slug"=>"zeratul", "franchise"=>"starcraft", "analyticsName"=>"Zeratul", "trait"=>{}, "skins"=>[], "abilities"=>[], "heroicAbilities"=>[], "revealed"=>true, "inFreeHeroRotation"=>false, "freeRotationMinLevel"=>0}
+  def heroes_json
+=begin
+    {
+      "name"=>"Zeratul",
+      "title"=>"Dark Prelate",
+      "role"=>{
+        "name"=>"Assassin",
+        "slug"=>"assassin"
+      },
+      "roleSecondary"=>{},
+      "type"=>{
+        "name"=>"Melee",
+        "slug"=>"melee"
+      },
+      "stats"=>{
+        "damage"=>0,
+        "utility"=>0,
+        "survivability"=>0,
+        "complexity"=>0
+      },
+      "slug"=>"zeratul",
+      "franchise"=>"starcraft",
+      "analyticsName"=>"Zeratul",
+      "trait"=>{},
+      "skins"=>[],
+      "abilities"=>[],
+      "heroicAbilities"=>[],
+      "revealed"=>true,
+      "inFreeHeroRotation"=>false,
+      "freeRotationMinLevel"=>0
+    }
+=end
 
 		heroes_json = []
 		(1..20).each do |index|
@@ -23,12 +53,12 @@ class ActiveSupport::TestCase
 					secondary_slug = "role-#{(1..4).to_a.sample}"
 				end while secondary_slug == role_slug
 				secondary_name = secondary_slug.titleize
-				
+
 				role_secondary = {"name"=>secondary_name, "slug"=>secondary_slug}
 			else
 				role_secondary = {}
 			end
-			
+
 			type_slug = "role-#{(1..2).to_a.sample}"
 			type_name = role_slug.titleize
 
@@ -36,7 +66,7 @@ class ActiveSupport::TestCase
 
 			in_free_hero_rotation = (index % 5 == 0)
 			free_rotation_min_level = (in_free_hero_rotation ? [5, 7, 12, 15].sample : 0)
-			
+
 			heroes_json << {
 				"name"=>"Hero #{index}",
 				"title"=>"Title for Hero #{index}",
