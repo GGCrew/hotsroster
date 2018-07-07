@@ -52,7 +52,7 @@ class Hero < ActiveRecord::Base
 		json_end = (json_end_regex =~ hero_script) + json_end_string.length - 1 - 1  #...and trim trailing semicolon
 		json_string = hero_script[json_start..json_end]
 		json = JSON.parse(json_string)
-		
+
 		return json
 	end
 
@@ -77,14 +77,19 @@ class Hero < ActiveRecord::Base
 			hero = self.find_by(slug: hero_json['slug'])
 			hero = self.create!(attributes) unless hero
 
-			# Assumes Blizzard continues to release new heroes on Tuesdays
-			release_date = Date.today
-			(release_date += (2 - release_date.wday).days) if release_date.wday < 2 # Sun, Mon
-			(release_date += (9 - release_date.wday).days) if release_date.wday > 2 # Wed, Thu, Fri, Sat
+      # Release date is now included in source data!
+      release_date = Date.new( hero_json['releaseDate']['year'], hero_json['releaseDate']['month'], hero_json['releaseDate']['day'])
+      prerelease_date = release_date.dup  # There is an exception to this rule: Artanis had a limited pre-release 1 week before official release
+
+      # HotSRoster is designed to only track data after the game's official release.
+      # Source data references alpha and beta release dates.
+      if release_date < GAME_LAUNCH_DATE
+        release_date = GAME_LAUNCH_DATE
+      end
 
 			# Avoid overwriting existing (possibly custom) data
 			attributes.merge!({release_date: release_date}) unless hero.release_date
-			attributes.merge!({prerelease_date: release_date}) unless hero.prerelease_date
+			attributes.merge!({prerelease_date: prerelease_date}) unless hero.prerelease_date
 			attributes.merge!({player_character_name: attributes[:name]}) unless hero.player_character_name
 
 			hero.update!(attributes)
@@ -202,7 +207,7 @@ class Hero < ActiveRecord::Base
 		end
 		extra_ids.flatten!
 		extra_ids.uniq! unless extra_ids.empty?
-		
+
 		return self.select(:id).where.not(id: extra_ids).map(&:id)
 	end
 
@@ -255,7 +260,7 @@ class Hero < ActiveRecord::Base
 	def self.typical_weeks_between_hero_releases
 		weeks = []
 		heroes = self.distinct_heroes.post_launch_heroes.order(release_date: :asc)
-		
+
 		heroes.each_with_index do |hero, index|
 			difference = hero.release_date - (index == 0 ? GAME_LAUNCH_DATE : heroes[index-1].release_date)
 			difference = (difference / 1.week).to_i
@@ -266,6 +271,25 @@ class Hero < ActiveRecord::Base
 		max_count = weeks.max
 		return weeks.index(max_count)
 	end
+
+  def self.export_hero_addition_dates_for_migration
+    heroes = self.distinct_heroes.order(:slug).select(:slug, :release_date, :prerelease_date)
+
+    slug_text_length = "slug: '', ".length
+    longest_slug_length = heroes.map{|hero| hero.slug.length}.max
+    total_slug_length = slug_text_length + longest_slug_length
+
+    formatted_data = []
+    heroes.each do |hero|
+      datum = ""
+      datum << "slug: '#{hero.slug}',".ljust(total_slug_length)
+      datum << "release_date: DateTime.parse('#{hero.release_date.to_date.to_s}')"
+      (datum << ", prerelease_date: DateTime.parse('#{hero.prerelease_date.to_date.to_s}')") if hero.prerelease_date
+      formatted_data << "{#{datum}}"
+    end
+
+    return  formatted_data.join(",#{$/}")
+  end
 
 	#..#
 
@@ -297,14 +321,14 @@ class Hero < ActiveRecord::Base
 		index = hero_ids.count if index == 0
 		return Hero.find(hero_ids[index - 1])
 	end
-	
+
 	def next
 		hero_ids = Hero.distinct_heroes.select(:id).order(:name).map(&:id)
 		index = hero_ids.index(self.distinct_hero.id)
 		index = -1 if self.id == hero_ids.last
 		return Hero.find(hero_ids[index + 1])
 	end
-	
+
 	def first_rotation
 		self.date_ranges.since_game_launch.order([:start, :end]).first
 	end
