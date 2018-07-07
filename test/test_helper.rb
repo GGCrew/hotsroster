@@ -89,8 +89,8 @@ class ActiveSupport::TestCase
 
 			heroes_json << {
         "id"=>"Hero #{index}",
-				"name"=>"Hero #{index}",
-				"title"=>"Title for Hero #{index}",
+        "name"=>"Hero #{index}",
+        "title"=>"Title for Hero #{index}",
         "baseHeroInfo"=>{
           "role"=>{},
           "skins"=>[],
@@ -108,24 +108,24 @@ class ActiveSupport::TestCase
           "slug"=>role_slug,
           "description"=>"#{role_name} Flowery description of role."
         },
-				"roleSecondary"=>role_secondary,
-				"type"=>{"name"=>type_name, "slug"=>type_slug},
+        "roleSecondary"=>role_secondary,
+        "type"=>{"name"=>type_name, "slug"=>type_slug},
         "multiclassRoles"=>[],
         "pairedHeroes"=>[],
-				"slug"=>"hero-#{index}",
-				"franchise"=>franchise_value,
+        "slug"=>"hero-#{index}",
+        "franchise"=>franchise_value,
         "stanceSlug"=>"",
         "difficulty"=>difficulty,
-				"stats"=>{"damage"=>0, "utility"=>0, "survivability"=>0, "complexity"=>0},
-				"skins"=>[],
+        "stats"=>{"damage"=>0, "utility"=>0, "survivability"=>0, "complexity"=>0},
+        "skins"=>[],
         "releaseDate"=>release_date,
         "alternateHeroInfo"=>[],
         "auxiliaryHeroInfo"=>[],
         "heroStanceName"=>"",
-				"analyticsName"=>"Hero #{index}".downcase,
-				"revealed"=>true,
-				"inFreeHeroRotation"=>in_free_hero_rotation,
-				"freeRotationMinLevel"=>free_rotation_min_level
+        "analyticsName"=>"Hero #{index}".downcase,
+        "revealed"=>true,
+        "inFreeHeroRotation"=>in_free_hero_rotation,
+        "freeRotationMinLevel"=>free_rotation_min_level
         "unified"=>false
 			}
 		end
