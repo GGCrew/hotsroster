@@ -1,6 +1,5 @@
 class ImportHeroAdditionDates < ActiveRecord::Migration
   def up 
-  	game_launch_date = DateTime.parse('2015-06-02')
   	hero_data = [
 			{slug: 'abathur', 					release_date: DateTime.parse('2014-03-13')},
 			{slug: 'alarak',            release_date: DateTime.parse('2016-09-13')},
@@ -67,12 +66,10 @@ class ImportHeroAdditionDates < ActiveRecord::Migration
 
  		for hero_datum in hero_data
  			attributes = {} 			
- 			if hero_datum[:release_date] < game_launch_date
- 				attributes[:prerelease_date] = hero_datum[:release_date]
- 				attributes[:release_date] = game_launch_date
+      attributes[:prerelease_date] = (hero_datum[:prerelease_date] ? hero_datum[:prerelease_date] : hero_datum[:release_date])
+ 			if hero_datum[:release_date] < GAME_LAUNCH_DATE
+ 				attributes[:release_date] = GAME_LAUNCH_DATE
  			else
-				#hero_datum[:prerelease_date] ? (hero.prerelease_date = hero_datum[:prerelease_date]) : (hero.prerelease_date = hero_datum[:release_date] )
-				attributes[:prerelease_date] = (hero_datum[:prerelease_date] ? hero_datum[:prerelease_date] : hero_datum[:release_date])
  				attributes[:release_date] = hero_datum[:release_date]
  			end
  		
