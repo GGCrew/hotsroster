@@ -13,35 +13,22 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
   def heroes_json
 =begin
-    {
-      "name"=>"Zeratul",
-      "title"=>"Dark Prelate",
-      "role"=>{
-        "name"=>"Assassin",
-        "slug"=>"assassin"
-      },
-      "roleSecondary"=>{},
-      "type"=>{
-        "name"=>"Melee",
-        "slug"=>"melee"
-      },
-      "stats"=>{
-        "damage"=>0,
-        "utility"=>0,
-        "survivability"=>0,
-        "complexity"=>0
-      },
-      "slug"=>"zeratul",
-      "franchise"=>"starcraft",
-      "analyticsName"=>"Zeratul",
-      "trait"=>{},
-      "skins"=>[],
-      "abilities"=>[],
-      "heroicAbilities"=>[],
-      "revealed"=>true,
-      "inFreeHeroRotation"=>false,
-      "freeRotationMinLevel"=>0
-    }
+{"name"=>"Zeratul",
+ "title"=>"Dark Prelate",
+ "role"=>{"name"=>"Assassin", "slug"=>"assassin"},
+ "roleSecondary"=>{},
+ "type"=>{"name"=>"Melee", "slug"=>"melee"},
+ "stats"=>{"damage"=>0, "utility"=>0, "survivability"=>0, "complexity"=>0},
+ "slug"=>"zeratul",
+ "franchise"=>"starcraft",
+ "analyticsName"=>"Zeratul",
+ "trait"=>{},
+ "skins"=>[],
+ "abilities"=>[],
+ "heroicAbilities"=>[],
+ "revealed"=>true,
+ "inFreeHeroRotation"=>false,
+ "freeRotationMinLevel"=>0}
 =end
 
 		heroes_json = []
