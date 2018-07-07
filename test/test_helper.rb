@@ -12,6 +12,7 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
   def heroes_json
+    # Sample data generated via "pp Hero.get_heroes_json(SOURCE_URLS[:heroes][:us])[-21]"
 =begin
 {"id"=>"Zeratul",
  "name"=>"Zeratul",
