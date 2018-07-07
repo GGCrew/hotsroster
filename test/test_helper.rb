@@ -4,7 +4,11 @@ require 'rails/test_help'
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-  fixtures :all
+  fixtures :franchises, :roles, :typps
+  fixtures :heros
+  fixtures :alternate_hero_names, :hero_roles
+  fixtures :date_ranges
+  fixtures :rosters
 
   # Add more helper methods to be used by all tests here...
   def heroes_json 
