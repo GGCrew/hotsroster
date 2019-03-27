@@ -61,16 +61,16 @@ class Roster < ActiveRecord::Base
 				end
 
 				page = Nokogiri::HTML(html)
-				#post_list = page.css('div.Topic-content div.TopicPost')
-        post_list = page.css('div#post-list div.topic-post')
+				post_list = page.css('div.Topic-content div.TopicPost')
+        #post_list = page.css('div#post-list div.topic-post')
 
 				if post_list.empty?
 					# TODO: Send alert to admin
 				end
 
 				for post in post_list
-					#post_detail = post.css('div.TopicPost-bodyContent')
-          post_detail = post.css('div.post-detail')
+					post_detail = post.css('div.TopicPost-bodyContent')
+          #post_detail = post.css('div.post-detail')
 
 					date_range = DateRange.import_from_post(post_detail)
 
